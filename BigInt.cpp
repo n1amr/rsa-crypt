@@ -22,7 +22,7 @@ string BigInt::toCellsString() const {
 }
 
 string BigInt::toBitsString() const {
-  stringstream nss;
+  stringstream ss;
   queue<CELL_T> tmp(data);
   tmp.push((CELL_T) 0);
 
@@ -30,19 +30,19 @@ string BigInt::toBitsString() const {
     CELL_T cell = tmp.front();
     tmp.pop();
     for (int i = 0; i < CELL_TYPE_LENGTH; ++i) {
-      nss << cell % 2;
+      ss << cell % 2;
       cell /= 2;
     }
   }
-  string bitString = nss.str();
-  reverse(bitString.begin(), bitString.end());
-  unsigned long firstOneIndex = bitString.find('1');
-  bitString = bitString.substr(min(firstOneIndex, bitString.length() - 1));
-  return bitString;
+
+  string ans = ss.str();
+  reverse(ans.begin(), ans.end());
+  ans = ans.substr(min((unsigned long) ans.find_first_not_of('0'), ans.length() - 1));
+  return ans;
 }
 
 string BigInt::toDecimalString() const {
-  stringstream nss;
+  stringstream ss;
   string bitString = toBitsString();
   string n = "0";
   while (!bitString.empty()) {
@@ -50,7 +50,6 @@ string BigInt::toDecimalString() const {
     n = addToDecimalString(n, bitString.back());
     bitString.pop_back();
   }
-  nss << n;
-  return nss.str();
+  ss << n;
+  return ss.str();
 }
-

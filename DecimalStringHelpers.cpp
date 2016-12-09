@@ -53,5 +53,6 @@ string divideDecimalStringByTwo(string s) {
     ss << ((char) ('0' + y));
   }
   string ans = ss.str();
+  ans = ans.substr(min((unsigned long) ans.find_first_not_of('0'), ans.length() - 1));
   return ans;
 }

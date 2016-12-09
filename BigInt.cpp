@@ -87,34 +87,24 @@ void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T 
 }
 
 BigInt BigInt::add(const BigInt &n) {
-  CONTAINER_T<CELL_T> newData;
+  CONTAINER_T<CELL_T> result_cells;
 
-  const CONTAINER_T<CELL_T> &data1 = this->data;
-  const CONTAINER_T<CELL_T> &data2 = n.data;
+  const CONTAINER_T<CELL_T> &cells_1 = this->data;
+  const CONTAINER_T<CELL_T> &cells_2 = n.data;
 
-  CELL_T remainder = 0;
+  CELL_T c1, c2, remainder = 0, ans;
   int i = 0, j = 0;
-  while (i < data1.size() || j < data2.size()) {
-    CELL_T cell_1 = (CELL_T) (i < data1.size() ? data1[i++] : 0);
-    CELL_T cell_2 = (CELL_T) (j < data2.size() ? data2[j++] : 0);
+  while (i < cells_1.size() || j < cells_2.size()) {
+    c1 = (CELL_T) (i < cells_1.size() ? cells_1[i++] : 0);
+    c2 = (CELL_T) (j < cells_2.size() ? cells_2[j++] : 0);
 
-    CELL_T ans;
-    addCells(cell_1, cell_2, remainder, ans, remainder);
-    newData.push_back(ans);
+    addCells(c1, c2, remainder, ans, remainder);
+    result_cells.push_back(ans);
   }
   if (remainder)
-    newData.push_back(remainder);
+    result_cells.push_back(remainder);
 
-  return BigInt(newData);
-}
-
-BigInt BigInt::shiftCell() {
-  REVERSE(data);
-  data.push_back(0);
-  REVERSE(data);
-  BigInt ans(data);
-  data.pop_back();
-  return ans;
+  return BigInt(result_cells);
 }
 
 void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_out) {

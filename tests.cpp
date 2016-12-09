@@ -73,8 +73,8 @@ bool testRepresentationOf1024BitNumber() {
 }
 
 bool testConversionBetweenStringAndIntVector(const string &s) {
-  auto v = decimalStringToDecimalVector(s);
-  string s2 = decimalVectorToDecimalString(v);
+  auto v = decimalStringToDecimalVec(s);
+  string s2 = decimalVecToDecimalString(v);
 
   bool pass = s == s2;
   if (!pass) {

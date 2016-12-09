@@ -12,9 +12,9 @@ BigInt::BigInt(const CONTAINER_T<CELL_T> &init) {
 }
 
 BigInt::BigInt(const string &s) {
-  vector<short> v = decimalStringToDecimalVector(s);
+  vector<short> v = decimalStringToDecimalVec(s);
 
-  vector<bool> bitVector = decimalVectorToBitsVector(v);
+  vector<bool> bitVector = decimalVecToBitsVec(v);
   while (bitVector.size() % CELL_TYPE_LENGTH != 0)
     bitVector.push_back(0);
 
@@ -73,11 +73,11 @@ string BigInt::toDecimalString() const {
   digits.push_back(0);
 
   for (auto it = bits.rbegin(); it != bits.rend(); ++it) {
-    digits = doubleDecimalVector(digits);
-    digits = addToDecimalVector(digits, *it);
+    digits = doubleDecimalVec(digits);
+    digits = addToDecimalVec(digits, *it);
   }
 
-  return decimalVectorToDecimalString(digits);
+  return decimalVecToDecimalString(digits);
 }
 
 BigInt BigInt::add(const BigInt &n) {

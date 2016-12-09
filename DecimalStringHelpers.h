@@ -6,13 +6,13 @@ using namespace std;
 
 #define REVERSE(s) reverse((s).begin(), (s).end())
 
-string decimalVectorToDecimalString(const vector<short> &v);
-vector<short> decimalStringToDecimalVector(const string &s);
+string decimalVecToDecimalString(const vector<short> &v);
+vector<short> decimalStringToDecimalVec(const string &s);
 
-vector<short> addToDecimalVector(const vector<short> &s, short d);
-vector<short> doubleDecimalVector(const vector<short> &s);
-vector<short> halveDecimalVector(const vector<short> &v);
-bool isDecimalVectorOdd(const vector<short> &s);
-vector<bool> decimalVectorToBitsVector(const vector<short> &s);
+vector<short> addToDecimalVec(const vector<short> &s, short d);
+vector<short> doubleDecimalVec(const vector<short> &s);
+vector<short> halveDecimalVec(const vector<short> &v);
+bool isDecimalVecOdd(const vector<short> &s);
+vector<bool> decimalVecToBitsVec(const vector<short> &s);
 
 #endif //RSA_DECIMALSTRINGHELPERS_H

@@ -3,21 +3,21 @@
 #include "DecimalStringHelpers.h"
 using namespace std;
 
-string decimalVectorToDecimalString(const vector<short> &v) {
+string decimalVecToDecimalString(const vector<short> &v) {
   stringstream ss;
   for (auto it = v.rbegin(); it != v.rend(); ++it)
     ss << (*it);
   return ss.str();
 }
 
-vector<short> decimalStringToDecimalVector(const string &s) {
+vector<short> decimalStringToDecimalVec(const string &s) {
   vector<short> v;
   for (auto it = s.rbegin(); it != s.rend(); ++it)
     v.push_back(*it - '0');
   return v;
 }
 
-vector<short> doubleDecimalVector(const vector<short> &v) {
+vector<short> doubleDecimalVec(const vector<short> &v) {
   vector<short> ans;
 
   short d, remainder = 0;
@@ -32,7 +32,7 @@ vector<short> doubleDecimalVector(const vector<short> &v) {
   return ans;
 }
 
-vector<short> addToDecimalVector(const vector<short> &v, short d) {
+vector<short> addToDecimalVec(const vector<short> &v, short d) {
   vector<short> ans;
 
   short remainder = d;
@@ -47,7 +47,7 @@ vector<short> addToDecimalVector(const vector<short> &v, short d) {
   return ans;
 }
 
-vector<short> halveDecimalVector(const vector<short> &v) {
+vector<short> halveDecimalVec(const vector<short> &v) {
   vector<short> ans;
 
   short x, remainder = 0;
@@ -64,19 +64,19 @@ vector<short> halveDecimalVector(const vector<short> &v) {
   return ans;
 }
 
-bool isDecimalVectorOdd(const vector<short> &v) {
+bool isDecimalVecOdd(const vector<short> &v) {
   return (bool) (v.front() % 2);
 }
 
-vector<bool> decimalVectorToBitsVector(const vector<short> &v) {
+vector<bool> decimalVecToBitsVec(const vector<short> &v) {
   vector<bool> ans;
 
   vector<short> tmp = v;
 
   while (!tmp.empty() && !(tmp.size() == 1 && tmp.back() == 0)) {
-    bool x = isDecimalVectorOdd(tmp);
+    bool x = isDecimalVecOdd(tmp);
     ans.push_back(x);
-    tmp = halveDecimalVector(tmp);
+    tmp = halveDecimalVec(tmp);
   }
 
   if (ans.empty())

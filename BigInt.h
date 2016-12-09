@@ -5,7 +5,8 @@
 using namespace std;
 
 #define CONTAINER_T vector
-#define CELL_T unsigned long long int
+//#define CELL_T unsigned long long int
+#define CELL_T unsigned char
 #define CELL_TYPE_LENGTH (sizeof(CELL_T) * 8)
 
 
@@ -20,6 +21,7 @@ public:
 
   string toCellsString() const;
   string toBitsString() const;
+  vector<bool> toBitsVector() const;
   string toDecimalString() const;
 
   BigInt add(const BigInt &n);

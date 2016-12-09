@@ -4,7 +4,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define REVERSE_STRING(s) reverse((s).begin(), (s).end())
+#define REVERSE(s) reverse((s).begin(), (s).end())
 
 string addToDecimalString(string s, char d);
 string doubleDecimalString(string s);

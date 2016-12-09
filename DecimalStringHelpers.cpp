@@ -17,7 +17,7 @@ string doubleDecimalString(string s) {
     ss << (char) ('0' + (remainder % 10));
 
   string ans = ss.str();
-  REVERSE_STRING(ans);
+  REVERSE(ans);
   return ans;
 }
 
@@ -36,13 +36,13 @@ string addToDecimalString(string s, char d) {
     ss << (char) ('0' + (remainder % 10));
 
   string ans = ss.str();
-  REVERSE_STRING(ans);
+  REVERSE(ans);
   return ans;
 }
 
 string halveDecimalString(string s) {
   stringstream ss;
-  REVERSE_STRING(s);
+  REVERSE(s);
 
   int remainder = 0;
   while (!s.empty()) {
@@ -70,6 +70,8 @@ string decimalStringToBitsString(string s) {
   }
 
   string ans = ss.str();
-  REVERSE_STRING(ans);
+  if (ans.empty())
+    ans = "0";
+  REVERSE(ans);
   return ans;
 }

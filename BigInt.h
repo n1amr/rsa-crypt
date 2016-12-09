@@ -4,8 +4,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define CONTAINER_T deque
-#define CELL_T unsigned char
+#define CONTAINER_T vector
+#define CELL_T unsigned long long int
 #define CELL_TYPE_LENGTH (sizeof(CELL_T) * 8)
 
 
@@ -22,8 +22,9 @@ public:
   string toBitsString() const;
   string toDecimalString() const;
 
+  BigInt add(const BigInt &n);
   friend ostream &operator<<(ostream &os, const BigInt &x) {
-    return os << x.toBitsString();
+    return os << x.toDecimalString();
   }
 };
 

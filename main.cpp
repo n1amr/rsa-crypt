@@ -6,7 +6,8 @@
 using namespace std;
 
 int main() {
-  cout << "Hello, World!" << endl;
+
+
   runTests();
   return 0;
 }

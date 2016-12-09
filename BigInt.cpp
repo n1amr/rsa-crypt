@@ -81,6 +81,27 @@ string BigInt::toDecimalString() const {
 }
 
 BigInt BigInt::add(const BigInt &n) {
-  return BigInt("1234");
+  CONTAINER_T<CELL_T> newData;
+
+  const CONTAINER_T<CELL_T> &data1 = this->data;
+  const CONTAINER_T<CELL_T> &data2 = n.data;
+
+  CELL_T remainder = 0;
+  int i = 0, j = 0;
+  while (i < data1.size() || j < data2.size()) {
+    CELL_T cell1 = (CELL_T) (i < data1.size() ? data1[i++] : 0);
+    CELL_T cell2 = (CELL_T) (j < data2.size() ? data2[j++] : 0);
+
+    CELL_T maxCell = max(cell1, cell2);
+    CELL_T resultCell = (CELL_T) (cell1 + cell2 + remainder);
+
+    newData.push_back(resultCell);
+    remainder = (CELL_T) ((resultCell < maxCell)
+                          || (remainder == 1 && resultCell == cell1 && resultCell == cell2));
+  }
+  if (remainder)
+    newData.push_back(remainder);
+
+  return BigInt(newData);
 }
 

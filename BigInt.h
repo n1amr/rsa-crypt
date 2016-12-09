@@ -2,7 +2,6 @@
 #define RSA_BIGINT_H
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 #define CONTAINER_T deque
@@ -11,20 +10,15 @@ using namespace std;
 
 
 class BigInt {
-  private:
-
+private:
   CONTAINER_T<CELL_T> data;
 
-  public:
-
+public:
   BigInt();
-
   BigInt(const CONTAINER_T<CELL_T> &init);
 
   string toCellsString() const;
-
   string toBitsString() const;
-
   string toDecimalString() const;
 
   friend ostream &operator<<(ostream &os, const BigInt &x) {

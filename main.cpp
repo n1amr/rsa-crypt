@@ -1,7 +1,7 @@
 #include <iostream>
 #include <bits/stdc++.h>
 #include "BigInt.h"
-
+#include "DecimalStringHelpers.h"
 using namespace std;
 
 int main() {
@@ -13,5 +13,9 @@ int main() {
   cout << x.toCellsString() << endl;
   cout << x.toBitsString() << endl;
   cout << x.toDecimalString() << endl;
+
+  string s = "123";
+  cout << divideDecimalStringByTwo(s) << endl;
+
   return 0;
 }

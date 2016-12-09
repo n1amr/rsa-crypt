@@ -1,10 +1,7 @@
 #include <bits/stdc++.h>
 #include "BigInt.h"
-
-
-string shiftRightDecimal(string s);
-
-string addToDecimalString(string s, char d);
+#include "DecimalStringHelpers.h"
+using namespace std;
 
 BigInt::BigInt() {
   // TODO
@@ -57,39 +54,3 @@ string BigInt::toDecimalString() const {
   return nss.str();
 }
 
-string shiftRightDecimal(string s) {
-  stringstream ss;
-
-  int remainder = 0;
-
-  for (int i = (int) (s.length() - 1); i >= 0; --i) {
-    int d = 2 * (s[i] - '0') + remainder;
-    ss << (char) ('0' + (d % 10));
-    remainder = d / 10;
-  }
-  if (remainder)
-    ss << (char) ('0' + (remainder % 10));
-
-  string ans = ss.str();
-  reverse(ans.begin(), ans.end());
-  return ans;
-}
-
-string addToDecimalString(string s, char d) {
-  stringstream ss;
-
-  int remainder = d - '0';
-
-  for (int i = (int) (s.length() - 1); i >= 0; --i) {
-    int x = (s[i] - '0');
-    int y = x + remainder;
-    ss << (char) ('0' + (y % 10));
-    remainder = y / 10;
-  }
-  if (remainder)
-    ss << (char) ('0' + (remainder % 10));
-
-  string ans = ss.str();
-  reverse(ans.begin(), ans.end());
-  return ans;
-}

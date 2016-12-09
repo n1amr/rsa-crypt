@@ -18,8 +18,8 @@ BigInt::BigInt(const string &s) {
   int nBits = (int) bitString.length();
   int nCells = (nBits + CELL_TYPE_LENGTH - 1) / CELL_TYPE_LENGTH;
 
-  for (int cellNum = 0; cellNum < nCells; cellNum++) {
-    string cellBits = bitString.substr(cellNum * CELL_TYPE_LENGTH, CELL_TYPE_LENGTH);
+  for (int i = 0; i < nCells; i++) {
+    string cellBits = bitString.substr(i * CELL_TYPE_LENGTH, CELL_TYPE_LENGTH);
     CELL_T cell = 0;
     while (!cellBits.empty()) {
       cell = (CELL_T) ((cell << 1) + ((int) cellBits.back() - '0'));
@@ -32,8 +32,8 @@ BigInt::BigInt(const string &s) {
 string BigInt::toCellsString() const {
   stringstream ss;
   ss << "BigInt({";
-  for (CELL_T cell : data)
-    ss << ((unsigned long long int) cell) << ", ";
+  for (auto it = data.begin(); it != data.end(); ++it)
+    ss << ((unsigned long long int) *it) << ", ";
   ss << "})";
   return ss.str();
 }
@@ -50,7 +50,7 @@ string BigInt::toBitsString() const {
 
   string ans = ss.str();
   REVERSE(ans);
-  ans = ans.substr(min((unsigned long) ans.find_first_not_of('0'), ans.length() - 1));
+  TRIM_ZEROS(ans);
   return ans;
 }
 

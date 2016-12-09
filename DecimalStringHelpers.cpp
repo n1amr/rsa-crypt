@@ -3,13 +3,13 @@
 #include "DecimalStringHelpers.h"
 using namespace std;
 
-string doubleDecimalString(string s) {
+string doubleDecimalString(const string &s) {
   stringstream ss;
 
   int remainder = 0;
 
-  for (int i = (int) (s.length() - 1); i >= 0; --i) {
-    int d = 2 * (s[i] - '0') + remainder;
+  for (auto it = s.rbegin(); it != s.rend(); ++it) {
+    int d = 2 * (*it - '0') + remainder;
     ss << (char) ('0' + (d % 10));
     remainder = d / 10;
   }
@@ -21,16 +21,15 @@ string doubleDecimalString(string s) {
   return ans;
 }
 
-string addToDecimalString(string s, char d) {
+string addToDecimalString(const string &s, char d) {
   stringstream ss;
 
   int remainder = d - '0';
 
-  for (int i = (int) (s.length() - 1); i >= 0; --i) {
-    int x = (s[i] - '0');
-    int y = x + remainder;
-    ss << (char) ('0' + (y % 10));
-    remainder = y / 10;
+  for (auto it = s.rbegin(); it != s.rend(); ++it) {
+    int x = (*it - '0') + remainder;
+    ss << (char) ('0' + (x % 10));
+    remainder = x / 10;
   }
   if (remainder)
     ss << (char) ('0' + (remainder % 10));
@@ -40,33 +39,32 @@ string addToDecimalString(string s, char d) {
   return ans;
 }
 
-string halveDecimalString(string s) {
+string halveDecimalString(const string &s) {
   stringstream ss;
-  REVERSE(s);
 
-  int remainder = 0;
-  while (!s.empty()) {
-    int x = s.back() - '0' + 10 * remainder;
-    s.pop_back();
-    int y = x / 2;
+  int x, remainder = 0;
+  for (auto it = s.begin(); it != s.end(); ++it) {
+    x = 10 * remainder + (*it - '0');
     remainder = x % 2;
-    ss << ((char) ('0' + y));
+    ss << ((char) ('0' + x / 2));
   }
+
   string ans = ss.str();
-  ans = ans.substr(min((unsigned long) ans.find_first_not_of('0'), ans.length() - 1));
+  TRIM_ZEROS(ans);
   return ans;
 }
 
-bool isDecimalStringOdd(string s) {
+bool isDecimalStringOdd(const string &s) {
   return (bool) ((s[s.length() - 1] - '0') & 1);
 }
 
-string decimalStringToBitsString(string s) {
+string decimalStringToBitsString(const string &s) {
   stringstream ss;
 
-  while (!s.empty() && !(s.length() == 1 && s == "0")) {
-    ss << isDecimalStringOdd(s);
-    s = halveDecimalString(s);
+  string tmp = s;
+  while (!tmp.empty() && !(tmp.length() == 1 && tmp == "0")) {
+    ss << isDecimalStringOdd(tmp);
+    tmp = halveDecimalString(tmp);
   }
 
   string ans = ss.str();

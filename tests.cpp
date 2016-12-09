@@ -70,8 +70,14 @@ bool testRepresentationOf1024BitNumber() {
 }
 
 void runTests() {
+  clock_t begin_time = clock();
+
   testRepresentationOfSmallNumbers();
   testRepresentationOfLongNumbers();
   testRepresentationOf1024BitNumber();
+
+  clock_t end_time = clock();
+  float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
+  cout << "Total test time = " << elapsed_time << endl;
 }
 

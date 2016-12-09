@@ -38,7 +38,7 @@ int testRepresentationOfSmallNumbers() {
   stringstream ss;
   string s;
   long long start = 0;
-  for (long long i = start; i < start + 10000; ++i) {
+  for (long long i = start; i < start + 100; ++i) {
     ss.str("");
     ss << i;
     s = ss.str();
@@ -53,7 +53,7 @@ bool testRepresentationOfLongNumbers() {
   stringstream ss;
   string s;
   long long start = (long long int) 1e17;
-  for (long long i = start; i < start + 1000; ++i) {
+  for (long long i = start; i < start + 100; ++i) {
     ss.str("");
     ss << i;
     s = ss.str();
@@ -89,7 +89,7 @@ int testConversionBetweenStringAndIntVectorShort() {
   stringstream ss;
   string s;
   long long start = 0;
-  for (long long i = start; i < start + 10000; ++i) {
+  for (long long i = start; i < start + 100; ++i) {
     ss.str("");
     ss << i;
     s = ss.str();
@@ -104,7 +104,7 @@ int testConversionBetweenStringAndIntVectorLong() {
   stringstream ss;
   string s;
   long long start = (long long int) 1e17;
-  for (long long i = start; i < start + 1000; ++i) {
+  for (long long i = start; i < start + 100; ++i) {
     ss.str("");
     ss << i;
     s = ss.str();

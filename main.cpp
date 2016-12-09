@@ -7,7 +7,8 @@ using namespace std;
 int main() {
   cout << "Hello, World!" << endl;
 
-  BigInt x(CONTAINER_T<CELL_T>({1, 2}));
+  CONTAINER_T<CELL_T> data({1, 2});
+  BigInt x(data);
   cout << x << endl;
   cout << x.toCellsString() << endl;
   cout << x.toBitsString() << endl;

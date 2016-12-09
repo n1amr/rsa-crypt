@@ -4,8 +4,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-string shiftRightDecimal(string s);
 string addToDecimalString(string s, char d);
-string divideDecimalStringByTwo(string s);
+string doubleDecimalString(string s);
+string halveDecimalString(string s);
 
 #endif //RSA_DECIMALSTRINGHELPERS_H

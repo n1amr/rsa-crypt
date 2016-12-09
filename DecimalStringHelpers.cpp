@@ -3,7 +3,7 @@
 #include "DecimalStringHelpers.h"
 using namespace std;
 
-string shiftRightDecimal(string s) {
+string doubleDecimalString(string s) {
   stringstream ss;
 
   int remainder = 0;
@@ -40,7 +40,7 @@ string addToDecimalString(string s, char d) {
   return ans;
 }
 
-string divideDecimalStringByTwo(string s) {
+string halveDecimalString(string s) {
   stringstream ss;
   reverse(s.begin(), s.end());
 

@@ -15,7 +15,7 @@ int main() {
   cout << x.toDecimalString() << endl;
 
   string s = "123";
-  cout << divideDecimalStringByTwo(s) << endl;
+  cout << halveDecimalString(s) << endl;
 
   return 0;
 }

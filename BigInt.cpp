@@ -46,7 +46,7 @@ string BigInt::toDecimalString() const {
   string bitString = toBitsString();
   string n = "0";
   while (!bitString.empty()) {
-    n = shiftRightDecimal(n);
+    n = doubleDecimalString(n);
     n = addToDecimalString(n, bitString.back());
     bitString.pop_back();
   }

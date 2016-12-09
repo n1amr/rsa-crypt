@@ -3,73 +3,84 @@
 #include "DecimalStringHelpers.h"
 using namespace std;
 
-string doubleDecimalString(const string &s) {
+string decimalVectorToDecimalString(const vector<short> &v) {
   stringstream ss;
+  for (auto it = v.rbegin(); it != v.rend(); ++it)
+    ss << (*it);
+  return ss.str();
+}
 
-  int remainder = 0;
+vector<short> decimalStringToDecimalVector(const string &s) {
+  vector<short> v;
+  for (auto it = s.rbegin(); it != s.rend(); ++it)
+    v.push_back(*it - '0');
+  return v;
+}
 
-  for (auto it = s.rbegin(); it != s.rend(); ++it) {
-    int d = 2 * (*it - '0') + remainder;
-    ss << (char) ('0' + (d % 10));
-    remainder = d / 10;
+vector<short> doubleDecimalVector(const vector<short> &v) {
+  vector<short> ans;
+
+  short d, remainder = 0;
+  for (auto it = v.begin(); it != v.end(); ++it) {
+    d = (short) (2 * (*it) + remainder);
+    ans.push_back((short) (d % 10));
+    remainder = (short) (d / 10);
   }
   if (remainder)
-    ss << (char) ('0' + (remainder % 10));
+    ans.push_back((short) (remainder % 10));
 
-  string ans = ss.str();
-  REVERSE(ans);
   return ans;
 }
 
-string addToDecimalString(const string &s, char d) {
-  stringstream ss;
+vector<short> addToDecimalVector(const vector<short> &v, short d) {
+  vector<short> ans;
 
-  int remainder = d - '0';
-
-  for (auto it = s.rbegin(); it != s.rend(); ++it) {
-    int x = (*it - '0') + remainder;
-    ss << (char) ('0' + (x % 10));
-    remainder = x / 10;
+  short remainder = d;
+  for (auto it = v.begin(); it != v.end(); ++it) {
+    int x = (*it) + remainder;
+    ans.push_back((short) (x % 10));
+    remainder = (short) (x / 10);
   }
   if (remainder)
-    ss << (char) ('0' + (remainder % 10));
+    ans.push_back((short) (remainder % 10));
 
-  string ans = ss.str();
+  return ans;
+}
+
+vector<short> halveDecimalVector(const vector<short> &v) {
+  vector<short> ans;
+
+  short x, remainder = 0;
+  for (auto it = v.rbegin(); it != v.rend(); ++it) {
+    x = (short) (10 * remainder + (*it));
+    remainder = (short) (x % 2);
+    ans.push_back((short) (x / 2));
+  }
+
   REVERSE(ans);
+  while (ans.size() > 1 && ans.back() == 0)
+    ans.pop_back();
+
   return ans;
 }
 
-string halveDecimalString(const string &s) {
-  stringstream ss;
-
-  int x, remainder = 0;
-  for (auto it = s.begin(); it != s.end(); ++it) {
-    x = 10 * remainder + (*it - '0');
-    remainder = x % 2;
-    ss << ((char) ('0' + x / 2));
-  }
-
-  string ans = ss.str();
-  TRIM_ZEROS(ans);
-  return ans;
+bool isDecimalVectorOdd(const vector<short> &v) {
+  return (bool) (v.front() % 2);
 }
 
-bool isDecimalStringOdd(const string &s) {
-  return (bool) ((s[s.length() - 1] - '0') & 1);
-}
+vector<bool> decimalVectorToBitsVector(const vector<short> &v) {
+  vector<bool> ans;
 
-string decimalStringToBitsString(const string &s) {
-  stringstream ss;
+  vector<short> tmp = v;
 
-  string tmp = s;
-  while (!tmp.empty() && !(tmp.length() == 1 && tmp == "0")) {
-    ss << isDecimalStringOdd(tmp);
-    tmp = halveDecimalString(tmp);
+  while (!tmp.empty() && !(tmp.size() == 1 && tmp.back() == 0)) {
+    bool x = isDecimalVectorOdd(tmp);
+    ans.push_back(x);
+    tmp = halveDecimalVector(tmp);
   }
 
-  string ans = ss.str();
   if (ans.empty())
-    ans = "0";
-  REVERSE(ans);
+    ans.push_back(0);
   return ans;
 }
+

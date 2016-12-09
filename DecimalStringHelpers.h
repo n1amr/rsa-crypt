@@ -5,12 +5,14 @@
 using namespace std;
 
 #define REVERSE(s) reverse((s).begin(), (s).end())
-#define TRIM_ZEROS(s) (s) = (s).substr(min((unsigned long) (s).find_first_not_of('0'), (s).length() - 1))
 
-string addToDecimalString(const string &s, char d);
-string doubleDecimalString(const string &s) ;
-string halveDecimalString(const string &s);
-bool isDecimalStringOdd(const string &s);
-string decimalStringToBitsString(const string &s);
+string decimalVectorToDecimalString(const vector<short> &v);
+vector<short> decimalStringToDecimalVector(const string &s);
+
+vector<short> addToDecimalVector(const vector<short> &s, short d);
+vector<short> doubleDecimalVector(const vector<short> &s);
+vector<short> halveDecimalVector(const vector<short> &v);
+bool isDecimalVectorOdd(const vector<short> &s);
+vector<bool> decimalVectorToBitsVector(const vector<short> &s);
 
 #endif //RSA_DECIMALSTRINGHELPERS_H

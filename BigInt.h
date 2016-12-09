@@ -5,9 +5,8 @@
 using namespace std;
 
 #define CONTAINER_T vector
-//#define CELL_T unsigned long long int
-#define CELL_T unsigned char
-#define DOUBLE_CELL_T unsigned short int
+#define CELL_T unsigned int
+#define DOUBLE_CELL_T unsigned long long int
 #define CELL_TYPE_LENGTH (sizeof(CELL_T) * 8)
 
 

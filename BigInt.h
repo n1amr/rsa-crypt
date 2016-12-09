@@ -16,7 +16,7 @@ private:
 public:
   BigInt();
   BigInt(const CONTAINER_T<CELL_T> &init);
-  BigInt(string s);
+  BigInt(const string &s);
 
   string toCellsString() const;
   string toBitsString() const;

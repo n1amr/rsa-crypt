@@ -12,7 +12,7 @@ BigInt::BigInt(const CONTAINER_T<CELL_T> &init) {
   data = CONTAINER_T<CELL_T>(init);
 }
 
-BigInt::BigInt(string s) {
+BigInt::BigInt(const string &s) {
   string bitString = decimalStringToBitsString(s);
   int nBits = (int) bitString.length();
   int nCells = (nBits + CELL_TYPE_LENGTH - 1) / CELL_TYPE_LENGTH;
@@ -63,13 +63,13 @@ string BigInt::toDecimalString() const {
   string bitString = toBitsString();
   REVERSE_STRING(bitString);
 
-  string n = "0";
+  string s = "0";
   while (!bitString.empty()) {
-    n = doubleDecimalString(n);
-    n = addToDecimalString(n, bitString.back());
+    s = doubleDecimalString(s);
+    s = addToDecimalString(s, bitString.back());
     bitString.pop_back();
   }
-  ss << n;
+  ss << s;
   return ss.str();
 }
 

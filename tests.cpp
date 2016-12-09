@@ -4,6 +4,9 @@
 #include "DecimalStringHelpers.h"
 using namespace std;
 
+int mul_ops = 0;
+int add_ops = 0;
+
 bool testRepresentationOf1024BitNumber();
 
 bool testRepresentationOfANumber(string s) {
@@ -125,6 +128,7 @@ bool testAddition(string n1, string n2, string ans) {
     cout << n1 << " + " << n2 << " = " <<
          ans << " != " << z.toDecimalString() << endl;
   }
+  add_ops++;
   return !correct;
 }
 
@@ -193,6 +197,7 @@ bool testMutliplication(string n1, string n2, string ans) {
     cout << n1 << " * " << n2 << " = " <<
          ans << " != " << z.toDecimalString() << endl;
   }
+  mul_ops++;
   return !correct;
 }
 
@@ -221,8 +226,8 @@ bool testMutliplicationSmallNumbers() {
 }
 
 bool testMutliplicationSmallNumbers2() {
-  long long n1_start = 5234321;
-  long long n2_start = 4671151;
+  long long n1_start = 523432261;
+  long long n2_start = 467115341;
   for (long long i = n1_start; i < n1_start + 100; ++i) {
     stringstream ss1;
     ss1 << i;
@@ -251,9 +256,9 @@ bool testMutliplicationLongNumbers() {
       "4390762844544221301382902406733168845063887446673695681038901126589516324486872174593251287459038837673006252692795342760466061484950541992064671038090344069586993712870106532707591600212977801289036122525772195192015613446841363419443971696105292747800147575675918123780118961240020869192748281892848129172578166276883926228710835559697740220966300956149085285653936567962547064962956654474626823571911224071829917735208007842153479478149770430902294049999639836016794866595127246033598119912894381645536479187765278468631159417850565072273061142119867482306721963019196878894342252311339214292400044805671485408566");
 }
 
-
 void runTests() {
-  clock_t begin_time = clock();
+  clock_t begin_time, end_time;
+  begin_time = clock();
 
   testRepresentationOfSmallNumbers();
   testRepresentationOfLongNumbers();
@@ -267,8 +272,10 @@ void runTests() {
   testMutliplicationSmallNumbers2();
   testMutliplicationLongNumbers();
 
-  clock_t end_time = clock();
+  end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
-  cout << "Total test time = " << elapsed_time << endl;
+  cout << "Total test time = " << elapsed_time << endl
+       << "  " << add_ops << " addition operations" << endl
+       << "  " << mul_ops << " multiplication operations" << endl;
 }
 

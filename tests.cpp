@@ -183,6 +183,75 @@ bool testAdditionLongNumbers() {
       "2824013958708217496949108842204627863351353911851577524683401930862693830361198499905873920995230135979350242643016761517910086527181505166477361617624937711255226127555345887008573074261857637333279171144375079265170433");
 }
 
+bool testMutliplication(string n1, string n2, string ans) {
+  BigInt x(n1);
+  BigInt y(n2);
+  BigInt z = x.multiply(y);
+
+  bool correct = z.toDecimalString() == ans;
+  if (!correct) {
+    cout << n1 << " * " << n2 << " = " <<
+         ans << " != " << z.toDecimalString() << endl;
+  }
+  return !correct;
+}
+
+bool testMutliplicationSmallNumbers() {
+  int n1_start = 0;
+  int n2_start = 0;
+  for (int i = n1_start; i < n1_start + 100; ++i) {
+    stringstream ss1;
+    ss1 << i;
+    string s1 = ss1.str();
+    BigInt x(s1);
+    for (int j = n2_start; j < n2_start + 100; ++j) {
+      stringstream ss2;
+      ss2 << j;
+      string s2 = ss2.str();
+
+      stringstream ss3;
+      ss3 << (i * j);
+
+      bool bad = testMutliplication(s1, s2, ss3.str());
+      if (bad)
+        return bad;
+    }
+  }
+  return 0;
+}
+
+bool testMutliplicationSmallNumbers2() {
+  long long n1_start = 5234321;
+  long long n2_start = 4671151;
+  for (long long i = n1_start; i < n1_start + 100; ++i) {
+    stringstream ss1;
+    ss1 << i;
+    string s1 = ss1.str();
+    BigInt x(s1);
+    for (long long j = n2_start; j < n2_start + 100; ++j) {
+      stringstream ss2;
+      ss2 << j;
+      string s2 = ss2.str();
+
+      stringstream ss3;
+      ss3 << (i * j);
+
+      bool bad = testMutliplication(s1, s2, ss3.str());
+      if (bad)
+        return bad;
+    }
+  }
+  return 0;
+}
+
+bool testMutliplicationLongNumbers() {
+  return testMutliplication(
+      "49695700165340003591763298360793787790389700721006032962550750345751169893329781646405242590549172772653361935191472597091837344081386249491229556310016777875670909900770757760035554540680015525618951935911780761266142261603898700824084522153923122544256142742380519074007926967846888881440525780853947035022",
+      "88352972791125599654602526729806289318058473276859480855617212988836676467159489722738068957562597567906068173874687651781669126218590167348485375483703607243201626118125468859381893195856552712039134967906750615111211852204440100709993128784338373228907267352165732599309856535472049222470403388325213434253",
+      "4390762844544221301382902406733168845063887446673695681038901126589516324486872174593251287459038837673006252692795342760466061484950541992064671038090344069586993712870106532707591600212977801289036122525772195192015613446841363419443971696105292747800147575675918123780118961240020869192748281892848129172578166276883926228710835559697740220966300956149085285653936567962547064962956654474626823571911224071829917735208007842153479478149770430902294049999639836016794866595127246033598119912894381645536479187765278468631159417850565072273061142119867482306721963019196878894342252311339214292400044805671485408566");
+}
+
+
 void runTests() {
   clock_t begin_time = clock();
 
@@ -194,6 +263,9 @@ void runTests() {
   testAdditionSmallNumbers();
   testAdditionSmallNumbers2();
   testAdditionLongNumbers();
+  testMutliplicationSmallNumbers();
+  testMutliplicationSmallNumbers2();
+  testMutliplicationLongNumbers();
 
   clock_t end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;

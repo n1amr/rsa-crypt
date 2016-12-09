@@ -7,6 +7,7 @@ using namespace std;
 #define CONTAINER_T vector
 //#define CELL_T unsigned long long int
 #define CELL_T unsigned char
+#define DOUBLE_CELL_T unsigned short int
 #define CELL_TYPE_LENGTH (sizeof(CELL_T) * 8)
 
 
@@ -25,6 +26,9 @@ public:
   string toDecimalString() const;
 
   BigInt add(const BigInt &n);
+  BigInt shiftCell();
+  BigInt multiply(const BigInt &n);
+
   friend ostream &operator<<(ostream &os, const BigInt &x) {
     return os << x.toDecimalString();
   }

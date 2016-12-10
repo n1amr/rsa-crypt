@@ -3,16 +3,29 @@
 #include "DecimalStringHelpers.h"
 using namespace std;
 
-BigInt::BigInt() {
-  data.push_back((CELL_T) 0);
+CONTAINER_T<CELL_T> invert_cells(const CONTAINER_T<CELL_T> &cells);
+void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out);
+void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_out);
+
+// TODO
+void printVectorReversed(string name, CONTAINER_T<CELL_T> v) {
+  cout << name << " = ";
+  for (auto it = v.rbegin(); it != v.rend(); ++it)
+    cout << ((long long) *it) << " ";
+  cout << endl;
 }
 
-BigInt::BigInt(const CONTAINER_T<CELL_T> &init) {
-  data = CONTAINER_T<CELL_T>(init);
-}
+BigInt::BigInt()
+    : data(CONTAINER_T<CELL_T> {0}) {}
+
+BigInt::BigInt(const CONTAINER_T<CELL_T> &init)
+    : data(CONTAINER_T<CELL_T> {init}) {}
 
 BigInt::BigInt(const string &s) {
-  vector<short> v = decimalStringToDecimalVec(s);
+  if (!s.empty() && (s[0] == '-' || s[0] == '+'))
+    sign = NEGATIVE;
+  string absDecimalString = sign == NEGATIVE ? s.substr(1) : s;
+  vector<short> v = decimalStringToDecimalVec(absDecimalString);
 
   vector<bool> bitVector = decimalVecToBitsVec(v);
   while (bitVector.size() % CELL_TYPE_LENGTH != 0)
@@ -30,11 +43,16 @@ BigInt::BigInt(const string &s) {
     }
     data.push_back(cell);
   }
+
+  // TODO
+  if (sign == NEGATIVE) {
+    data = BigInt(data).negate().data;
+  }
 }
 
 string BigInt::toCellsString() const {
   stringstream ss;
-  ss << "BigInt({";
+  ss << "BigInt(" << ((sign == POSITIVE) ? "+" : "-") << "{";
   for (auto it = data.rbegin(); it != data.rend(); ++it)
     ss << ((unsigned long long int) *it) << ", ";
   ss << "})";
@@ -52,6 +70,7 @@ string BigInt::toBitsString() const {
 
 vector<bool> BigInt::toBitsVector() const {
   vector<bool> v;
+  v.reserve(data.size() * CELL_TYPE_LENGTH);
 
   for (auto it = data.begin(); it != data.end(); ++it) {
     CELL_T cell = *it;
@@ -66,10 +85,11 @@ vector<bool> BigInt::toBitsVector() const {
   return v;
 }
 
-
-string BigInt::toDecimalString() const {
+string BigInt::toAbsDecimalString() const {
   auto bits = toBitsVector();
+
   vector<short> digits;
+  digits.reserve(bits.size() / 3);
   digits.push_back(0);
 
   for (auto it = bits.rbegin(); it != bits.rend(); ++it) {
@@ -80,44 +100,83 @@ string BigInt::toDecimalString() const {
   return decimalVecToDecimalString(digits);
 }
 
-void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out) {
-  DOUBLE_CELL_T sum = ((DOUBLE_CELL_T) cell1) + cell2 + remainder;
-  ans = (CELL_T) sum;
-  remainder_out = (CELL_T) (sum >> (CELL_TYPE_LENGTH));
+string BigInt::toDecimalString() const {
+  if (sign == POSITIVE) {
+    return toAbsDecimalString();
+  } else {
+    return "-" + negate().toAbsDecimalString();
+  }
 }
 
-BigInt BigInt::add(const BigInt &n) {
+BigInt BigInt::invert() const {
+  return BigInt(invert_cells(this->data));
+}
+
+BigInt BigInt::negate() const {
+  return BigInt(this->data)
+      .invert()
+      .add(BigInt("1"));
+}
+
+BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
   CONTAINER_T<CELL_T> result_cells;
 
-  const CONTAINER_T<CELL_T> &cells_1 = this->data;
-  const CONTAINER_T<CELL_T> &cells_2 = n.data;
+  const CONTAINER_T<CELL_T> &cells_1 = n1.data;
+  const CONTAINER_T<CELL_T> &cells_2 = n2.data;
 
   CELL_T c1, c2, remainder = 0, ans;
   int i = 0, j = 0;
   while (i < cells_1.size() || j < cells_2.size()) {
-    c1 = (CELL_T) (i < cells_1.size() ? cells_1[i++] : 0);
-    c2 = (CELL_T) (j < cells_2.size() ? cells_2[j++] : 0);
+    c1 = (CELL_T) (i < cells_1.size() ? cells_1[i++] : n1.sign == POSITIVE ? 0 : ~0);
+    c2 = (CELL_T) (j < cells_2.size() ? cells_2[j++] : n2.sign == POSITIVE ? 0 : ~0);
 
     addCells(c1, c2, remainder, ans, remainder);
     result_cells.push_back(ans);
   }
-  if (remainder)
-    result_cells.push_back(remainder);
 
-  return BigInt(result_cells);
+  BigInt result(result_cells);
+
+  if (n1.sign == POSITIVE && n2.sign == POSITIVE) {
+    if (remainder)
+      result_cells.push_back(remainder);
+    return BigInt(result_cells);
+  } else if (n1.sign ^ n2.sign) {
+    if (remainder == 1) {
+      // POSITIVE
+      return BigInt(result_cells);
+    } else if (remainder == 0) {
+      // NEGATIVE
+      BigInt r(result_cells);
+      r.sign = NEGATIVE;
+      return r;
+    }
+  } else if (n1.sign == NEGATIVE && n2.sign == NEGATIVE) {
+    BigInt r(result_cells);
+    r.sign = NEGATIVE;
+    return r;
+  }
+
+  if (remainder == 0) {
+    // POSITIVE
+  } else if (remainder == 0) {
+    // NEGATIVE
+    result.sign = NEGATIVE;
+  } else {
+    throw exception();
+  }
+
+  return result;
 }
 
-void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_out) {
-  DOUBLE_CELL_T product = ((DOUBLE_CELL_T) cell1) * cell2;
-  ans = (CELL_T) product;
-  remainder_out = (CELL_T) (product >> (CELL_TYPE_LENGTH));
+BigInt BigInt::add(const BigInt &n) const {
+  return BigInt::add(*this, n);
 }
 
-BigInt BigInt::multiply(const BigInt &n) {
+BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
   BigInt sum;
 
-  const CONTAINER_T<CELL_T> &cells_1 = this->data;
-  const CONTAINER_T<CELL_T> &cells_2 = n.data;
+  const CONTAINER_T<CELL_T> &cells_1 = n1.data;
+  const CONTAINER_T<CELL_T> &cells_2 = n2.data;
 
   CONTAINER_T<CELL_T> shifted_cells = cells_2;
   CONTAINER_T<CELL_T> single_cell_product;
@@ -147,3 +206,28 @@ BigInt BigInt::multiply(const BigInt &n) {
   return sum;
 }
 
+BigInt BigInt::multiply(const BigInt &n) const {
+  return BigInt::multiply(*this, n);
+}
+
+void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out) {
+  DOUBLE_CELL_T sum = ((DOUBLE_CELL_T) cell1) + cell2 + remainder;
+  ans = (CELL_T) sum;
+  remainder_out = (CELL_T) (sum >> (CELL_TYPE_LENGTH));
+}
+
+void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_out) {
+  DOUBLE_CELL_T product = ((DOUBLE_CELL_T) cell1) * cell2;
+  ans = (CELL_T) product;
+  remainder_out = (CELL_T) (product >> (CELL_TYPE_LENGTH));
+}
+
+CONTAINER_T<CELL_T> invert_cells(const CONTAINER_T<CELL_T> &cells) {
+  CONTAINER_T<CELL_T> result;
+  result.reserve(cells.size());
+
+  for (auto it = cells.begin(); it != cells.end(); ++it)
+    result.push_back(~((CELL_T) (*it)));
+
+  return result;
+}

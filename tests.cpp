@@ -127,27 +127,9 @@ bool testAddition(string n1, string n2, string expected) {
   return !correct;
 }
 
-bool testAdditionSmallNumbers() {
-  int n1_start = 0;
-  int n2_start = 0;
-  for (int i = n1_start; i < n1_start + 100; ++i) {
-    for (int j = n2_start; j < n2_start + 100; ++j) {
-      bool bad = testAddition(to_string(i), to_string(j), to_string(i + j))
-                 || testAddition(to_string(i), to_string(-j), to_string(i - j))
-                 || testAddition(to_string(-i), to_string(j), to_string(-i + j))
-                 || testAddition(to_string(-i), to_string(-j), to_string(-i - j));
-      if (bad)
-        return bad;
-    }
-  }
-  return 0;
-}
-
-bool testAdditionSmallNumbers2() {
-  int n1_start = 4654321;
-  int n2_start = 46512;
-  for (int i = n1_start; i < n1_start + 100; ++i) {
-    for (int j = n2_start; j < n2_start + 100; ++j) {
+bool testAdditionSmallNumbers(long long n1_start, long long n2_start, long long steps) {
+  for (long long i = n1_start; i < n1_start + steps; ++i) {
+    for (long long j = n2_start; j < n2_start + steps; ++j) {
       bool bad = testAddition(to_string(i), to_string(j), to_string(i + j))
                  || testAddition(to_string(i), to_string(-j), to_string(i - j))
                  || testAddition(to_string(-i), to_string(j), to_string(-i + j))
@@ -178,61 +160,19 @@ bool testAdditionLongNumbers() {
       "-2824013958708217496949108842204627863351353911851577524683401930862693830361198499905873920995230135979350242643016761517910086527181505166477361617624937711255226127555345887008573074261857637333279171144375079265170433");
 }
 
-bool testMutliplication(string n1, string n2, string ans) {
-  BigInt x(n1);
-  BigInt y(n2);
-  BigInt z = x.multiply(y);
-
-  bool correct = z.toDecimalString() == ans;
-  if (!correct) {
-    cout << n1 << " * " << n2 << " = " <<
-         ans << " != " << z.toDecimalString() << endl;
-  }
+bool testMutliplication(string n1, string n2, string expected) {
   mul_ops++;
+  string output = BigInt::multiply(BigInt(n1), BigInt(n2)).toDecimalString();
+  bool correct = expected == output;
+  if (!correct)
+    cout << n1 << " * " << n2 << " = " << expected << " != " << output << endl;
   return !correct;
 }
 
-bool testMutliplicationSmallNumbers() {
-  int n1_start = 0;
-  int n2_start = 0;
-  for (int i = n1_start; i < n1_start + 100; ++i) {
-    stringstream ss1;
-    ss1 << i;
-    string s1 = ss1.str();
-    BigInt x(s1);
-    for (int j = n2_start; j < n2_start + 100; ++j) {
-      stringstream ss2;
-      ss2 << j;
-      string s2 = ss2.str();
-
-      stringstream ss3;
-      ss3 << (i * j);
-
-      bool bad = testMutliplication(s1, s2, ss3.str());
-      if (bad)
-        return bad;
-    }
-  }
-  return 0;
-}
-
-bool testMutliplicationSmallNumbers2() {
-  long long n1_start = 523432261;
-  long long n2_start = 467115341;
-  for (long long i = n1_start; i < n1_start + 100; ++i) {
-    stringstream ss1;
-    ss1 << i;
-    string s1 = ss1.str();
-    BigInt x(s1);
-    for (long long j = n2_start; j < n2_start + 100; ++j) {
-      stringstream ss2;
-      ss2 << j;
-      string s2 = ss2.str();
-
-      stringstream ss3;
-      ss3 << (i * j);
-
-      bool bad = testMutliplication(s1, s2, ss3.str());
+bool testMutliplicationSmallNumbers(long long n1_start, long long n2_start, long long steps) {
+  for (long long i = n1_start; i < n1_start + steps; ++i) {
+    for (long long j = n2_start; j < n2_start + steps; ++j) {
+      bool bad = testMutliplication(to_string(i), to_string(j), to_string(i * j));
       if (bad)
         return bad;
     }
@@ -256,11 +196,11 @@ void runTests() {
   testRepresentationOf1024BitNumber();
   testConversionBetweenStringAndIntVectorShort();
   testConversionBetweenStringAndIntVectorLong();
-  testAdditionSmallNumbers();
-  testAdditionSmallNumbers2();
+  testAdditionSmallNumbers(0, 0, 50);
+  testAdditionSmallNumbers(4654321, 46512, 50);
   testAdditionLongNumbers();
-  testMutliplicationSmallNumbers();
-  testMutliplicationSmallNumbers2();
+  testMutliplicationSmallNumbers(0, 0, 50);
+  testMutliplicationSmallNumbers(523432261, 467115341, 50);
   testMutliplicationLongNumbers();
 
   end_time = clock();
@@ -269,4 +209,3 @@ void runTests() {
        << "  " << add_ops << " addition operations" << endl
        << "  " << mul_ops << " multiplication operations" << endl;
 }
-

@@ -251,6 +251,51 @@ string BigInt::toDecimalString() const {
   }
 }
 
+
+BigInt BigInt::operator+(const BigInt &n) const { return this->add(n); }
+
+BigInt BigInt::operator-(const BigInt &n) const { return this->subtract(n); }
+
+BigInt BigInt::operator*(const BigInt &n) const { return this->multiply(n); }
+
+bool BigInt::operator==(const BigInt &n) const { return this->equals(n); }
+
+bool BigInt::operator!=(const BigInt &n) const { return !(*this == n); }
+
+bool BigInt::operator<(const BigInt &n) const { return this->isLessThan(n); }
+
+bool BigInt::operator>(const BigInt &n) const { return this->isGreaterThan(n); }
+
+bool BigInt::operator<=(const BigInt &n) const { return !((*this) > n); }
+
+bool BigInt::operator>=(const BigInt &n) const { return !((*this) < n); }
+
+BigInt BigInt::operator++() {
+  BigInt result = (*this) + BigInt::ONE;
+  data = result.data;
+  sign = result.sign;
+  return result;
+}
+
+BigInt BigInt::operator++(int) {
+  BigInt tmp = *this;
+  operator++();
+  return tmp;
+}
+
+BigInt BigInt::operator--() {
+  BigInt result = (*this) - BigInt::ONE;
+  data = result.data;
+  sign = result.sign;
+  return result;
+}
+
+BigInt BigInt::operator--(int) {
+  BigInt tmp = *this;
+  operator--();
+  return tmp;
+}
+
 void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out) {
   DOUBLE_CELL_T sum = ((DOUBLE_CELL_T) cell1) + cell2 + remainder;
   ans = (CELL_T) sum;

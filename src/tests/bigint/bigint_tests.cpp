@@ -334,6 +334,77 @@ bool testIsGreaterThanSmallNumbers(long long start, long long steps) {
   return 0;
 }
 
+bool testPostIncrement(long long n1) {
+  BigInt x(to_string(n1));
+  BigInt copy = x;
+  BigInt result_1 = copy++;
+
+  if (result_1 != x)
+    cout << n1 << "++ before  => " << n1 << " != " << result_1 << endl;
+  if (copy != x + BigInt::ONE)
+    cout << n1 << "++ after  => " << (n1 + 1) << " != " << copy << endl;
+
+  return result_1 != x || copy != x + BigInt::ONE;
+}
+
+bool testPreIncrement(long long n1) {
+  BigInt x(to_string(n1));
+  BigInt copy = x;
+  BigInt result_1 = ++copy;
+
+  if (result_1 != x + BigInt::ONE)
+    cout << "++" << n1 << " before  => " << (n1 + 1) << " != " << result_1 << endl;
+  if (copy != x + BigInt::ONE)
+    cout << "++" << n1 << " after  => " << (n1 + 1) << " != " << copy << endl;
+
+  return result_1 != x + BigInt::ONE || copy != x + BigInt::ONE;
+}
+
+bool testPostDecrement(long long n1) {
+  BigInt x(to_string(n1));
+  BigInt copy = x;
+  BigInt result_1 = copy--;
+
+  if (result_1 != x)
+    cout << n1 << "-- before  => " << n1 << " != " << result_1 << endl;
+  if (copy != x - BigInt::ONE)
+    cout << n1 << "-- after  => " << (n1 - 1) << " != " << copy << endl;
+
+  return result_1 != x || copy != x - BigInt::ONE;
+}
+
+bool testPreDecrement(long long n1) {
+  BigInt x(to_string(n1));
+  BigInt copy = x;
+  BigInt result_1 = --copy;
+
+  if (result_1 != x - BigInt::ONE)
+    cout << "--" << n1 << " before  => " << (n1 - 1) << " != " << result_1 << endl;
+  if (copy != x - BigInt::ONE)
+    cout << "--" << n1 << " after  => " << (n1 - 1) << " != " << copy << endl;
+
+  return result_1 != x - BigInt::ONE || copy != x - BigInt::ONE;
+}
+
+bool testIncrements(long long n1) {
+  bool correct =
+      testPostIncrement(n1)
+      || testPreIncrement(n1)
+      || testPostDecrement(n1)
+      || testPreDecrement(n1);
+  return !correct;
+}
+
+bool testIncrementsSmallNumbers(long long start, long long steps) {
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    bool bad = testIncrements(i);
+    if (bad)
+      return bad;
+  }
+
+  return 0;
+}
+
 
 void runBigIntTests() {
   clock_t begin_time, end_time;
@@ -358,6 +429,9 @@ void runBigIntTests() {
 
   testIsGreaterThanSmallNumbers(0, 50);
   testIsGreaterThanSmallNumbers(MAX_CELL_VALUE, 50);
+
+  testIncrementsSmallNumbers(0, 50);
+  testIncrementsSmallNumbers(MAX_CELL_VALUE, 50);
 
   testNegationSmallNumbers(0, 500);
   testNegationSmallNumbers(MAX_CELL_VALUE, 500);

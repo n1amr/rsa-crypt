@@ -70,21 +70,19 @@ public:
   string toAbsDecimalString() const;
   string toDecimalString() const;
 
-  BigInt operator+(const BigInt &n) const { return this->add(n); }
-
-  BigInt operator-(const BigInt &n) const { return this->subtract(n); }
-
-  BigInt operator*(const BigInt &n) const { return this->multiply(n); }
-
-  bool operator==(const BigInt &n) const { return this->equals(n); }
-
-  bool operator<(const BigInt &n) const { return this->isLessThan(n); }
-
-  bool operator>(const BigInt &n) const { return this->isGreaterThan(n); }
-
-  bool operator<=(const BigInt &n) const { return !((*this) > n); }
-
-  bool operator>=(const BigInt &n) const { return !((*this) < n); }
+  BigInt operator+(const BigInt &n) const;
+  BigInt operator-(const BigInt &n) const;
+  BigInt operator*(const BigInt &n) const;
+  bool operator==(const BigInt &n) const;
+  bool operator!=(const BigInt &n) const;
+  bool operator<(const BigInt &n) const;
+  bool operator>(const BigInt &n) const;
+  bool operator<=(const BigInt &n) const;
+  bool operator>=(const BigInt &n) const;
+  BigInt operator++();
+  BigInt operator++(int);
+  BigInt operator--();
+  BigInt operator--(int);
 
   friend ostream &operator<<(ostream &os, const BigInt &x) {
     return os << x.toDecimalString();

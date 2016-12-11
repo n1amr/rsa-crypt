@@ -129,13 +129,27 @@ bool testAddition(string n1, string n2, string expected) {
   return !correct;
 }
 
-bool testAdditionSmallNumbers(long long n1_start, long long n2_start, long long steps) {
+bool testSubtraction(string n1, string n2, string expected) {
+  add_ops++;
+  string output = BigInt::subtract(BigInt(n1), BigInt(n2)).toDecimalString();
+  bool correct = expected == output;
+  if (!correct)
+    cout << n1 << " - " << n2 << " = " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testAdditionSubtractionSmallNumbers(long long n1_start, long long n2_start, long long steps) {
   for (long long i = n1_start; i < n1_start + steps; ++i) {
     for (long long j = n2_start; j < n2_start + steps; ++j) {
-      bool bad = testAddition(to_string(i), to_string(j), to_string(i + j))
-                 || testAddition(to_string(i), to_string(-j), to_string(i - j))
-                 || testAddition(to_string(-i), to_string(j), to_string(-i + j))
-                 || testAddition(to_string(-i), to_string(-j), to_string(-i - j));
+      bool bad =
+          testAddition(to_string(i), to_string(j), to_string(i + j))
+          || testAddition(to_string(i), to_string(-j), to_string(i - j))
+          || testAddition(to_string(-i), to_string(j), to_string(-i + j))
+          || testAddition(to_string(-i), to_string(-j), to_string(-i - j))
+          || testSubtraction(to_string(i), to_string(-j), to_string(i + j))
+          || testSubtraction(to_string(i), to_string(j), to_string(i - j))
+          || testSubtraction(to_string(-i), to_string(-j), to_string(-i + j))
+          || testSubtraction(to_string(-i), to_string(j), to_string(-i - j));
       if (bad)
         return bad;
     }
@@ -280,9 +294,9 @@ void runTests() {
   testNegationSmallNumbers(0, 500);
   testNegationSmallNumbers(MAX_CELL_VALUE, 500);
 
-  testAdditionSmallNumbers(0, 0, 50);
-  testAdditionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
-  testAdditionSmallNumbers(4654321, 46512, 50);
+  testAdditionSubtractionSmallNumbers(0, 0, 50);
+  testAdditionSubtractionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
+  testAdditionSubtractionSmallNumbers(4654321, 46512, 50);
   testAdditionLongNumbers();
 
   testMutliplicationSmallNumbers(0, 0, 50);

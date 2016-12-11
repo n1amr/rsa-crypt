@@ -1,7 +1,7 @@
-#include "tests.h"
+#include "bigint_tests.h"
 #include "bits/stdc++.h"
-#include "BigInt.h"
-#include "DecimalStringHelpers.h"
+#include "../../bigint/BigInt.h"
+#include "../../bigint/DecimalStringHelpers.h"
 using namespace std;
 
 int mul_ops = 0;
@@ -276,7 +276,7 @@ bool testIsNegativeSmallNumbers(long long start, long long steps) {
   return 0;
 }
 
-void runTests() {
+void runBigIntTests() {
   clock_t begin_time, end_time;
   begin_time = clock();
 
@@ -306,7 +306,7 @@ void runTests() {
 
   end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
-  cout << "Total test time = " << elapsed_time << endl
-       << "  " << add_ops << " addition operations" << endl
-       << "  " << mul_ops << " multiplication operations" << endl;
+  cout << "Total BigInt tests time = " << elapsed_time
+       << "(" << add_ops << " addition operations"
+       << ", " << mul_ops << " multiplication operations" << ")" << endl;
 }

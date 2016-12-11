@@ -202,7 +202,7 @@ bool testMultiplicationLongNumbers() {
 }
 
 bool testNegation(string input, string expected) {
-  string output = BigInt(input).negate().toDecimalString();
+  string output = (-BigInt(input)).toDecimalString();
   bool correct = expected == output;
   if (!correct)
     cout << "- " << input << " = " << expected << " != " << output << endl;
@@ -292,7 +292,6 @@ bool testEqualsSmallNumbers(long long start, long long steps) {
 
   return 0;
 }
-
 
 bool testisLessThan(string n1, string n2, string expected) {
   string output = to_string(BigInt(n1) < BigInt(n2));
@@ -404,7 +403,6 @@ bool testIncrementsSmallNumbers(long long start, long long steps) {
 
   return 0;
 }
-
 
 void runBigIntTests() {
   clock_t begin_time, end_time;

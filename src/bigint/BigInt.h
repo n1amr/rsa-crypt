@@ -72,6 +72,7 @@ public:
 
   BigInt operator+(const BigInt &n) const;
   BigInt operator-(const BigInt &n) const;
+  BigInt operator-() const;
   BigInt operator*(const BigInt &n) const;
   bool operator==(const BigInt &n) const;
   bool operator!=(const BigInt &n) const;

@@ -256,6 +256,8 @@ BigInt BigInt::operator+(const BigInt &n) const { return this->add(n); }
 
 BigInt BigInt::operator-(const BigInt &n) const { return this->subtract(n); }
 
+BigInt BigInt::operator-() const { return this->negate(); }
+
 BigInt BigInt::operator*(const BigInt &n) const { return this->multiply(n); }
 
 bool BigInt::operator==(const BigInt &n) const { return this->equals(n); }

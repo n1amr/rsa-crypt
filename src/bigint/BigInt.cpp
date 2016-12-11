@@ -86,8 +86,11 @@ BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
 BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
   BigInt sum;
 
-  const CONTAINER_T<CELL_T> &cells_1 = n1.data;
-  const CONTAINER_T<CELL_T> &cells_2 = n2.data;
+  BigInt n_abs1 = n1.isNegative() ? n1.negate() : n1;
+  BigInt n_abs2 = n2.isNegative() ? n2.negate() : n2;
+
+  const CONTAINER_T<CELL_T> &cells_1 = n_abs1.data;
+  const CONTAINER_T<CELL_T> &cells_2 = n_abs2.data;
 
   CONTAINER_T<CELL_T> shifted_cells = cells_2;
   CONTAINER_T<CELL_T> single_cell_product;
@@ -114,6 +117,8 @@ BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
     shifted_cells.push_back(0);
   }
 
+  if (n1.isNegative() ^ n2.isNegative())
+    sum = sum.negate();
   return sum;
 }
 

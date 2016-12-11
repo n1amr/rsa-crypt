@@ -4,13 +4,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define CONTAINER_T vector
-//#define CELL_T unsigned int
-//#define DOUBLE_CELL_T unsigned long long int
+#define SMALL_CELL 1
+#if SMALL_CELL
 #define CELL_T unsigned char
 #define DOUBLE_CELL_T unsigned short int
+#else
+#define CELL_T unsigned int
+#define DOUBLE_CELL_T unsigned long long int
+#endif
+
 #define CELL_TYPE_LENGTH (sizeof(CELL_T) * 8)
 #define MAX_CELL_VALUE (1 << CELL_TYPE_LENGTH)
+
+#define CONTAINER_T vector
+
 #define SIGN_T bool
 #define POSITIVE 0
 #define NEGATIVE 1
@@ -56,7 +63,9 @@ public:
 
 
   BigInt operator+(const BigInt &n) const { return this->add(n); }
+
   BigInt operator-(const BigInt &n) const { return this->subtract(n); }
+
   BigInt operator*(const BigInt &n) const { return this->multiply(n); }
 
   friend ostream &operator<<(ostream &os, const BigInt &x) {

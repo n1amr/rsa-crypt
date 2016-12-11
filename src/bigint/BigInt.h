@@ -54,6 +54,11 @@ public:
   string toAbsDecimalString() const;
   string toDecimalString() const;
 
+
+  BigInt operator+(const BigInt &n) const { return this->add(n); }
+  BigInt operator-(const BigInt &n) const { return this->subtract(n); }
+  BigInt operator*(const BigInt &n) const { return this->multiply(n); }
+
   friend ostream &operator<<(ostream &os, const BigInt &x) {
     return os << x.toDecimalString();
   }

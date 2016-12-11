@@ -253,7 +253,6 @@ bool testIsZeroSmallNumbers(long long start, long long steps) {
   return 0;
 }
 
-
 bool testIsPositiveSmallNumbers(long long start, long long steps) {
   for (long long i = start - steps; i <= start + steps; ++i) {
     bool bad = testIsPositive(to_string(i), to_string(i > 0));
@@ -274,6 +273,26 @@ bool testIsNegativeSmallNumbers(long long start, long long steps) {
   return 0;
 }
 
+bool testEquals(string n1, string n2, string expected) {
+  string output = to_string(BigInt(n1) == BigInt(n2));
+  bool correct = expected == output;
+  if (!correct)
+    cout << n1 << " == " << n2 << " => " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testEqualsSmallNumbers(long long start, long long steps) {
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    for (long long j = start - steps; j <= start + steps; ++j) {
+      bool bad = testEquals(to_string(i), to_string(j), to_string(i == j));
+      if (bad)
+        return bad;
+    }
+  }
+
+  return 0;
+}
+
 void runBigIntTests() {
   clock_t begin_time, end_time;
   begin_time = clock();
@@ -288,6 +307,9 @@ void runBigIntTests() {
   testIsZeroSmallNumbers(0, 1000);
   testIsPositiveSmallNumbers(0, 1000);
   testIsNegativeSmallNumbers(0, 1000);
+
+  testEqualsSmallNumbers(0, 50);
+  testEqualsSmallNumbers(MAX_CELL_VALUE, 50);
 
   testNegationSmallNumbers(0, 500);
   testNegationSmallNumbers(MAX_CELL_VALUE, 500);

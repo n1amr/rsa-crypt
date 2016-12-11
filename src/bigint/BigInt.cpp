@@ -44,7 +44,9 @@ BigInt BigInt::ZERO("0");
 BigInt BigInt::ONE("1");
 
 bool BigInt::isZero(const BigInt &n) {
-  return n.data.size() == 1 && n.data[0] == 0;
+  return n.data.rend() == find_if(n.data.rbegin(), n.data.rend(),
+                                  [](const CELL_T &x) { return x; }) // All zeros
+         && n.sign == POSITIVE;
 }
 
 bool BigInt::isPositive(const BigInt &n) {
@@ -53,6 +55,10 @@ bool BigInt::isPositive(const BigInt &n) {
 
 bool BigInt::isNegative(const BigInt &n) {
   return !isZero(n) && n.sign == NEGATIVE;
+}
+
+bool BigInt::equals(const BigInt &n1, const BigInt &n2) {
+  return isZero(n1.subtract(n2));
 }
 
 BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
@@ -136,6 +142,10 @@ bool BigInt::isPositive() const {
 
 bool BigInt::isNegative() const {
   return BigInt::isNegative(*this);
+}
+
+bool BigInt::equals(const BigInt &n) const {
+  return BigInt::equals(*this, n);
 }
 
 BigInt BigInt::add(const BigInt &n) const {

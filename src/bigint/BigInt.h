@@ -24,10 +24,10 @@ using namespace std;
 
 class BigInt {
 private:
-public:
   CONTAINER_T<CELL_T> data;
   SIGN_T sign = POSITIVE;
 
+public:
   BigInt();
   BigInt(const CONTAINER_T<CELL_T> &init, SIGN_T sign = POSITIVE);
   BigInt(const string &s);
@@ -39,6 +39,8 @@ public:
   static bool isPositive(const BigInt &n);
   static bool isNegative(const BigInt &n);
 
+  static bool equals(const BigInt &n1, const BigInt &n2);
+
   static BigInt add(const BigInt &n1, const BigInt &n2);
   static BigInt multiply(const BigInt &n1, const BigInt &n2);
   static BigInt subtract(const BigInt &n1, const BigInt &n2);
@@ -46,6 +48,8 @@ public:
   bool isZero() const;
   bool isPositive() const;
   bool isNegative() const;
+
+  bool equals(const BigInt &n) const;
 
   BigInt add(const BigInt &n) const;
   BigInt multiply(const BigInt &n) const;
@@ -67,6 +71,8 @@ public:
   BigInt operator-(const BigInt &n) const { return this->subtract(n); }
 
   BigInt operator*(const BigInt &n) const { return this->multiply(n); }
+
+  bool operator==(const BigInt &n) const { return this->equals(n); }
 
   friend ostream &operator<<(ostream &os, const BigInt &x) {
     return os << x.toDecimalString();

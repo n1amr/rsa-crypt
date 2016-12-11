@@ -197,10 +197,12 @@ void runTests() {
   testConversionBetweenStringAndIntVectorShort();
   testConversionBetweenStringAndIntVectorLong();
   testAdditionSmallNumbers(0, 0, 50);
+  testAdditionSmallNumbers((1 << CELL_TYPE_LENGTH) - 5, (1 << CELL_TYPE_LENGTH) - 5, 10);
   testAdditionSmallNumbers(4654321, 46512, 50);
   testAdditionLongNumbers();
   testMutliplicationSmallNumbers(0, 0, 50);
   testMutliplicationSmallNumbers(523432261, 467115341, 50);
+  testMutliplicationSmallNumbers((1 << CELL_TYPE_LENGTH) - 5, (1 << CELL_TYPE_LENGTH) - 5, 10);
   testMutliplicationLongNumbers();
 
   end_time = clock();

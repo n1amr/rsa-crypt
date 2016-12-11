@@ -18,11 +18,11 @@ void printVectorReversed(string name, CONTAINER_T<CELL_T> v) {
 BigInt::BigInt()
     : data(CONTAINER_T<CELL_T> {0}) {}
 
-BigInt::BigInt(const CONTAINER_T<CELL_T> &init)
-    : data(CONTAINER_T<CELL_T> {init}) {}
+BigInt::BigInt(const CONTAINER_T<CELL_T> &init, SIGN_T sign)
+    : data(CONTAINER_T<CELL_T> {init}), sign(sign) {}
 
 BigInt::BigInt(const string &s) {
-  if (!s.empty() && (s[0] == '-' || s[0] == '+'))
+  if (!s.empty() && s[0] == '-')
     sign = NEGATIVE;
   string absDecimalString = sign == NEGATIVE ? s.substr(1) : s;
   vector<short> v = decimalStringToDecimalVec(absDecimalString);
@@ -113,9 +113,7 @@ BigInt BigInt::invert() const {
 }
 
 BigInt BigInt::negate() const {
-  return BigInt(this->data)
-      .invert()
-      .add(BigInt("1"));
+  return BigInt::add(this->invert(), BigInt("1"));
 }
 
 BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
@@ -134,38 +132,16 @@ BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
     result_cells.push_back(ans);
   }
 
-  BigInt result(result_cells);
-
-  if (n1.sign == POSITIVE && n2.sign == POSITIVE) {
-    if (remainder)
+  if (n1.sign == n2.sign) {
+    if (n1.sign == POSITIVE && remainder)  // POSITIVE + POSITIVE
       result_cells.push_back(remainder);
-    return BigInt(result_cells);
-  } else if (n1.sign ^ n2.sign) {
-    if (remainder == 1) {
-      // POSITIVE
-      return BigInt(result_cells);
-    } else if (remainder == 0) {
-      // NEGATIVE
-      BigInt r(result_cells);
-      r.sign = NEGATIVE;
-      return r;
-    }
-  } else if (n1.sign == NEGATIVE && n2.sign == NEGATIVE) {
-    BigInt r(result_cells);
-    r.sign = NEGATIVE;
-    return r;
-  }
+    else if (n1.sign == NEGATIVE && !remainder)  // NEGATIVE + NEGATIVE
+      result_cells.push_back((CELL_T) (-2));
 
-  if (remainder == 0) {
-    // POSITIVE
-  } else if (remainder == 0) {
-    // NEGATIVE
-    result.sign = NEGATIVE;
-  } else {
-    throw exception();
+    return BigInt(result_cells, n1.sign);
+  } else { // POSITIVE + NEGATIVE
+    return BigInt(result_cells, (SIGN_T) (remainder ? POSITIVE : NEGATIVE));
   }
-
-  return result;
 }
 
 BigInt BigInt::add(const BigInt &n) const {

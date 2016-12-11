@@ -21,7 +21,7 @@ private:
 
 public:
   BigInt();
-  BigInt(const CONTAINER_T<CELL_T> &init);
+  BigInt(const CONTAINER_T<CELL_T> &init, SIGN_T sign = POSITIVE);
   BigInt(const string &s);
 
   string toCellsString() const;

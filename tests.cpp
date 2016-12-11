@@ -9,6 +9,8 @@ int add_ops = 0;
 
 bool testRepresentationOf1024BitNumber();
 
+void testNegation();
+
 bool testRepresentationOfANumber(string s) {
   bool correct;
   bool reasonable_time;
@@ -187,6 +189,25 @@ bool testMutliplicationLongNumbers() {
       "4390762844544221301382902406733168845063887446673695681038901126589516324486872174593251287459038837673006252692795342760466061484950541992064671038090344069586993712870106532707591600212977801289036122525772195192015613446841363419443971696105292747800147575675918123780118961240020869192748281892848129172578166276883926228710835559697740220966300956149085285653936567962547064962956654474626823571911224071829917735208007842153479478149770430902294049999639836016794866595127246033598119912894381645536479187765278468631159417850565072273061142119867482306721963019196878894342252311339214292400044805671485408566");
 }
 
+bool testNegation(string input, string expected) {
+  string output = BigInt(input).negate().toDecimalString();
+  bool correct = expected == output;
+  if (!correct)
+    cout << "- " << input << " = " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testNegationSmallNumbers(long long start, long long steps) {
+  for (long long i = start; i < start + steps; ++i) {
+    bool bad = testNegation(to_string(i), to_string(-i))
+               || testNegation(to_string(-i), to_string(i));
+    if (bad)
+      return bad;
+  }
+
+  return 0;
+}
+
 void runTests() {
   clock_t begin_time, end_time;
   begin_time = clock();
@@ -194,12 +215,17 @@ void runTests() {
   testRepresentationOfSmallNumbers();
   testRepresentationOfLongNumbers();
   testRepresentationOf1024BitNumber();
+
   testConversionBetweenStringAndIntVectorShort();
   testConversionBetweenStringAndIntVectorLong();
+
+  testNegationSmallNumbers(-500, 1000);
+
   testAdditionSmallNumbers(0, 0, 50);
   testAdditionSmallNumbers((1 << CELL_TYPE_LENGTH) - 5, (1 << CELL_TYPE_LENGTH) - 5, 10);
   testAdditionSmallNumbers(4654321, 46512, 50);
   testAdditionLongNumbers();
+
   testMutliplicationSmallNumbers(0, 0, 50);
   testMutliplicationSmallNumbers(523432261, 467115341, 50);
   testMutliplicationSmallNumbers((1 << CELL_TYPE_LENGTH) - 5, (1 << CELL_TYPE_LENGTH) - 5, 10);

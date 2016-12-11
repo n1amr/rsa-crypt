@@ -3,15 +3,15 @@
 #include "DecimalStringHelpers.h"
 using namespace std;
 
-CONTAINER_T<CELL_T> invert_cells(const CONTAINER_T<CELL_T> &cells);
+CELLS_CONTAINER_T invert_cells(const CELLS_CONTAINER_T &cells);
 void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out);
 void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_out);
 
 BigInt::BigInt()
-    : data(CONTAINER_T<CELL_T> {0}) {}
+    : data(CELLS_CONTAINER_T {0}) {}
 
-BigInt::BigInt(const CONTAINER_T<CELL_T> &init, SIGN_T sign)
-    : data(CONTAINER_T<CELL_T> {init}), sign(sign) {}
+BigInt::BigInt(const CELLS_CONTAINER_T &init, SIGN_T sign)
+    : data(CELLS_CONTAINER_T {init}), sign(sign) {}
 
 BigInt::BigInt(const string &s) {
   if (!s.empty() && s[0] == '-')
@@ -62,10 +62,10 @@ bool BigInt::equals(const BigInt &n1, const BigInt &n2) {
 }
 
 BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
-  CONTAINER_T<CELL_T> result_cells;
+  CELLS_CONTAINER_T result_cells;
 
-  const CONTAINER_T<CELL_T> &cells_1 = n1.data;
-  const CONTAINER_T<CELL_T> &cells_2 = n2.data;
+  const CELLS_CONTAINER_T &cells_1 = n1.data;
+  const CELLS_CONTAINER_T &cells_2 = n2.data;
 
   CELL_T c1, c2, remainder = 0, ans;
   int i = 0, j = 0;
@@ -95,11 +95,11 @@ BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
   BigInt n_abs1 = n1.isNegative() ? n1.negate() : n1;
   BigInt n_abs2 = n2.isNegative() ? n2.negate() : n2;
 
-  const CONTAINER_T<CELL_T> &cells_1 = n_abs1.data;
-  const CONTAINER_T<CELL_T> &cells_2 = n_abs2.data;
+  const CELLS_CONTAINER_T &cells_1 = n_abs1.data;
+  const CELLS_CONTAINER_T &cells_2 = n_abs2.data;
 
-  CONTAINER_T<CELL_T> shifted_cells = cells_2;
-  CONTAINER_T<CELL_T> single_cell_product;
+  CELLS_CONTAINER_T shifted_cells = cells_2;
+  CELLS_CONTAINER_T single_cell_product;
   REVERSE(shifted_cells);
 
   CELL_T c, c2, old_remainder, mul_remainder, add_remainder, product;
@@ -247,8 +247,8 @@ void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_ou
   remainder_out = (CELL_T) (product >> (CELL_TYPE_LENGTH));
 }
 
-CONTAINER_T<CELL_T> invert_cells(const CONTAINER_T<CELL_T> &cells) {
-  CONTAINER_T<CELL_T> result;
+CELLS_CONTAINER_T invert_cells(const CELLS_CONTAINER_T &cells) {
+  CELLS_CONTAINER_T result;
   result.reserve(cells.size());
 
   for (auto it = cells.begin(); it != cells.end(); ++it)

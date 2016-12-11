@@ -17,6 +17,7 @@ using namespace std;
 #define MAX_CELL_VALUE (1 << CELL_TYPE_LENGTH)
 
 #define CONTAINER_T vector
+#define CELLS_CONTAINER_T CONTAINER_T<CELL_T>
 
 #define SIGN_T bool
 #define POSITIVE 0
@@ -24,12 +25,12 @@ using namespace std;
 
 class BigInt {
 private:
-  CONTAINER_T<CELL_T> data;
+  CELLS_CONTAINER_T data;
   SIGN_T sign = POSITIVE;
 
 public:
   BigInt();
-  BigInt(const CONTAINER_T<CELL_T> &init, SIGN_T sign = POSITIVE);
+  BigInt(const CELLS_CONTAINER_T &init, SIGN_T sign = POSITIVE);
   BigInt(const string &s);
 
   static BigInt ZERO;

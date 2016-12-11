@@ -6,14 +6,7 @@ using namespace std;
 CONTAINER_T<CELL_T> invert_cells(const CONTAINER_T<CELL_T> &cells);
 void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out);
 void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_out);
-
-// TODO
-void printVectorReversed(string name, CONTAINER_T<CELL_T> v) {
-  cout << name << " = ";
-  for (auto it = v.rbegin(); it != v.rend(); ++it)
-    cout << ((long long) *it) << " ";
-  cout << endl;
-}
+void printVectorReversed(string name, CONTAINER_T<CELL_T> v); // TODO
 
 BigInt::BigInt()
     : data(CONTAINER_T<CELL_T> {0}) {}
@@ -48,6 +41,87 @@ BigInt::BigInt(const string &s) {
   if (sign == NEGATIVE) {
     data = BigInt(data).negate().data;
   }
+}
+
+BigInt BigInt::ZERO("0");
+BigInt BigInt::ONE("1");
+
+BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
+  CONTAINER_T<CELL_T> result_cells;
+
+  const CONTAINER_T<CELL_T> &cells_1 = n1.data;
+  const CONTAINER_T<CELL_T> &cells_2 = n2.data;
+
+  CELL_T c1, c2, remainder = 0, ans;
+  int i = 0, j = 0;
+  while (i < cells_1.size() || j < cells_2.size()) {
+    c1 = (CELL_T) (i < cells_1.size() ? cells_1[i++] : n1.sign == POSITIVE ? 0 : ~0);
+    c2 = (CELL_T) (j < cells_2.size() ? cells_2[j++] : n2.sign == POSITIVE ? 0 : ~0);
+
+    addCells(c1, c2, remainder, ans, remainder);
+    result_cells.push_back(ans);
+  }
+
+  if (n1.sign == n2.sign) {
+    if (n1.sign == POSITIVE && remainder)  // POSITIVE + POSITIVE
+      result_cells.push_back(remainder);
+    else if (n1.sign == NEGATIVE && !remainder)  // NEGATIVE + NEGATIVE
+      result_cells.push_back((CELL_T) (-2));
+
+    return BigInt(result_cells, n1.sign);
+  } else { // POSITIVE + NEGATIVE
+    return BigInt(result_cells, (SIGN_T) (remainder ? POSITIVE : NEGATIVE));
+  }
+}
+
+BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
+  BigInt sum;
+
+  const CONTAINER_T<CELL_T> &cells_1 = n1.data;
+  const CONTAINER_T<CELL_T> &cells_2 = n2.data;
+
+  CONTAINER_T<CELL_T> shifted_cells = cells_2;
+  CONTAINER_T<CELL_T> single_cell_product;
+  REVERSE(shifted_cells);
+
+  CELL_T c, c2, old_remainder, mul_remainder, add_remainder, product;
+  for (CELL_T c1 : cells_1) {
+    single_cell_product.clear();
+    old_remainder = mul_remainder = add_remainder = 0;
+
+    for (auto it = shifted_cells.rbegin(); it != shifted_cells.rend(); ++it) {
+      c2 = *it;
+
+      multiplyCells(c1, c2, product, mul_remainder);
+      addCells(product, old_remainder, 0, c, add_remainder);
+
+      single_cell_product.push_back(c);
+      addCells(mul_remainder, add_remainder, 0, old_remainder, add_remainder);
+    }
+    if (old_remainder)
+      single_cell_product.push_back(old_remainder);
+
+    sum = sum.add(BigInt(single_cell_product));
+    shifted_cells.push_back(0);
+  }
+
+  return sum;
+}
+
+BigInt BigInt::add(const BigInt &n) const {
+  return BigInt::add(*this, n);
+}
+
+BigInt BigInt::multiply(const BigInt &n) const {
+  return BigInt::multiply(*this, n);
+}
+
+BigInt BigInt::invert() const {
+  return BigInt(invert_cells(this->data));
+}
+
+BigInt BigInt::negate() const {
+  return BigInt::add(this->invert(), BigInt("1"));
 }
 
 string BigInt::toCellsString() const {
@@ -108,84 +182,6 @@ string BigInt::toDecimalString() const {
   }
 }
 
-BigInt BigInt::invert() const {
-  return BigInt(invert_cells(this->data));
-}
-
-BigInt BigInt::negate() const {
-  return BigInt::add(this->invert(), BigInt("1"));
-}
-
-BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
-  CONTAINER_T<CELL_T> result_cells;
-
-  const CONTAINER_T<CELL_T> &cells_1 = n1.data;
-  const CONTAINER_T<CELL_T> &cells_2 = n2.data;
-
-  CELL_T c1, c2, remainder = 0, ans;
-  int i = 0, j = 0;
-  while (i < cells_1.size() || j < cells_2.size()) {
-    c1 = (CELL_T) (i < cells_1.size() ? cells_1[i++] : n1.sign == POSITIVE ? 0 : ~0);
-    c2 = (CELL_T) (j < cells_2.size() ? cells_2[j++] : n2.sign == POSITIVE ? 0 : ~0);
-
-    addCells(c1, c2, remainder, ans, remainder);
-    result_cells.push_back(ans);
-  }
-
-  if (n1.sign == n2.sign) {
-    if (n1.sign == POSITIVE && remainder)  // POSITIVE + POSITIVE
-      result_cells.push_back(remainder);
-    else if (n1.sign == NEGATIVE && !remainder)  // NEGATIVE + NEGATIVE
-      result_cells.push_back((CELL_T) (-2));
-
-    return BigInt(result_cells, n1.sign);
-  } else { // POSITIVE + NEGATIVE
-    return BigInt(result_cells, (SIGN_T) (remainder ? POSITIVE : NEGATIVE));
-  }
-}
-
-BigInt BigInt::add(const BigInt &n) const {
-  return BigInt::add(*this, n);
-}
-
-BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
-  BigInt sum;
-
-  const CONTAINER_T<CELL_T> &cells_1 = n1.data;
-  const CONTAINER_T<CELL_T> &cells_2 = n2.data;
-
-  CONTAINER_T<CELL_T> shifted_cells = cells_2;
-  CONTAINER_T<CELL_T> single_cell_product;
-  REVERSE(shifted_cells);
-
-  CELL_T c, c2, old_remainder, mul_remainder, add_remainder, product;
-  for (CELL_T c1 : cells_1) {
-    single_cell_product.clear();
-    old_remainder = mul_remainder = add_remainder = 0;
-
-    for (auto it = shifted_cells.rbegin(); it != shifted_cells.rend(); ++it) {
-      c2 = *it;
-
-      multiplyCells(c1, c2, product, mul_remainder);
-      addCells(product, old_remainder, 0, c, add_remainder);
-
-      single_cell_product.push_back(c);
-      addCells(mul_remainder, add_remainder, 0, old_remainder, add_remainder);
-    }
-    if (old_remainder)
-      single_cell_product.push_back(old_remainder);
-
-    sum = sum.add(BigInt(single_cell_product));
-    shifted_cells.push_back(0);
-  }
-
-  return sum;
-}
-
-BigInt BigInt::multiply(const BigInt &n) const {
-  return BigInt::multiply(*this, n);
-}
-
 void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out) {
   DOUBLE_CELL_T sum = ((DOUBLE_CELL_T) cell1) + cell2 + remainder;
   ans = (CELL_T) sum;
@@ -206,4 +202,11 @@ CONTAINER_T<CELL_T> invert_cells(const CONTAINER_T<CELL_T> &cells) {
     result.push_back(~((CELL_T) (*it)));
 
   return result;
+}
+
+void printVectorReversed(string name, CONTAINER_T<CELL_T> v) {
+  cout << name << " = ";
+  for (auto it = v.rbegin(); it != v.rend(); ++it)
+    cout << ((long long) *it) << " ";
+  cout << endl;
 }

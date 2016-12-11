@@ -24,11 +24,11 @@ public:
   BigInt(const CONTAINER_T<CELL_T> &init, SIGN_T sign = POSITIVE);
   BigInt(const string &s);
 
-  string toCellsString() const;
-  string toBitsString() const;
-  vector<bool> toBitsVector() const;
-  string toAbsDecimalString() const;
-  string toDecimalString() const;
+  static BigInt ZERO;
+  static BigInt ONE;
+
+  static BigInt add(const BigInt &n1, const BigInt &n2);
+  static BigInt multiply(const BigInt &n1, const BigInt &n2);
 
   BigInt add(const BigInt &n) const;
   BigInt multiply(const BigInt &n) const;
@@ -36,8 +36,11 @@ public:
   BigInt invert() const;
   BigInt negate() const;
 
-  static BigInt add(const BigInt &n1, const BigInt &n2);
-  static BigInt multiply(const BigInt &n1, const BigInt &n2);
+  string toCellsString() const;
+  string toBitsString() const;
+  vector<bool> toBitsVector() const;
+  string toAbsDecimalString() const;
+  string toDecimalString() const;
 
   friend ostream &operator<<(ostream &os, const BigInt &x) {
     return os << x.toDecimalString();

@@ -404,6 +404,23 @@ bool testIncrementsSmallNumbers(long long start, long long steps) {
   return 0;
 }
 
+BigInt factorial(long long n) {
+  BigInt product = BigInt::ONE;
+  BigInt end = (BigInt) n;
+  for (BigInt i = 1; i <= end; i++)
+    product *= i;
+  return product;
+}
+
+bool testFactorial(long long n, string expected) {
+  BigInt result = factorial(n);
+  string output = result.toDecimalString();
+  bool correct = expected == output;
+  if (!correct)
+    cout << "factorial(" << n << ") = " << expected << " != " << output << endl;
+  return !correct;
+}
+
 void runBigIntTests() {
   clock_t begin_time, end_time;
   begin_time = clock();
@@ -443,6 +460,9 @@ void runBigIntTests() {
   testMultiplicationSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
   testMultiplicationSmallNumbers(523432261, 467115341, 50);
   testMultiplicationLongNumbers();
+
+  testFactorial(171,
+                "1241018070217667823424840524103103992616605577501693185388951803611996075221691752992751978120487585576464959501670387052809889858690710767331242032218484364310473577889968548278290754541561964852153468318044293239598173696899657235903947616152278558180061176365108428800000000000000000000000000000000000000000");
 
   end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;

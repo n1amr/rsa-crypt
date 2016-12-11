@@ -31,6 +31,10 @@ private:
 public:
   BigInt();
   BigInt(const CELLS_CONTAINER_T &init, SIGN_T sign = POSITIVE);
+  BigInt(const BigInt &n);
+  BigInt(int n);
+  BigInt(long long n);
+  BigInt(const char *s);
   BigInt(const string &s);
 
   static BigInt ZERO;
@@ -72,14 +76,21 @@ public:
 
   BigInt operator+(const BigInt &n) const;
   BigInt operator-(const BigInt &n) const;
-  BigInt operator-() const;
   BigInt operator*(const BigInt &n) const;
+
+  BigInt operator-() const;
+
+  BigInt &operator+=(const BigInt &n);
+  BigInt &operator-=(const BigInt &n);
+  BigInt &operator*=(const BigInt &n);
+
   bool operator==(const BigInt &n) const;
   bool operator!=(const BigInt &n) const;
   bool operator<(const BigInt &n) const;
   bool operator>(const BigInt &n) const;
   bool operator<=(const BigInt &n) const;
   bool operator>=(const BigInt &n) const;
+
   BigInt operator++();
   BigInt operator++(int);
   BigInt operator--();

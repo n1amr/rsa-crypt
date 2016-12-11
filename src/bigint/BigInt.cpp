@@ -13,6 +13,14 @@ BigInt::BigInt()
 BigInt::BigInt(const CELLS_CONTAINER_T &init, SIGN_T sign)
     : data(CELLS_CONTAINER_T {init}), sign(sign) {}
 
+BigInt::BigInt(const BigInt &n) : BigInt(n.data, n.sign) {}
+
+BigInt::BigInt(int n) : BigInt(to_string(n)) {}
+
+BigInt::BigInt(long long n) : BigInt(to_string(n)) {}
+
+BigInt::BigInt(const char *s) : BigInt((string) s) {}
+
 BigInt::BigInt(const string &s) {
   if (!s.empty() && s[0] == '-')
     sign = NEGATIVE;
@@ -251,14 +259,17 @@ string BigInt::toDecimalString() const {
   }
 }
 
-
 BigInt BigInt::operator+(const BigInt &n) const { return this->add(n); }
 
 BigInt BigInt::operator-(const BigInt &n) const { return this->subtract(n); }
 
+BigInt BigInt::operator*(const BigInt &n) const { return this->multiply(n); }
+
 BigInt BigInt::operator-() const { return this->negate(); }
 
-BigInt BigInt::operator*(const BigInt &n) const { return this->multiply(n); }
+BigInt &BigInt::operator+=(const BigInt &n) { return *this = *this + n; }
+BigInt &BigInt::operator-=(const BigInt &n) { return *this = *this - n; }
+BigInt &BigInt::operator*=(const BigInt &n) { return *this = *this * n; }
 
 bool BigInt::operator==(const BigInt &n) const { return this->equals(n); }
 

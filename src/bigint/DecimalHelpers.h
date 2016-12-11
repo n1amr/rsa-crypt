@@ -13,7 +13,7 @@ vector<short> decimalStringToDecimalVec(const string &s);
 vector<short> addToDecimalVec(const vector<short> &s, short d);
 vector<short> doubleDecimalVec(const vector<short> &s);
 vector<short> halveDecimalVec(const vector<short> &v);
-bool isDecimalVecOdd(const vector<short> &s);
+inline bool isDecimalVecOdd(const vector<short> &s);
 vector<bool> decimalVecToBitsVec(const vector<short> &s);
 
 void printVectorReversed(string name, CELLS_CONTAINER_T v);

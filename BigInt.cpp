@@ -6,7 +6,6 @@ using namespace std;
 CONTAINER_T<CELL_T> invert_cells(const CONTAINER_T<CELL_T> &cells);
 void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out);
 void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_out);
-void printVectorReversed(string name, CONTAINER_T<CELL_T> v); // TODO
 
 BigInt::BigInt()
     : data(CONTAINER_T<CELL_T> {0}) {}
@@ -37,14 +36,24 @@ BigInt::BigInt(const string &s) {
     data.push_back(cell);
   }
 
-  // TODO
-  if (sign == NEGATIVE) {
-    data = BigInt(data).negate().data;
-  }
+  if (sign == NEGATIVE)
+    data = this->negate().data;
 }
 
 BigInt BigInt::ZERO("0");
 BigInt BigInt::ONE("1");
+
+bool BigInt::isZero(const BigInt &n) {
+  return n.data.size() == 1 && n.data[0] == 0;
+}
+
+bool BigInt::isPositive(const BigInt &n) {
+  return !isZero(n) && n.sign == POSITIVE;
+}
+
+bool BigInt::isNegative(const BigInt &n) {
+  return !isZero(n) && n.sign == NEGATIVE;
+}
 
 BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
   CONTAINER_T<CELL_T> result_cells;
@@ -108,6 +117,22 @@ BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
   return sum;
 }
 
+BigInt BigInt::subtract(const BigInt &n1, const BigInt &n2) {
+  return BigInt::add(n1, n2.negate());
+}
+
+bool BigInt::isZero() const {
+  return BigInt::isZero(*this);
+}
+
+bool BigInt::isPositive() const {
+  return BigInt::isPositive(*this);
+}
+
+bool BigInt::isNegative() const {
+  return BigInt::isNegative(*this);
+}
+
 BigInt BigInt::add(const BigInt &n) const {
   return BigInt::add(*this, n);
 }
@@ -116,12 +141,25 @@ BigInt BigInt::multiply(const BigInt &n) const {
   return BigInt::multiply(*this, n);
 }
 
+BigInt BigInt::subtract(const BigInt &n) const {
+  return BigInt::subtract(*this, n);
+}
+
+BigInt BigInt::copy() const {
+  return *this;
+}
+
 BigInt BigInt::invert() const {
   return BigInt(invert_cells(this->data));
 }
 
 BigInt BigInt::negate() const {
-  return BigInt::add(this->invert(), BigInt("1"));
+  if (isZero())
+    return copy();
+
+  BigInt ans = BigInt::add(this->invert(), BigInt::ONE);
+  ans.sign = !sign;
+  return ans;
 }
 
 string BigInt::toCellsString() const {
@@ -202,11 +240,4 @@ CONTAINER_T<CELL_T> invert_cells(const CONTAINER_T<CELL_T> &cells) {
     result.push_back(~((CELL_T) (*it)));
 
   return result;
-}
-
-void printVectorReversed(string name, CONTAINER_T<CELL_T> v) {
-  cout << name << " = ";
-  for (auto it = v.rbegin(); it != v.rend(); ++it)
-    cout << ((long long) *it) << " ";
-  cout << endl;
 }

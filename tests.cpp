@@ -198,9 +198,63 @@ bool testNegation(string input, string expected) {
 }
 
 bool testNegationSmallNumbers(long long start, long long steps) {
-  for (long long i = start; i < start + steps; ++i) {
-    bool bad = testNegation(to_string(i), to_string(-i))
-               || testNegation(to_string(-i), to_string(i));
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    bool bad = testNegation(to_string(i), to_string(-i));
+    if (bad)
+      return bad;
+  }
+
+  return 0;
+}
+
+bool testIsZero(string input, string expected) {
+  string output = to_string(BigInt(input).isZero());
+  bool correct = expected == output;
+  if (!correct)
+    cout << input << " == 0 => " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testIsPositive(string input, string expected) {
+  string output = to_string(BigInt(input).isPositive());
+  bool correct = expected == output;
+  if (!correct)
+    cout << input << " > 0 => " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testIsNegative(string input, string expected) {
+  string output = to_string(BigInt(input).isNegative());
+  bool correct = expected == output;
+  if (!correct)
+    cout << input << " < 0 => " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testIsZeroSmallNumbers(long long start, long long steps) {
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    bool bad = testIsZero(to_string(i), to_string(i == 0));
+    if (bad)
+      return bad;
+  }
+
+  return 0;
+}
+
+
+bool testIsPositiveSmallNumbers(long long start, long long steps) {
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    bool bad = testIsPositive(to_string(i), to_string(i > 0));
+    if (bad)
+      return bad;
+  }
+
+  return 0;
+}
+
+bool testIsNegativeSmallNumbers(long long start, long long steps) {
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    bool bad = testIsNegative(to_string(i), to_string(i < 0));
     if (bad)
       return bad;
   }
@@ -219,16 +273,21 @@ void runTests() {
   testConversionBetweenStringAndIntVectorShort();
   testConversionBetweenStringAndIntVectorLong();
 
-  testNegationSmallNumbers(-500, 1000);
+  testIsZeroSmallNumbers(0, 1000);
+  testIsPositiveSmallNumbers(0, 1000);
+  testIsNegativeSmallNumbers(0, 1000);
+
+  testNegationSmallNumbers(0, 500);
+  testNegationSmallNumbers(MAX_CELL_VALUE, 500);
 
   testAdditionSmallNumbers(0, 0, 50);
-  testAdditionSmallNumbers((1 << CELL_TYPE_LENGTH) - 5, (1 << CELL_TYPE_LENGTH) - 5, 10);
+  testAdditionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
   testAdditionSmallNumbers(4654321, 46512, 50);
   testAdditionLongNumbers();
 
   testMutliplicationSmallNumbers(0, 0, 50);
+  testMutliplicationSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
   testMutliplicationSmallNumbers(523432261, 467115341, 50);
-  testMutliplicationSmallNumbers((1 << CELL_TYPE_LENGTH) - 5, (1 << CELL_TYPE_LENGTH) - 5, 10);
   testMutliplicationLongNumbers();
 
   end_time = clock();

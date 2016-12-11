@@ -41,6 +41,8 @@ public:
   static bool isNegative(const BigInt &n);
 
   static bool equals(const BigInt &n1, const BigInt &n2);
+  static bool isLessThan(const BigInt &n1, const BigInt &n2);
+  static bool isGreaterThan(const BigInt &n1, const BigInt &n2);
 
   static BigInt add(const BigInt &n1, const BigInt &n2);
   static BigInt multiply(const BigInt &n1, const BigInt &n2);
@@ -51,6 +53,8 @@ public:
   bool isNegative() const;
 
   bool equals(const BigInt &n) const;
+  bool isLessThan(const BigInt &n) const;
+  bool isGreaterThan(const BigInt &n) const;
 
   BigInt add(const BigInt &n) const;
   BigInt multiply(const BigInt &n) const;
@@ -66,7 +70,6 @@ public:
   string toAbsDecimalString() const;
   string toDecimalString() const;
 
-
   BigInt operator+(const BigInt &n) const { return this->add(n); }
 
   BigInt operator-(const BigInt &n) const { return this->subtract(n); }
@@ -74,6 +77,14 @@ public:
   BigInt operator*(const BigInt &n) const { return this->multiply(n); }
 
   bool operator==(const BigInt &n) const { return this->equals(n); }
+
+  bool operator<(const BigInt &n) const { return this->isLessThan(n); }
+
+  bool operator>(const BigInt &n) const { return this->isGreaterThan(n); }
+
+  bool operator<=(const BigInt &n) const { return !((*this) > n); }
+
+  bool operator>=(const BigInt &n) const { return !((*this) < n); }
 
   friend ostream &operator<<(ostream &os, const BigInt &x) {
     return os << x.toDecimalString();

@@ -61,6 +61,14 @@ bool BigInt::equals(const BigInt &n1, const BigInt &n2) {
   return isZero(n1.subtract(n2));
 }
 
+bool BigInt::isLessThan(const BigInt &n1, const BigInt &n2) {
+  return isNegative(n1.subtract(n2));
+}
+
+bool BigInt::isGreaterThan(const BigInt &n1, const BigInt &n2) {
+  return isPositive(n1.subtract(n2));
+}
+
 BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
   CELLS_CONTAINER_T result_cells;
 
@@ -146,6 +154,14 @@ bool BigInt::isNegative() const {
 
 bool BigInt::equals(const BigInt &n) const {
   return BigInt::equals(*this, n);
+}
+
+bool BigInt::isLessThan(const BigInt &n) const {
+  return BigInt::isLessThan(*this, n);
+}
+
+bool BigInt::isGreaterThan(const BigInt &n) const {
+  return BigInt::isGreaterThan(*this, n);
 }
 
 BigInt BigInt::add(const BigInt &n) const {

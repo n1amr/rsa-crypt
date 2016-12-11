@@ -293,6 +293,48 @@ bool testEqualsSmallNumbers(long long start, long long steps) {
   return 0;
 }
 
+
+bool testisLessThan(string n1, string n2, string expected) {
+  string output = to_string(BigInt(n1) < BigInt(n2));
+  bool correct = expected == output;
+  if (!correct)
+    cout << n1 << " < " << n2 << " => " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testIsLessThanSmallNumbers(long long start, long long steps) {
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    for (long long j = start - steps; j <= start + steps; ++j) {
+      bool bad = testisLessThan(to_string(i), to_string(j), to_string(i < j));
+      if (bad)
+        return bad;
+    }
+  }
+
+  return 0;
+}
+
+bool testisGreaterThan(string n1, string n2, string expected) {
+  string output = to_string(BigInt(n1) > BigInt(n2));
+  bool correct = expected == output;
+  if (!correct)
+    cout << n1 << " > " << n2 << " => " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testIsGreaterThanSmallNumbers(long long start, long long steps) {
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    for (long long j = start - steps; j <= start + steps; ++j) {
+      bool bad = testisGreaterThan(to_string(i), to_string(j), to_string(i > j));
+      if (bad)
+        return bad;
+    }
+  }
+
+  return 0;
+}
+
+
 void runBigIntTests() {
   clock_t begin_time, end_time;
   begin_time = clock();
@@ -310,6 +352,12 @@ void runBigIntTests() {
 
   testEqualsSmallNumbers(0, 50);
   testEqualsSmallNumbers(MAX_CELL_VALUE, 50);
+
+  testIsLessThanSmallNumbers(0, 50);
+  testIsLessThanSmallNumbers(MAX_CELL_VALUE, 50);
+
+  testIsGreaterThanSmallNumbers(0, 50);
+  testIsGreaterThanSmallNumbers(MAX_CELL_VALUE, 50);
 
   testNegationSmallNumbers(0, 500);
   testNegationSmallNumbers(MAX_CELL_VALUE, 500);

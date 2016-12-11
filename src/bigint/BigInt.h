@@ -40,13 +40,13 @@ public:
   static BigInt ZERO;
   static BigInt ONE;
 
-  static bool isZero(const BigInt &n);
-  static bool isPositive(const BigInt &n);
-  static bool isNegative(const BigInt &n);
+  inline static bool isZero(const BigInt &n);
+  inline static bool isPositive(const BigInt &n);
+  inline static bool isNegative(const BigInt &n);
 
-  static bool equals(const BigInt &n1, const BigInt &n2);
-  static bool isLessThan(const BigInt &n1, const BigInt &n2);
-  static bool isGreaterThan(const BigInt &n1, const BigInt &n2);
+  inline static bool equals(const BigInt &n1, const BigInt &n2);
+  inline static bool isLessThan(const BigInt &n1, const BigInt &n2);
+  inline static bool isGreaterThan(const BigInt &n1, const BigInt &n2);
 
   static BigInt add(const BigInt &n1, const BigInt &n2);
   static BigInt multiply(const BigInt &n1, const BigInt &n2);
@@ -60,13 +60,13 @@ public:
   bool isLessThan(const BigInt &n) const;
   bool isGreaterThan(const BigInt &n) const;
 
-  BigInt add(const BigInt &n) const;
-  BigInt multiply(const BigInt &n) const;
-  BigInt subtract(const BigInt &n) const;
+  inline BigInt add(const BigInt &n) const;
+  inline BigInt multiply(const BigInt &n) const;
+  inline BigInt subtract(const BigInt &n) const;
 
-  BigInt copy() const;
-  BigInt invert() const;
-  BigInt negate() const;
+  inline BigInt copy() const;
+  inline BigInt invert() const;
+  inline BigInt negate() const;
 
   string toCellsString() const;
   string toBitsString() const;

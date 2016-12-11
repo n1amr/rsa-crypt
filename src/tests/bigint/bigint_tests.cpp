@@ -9,8 +9,6 @@ int add_ops = 0;
 
 bool testRepresentationOf1024BitNumber();
 
-void testNegation();
-
 bool testRepresentationOfANumber(string s) {
   bool correct;
   bool reasonable_time;
@@ -176,7 +174,7 @@ bool testAdditionLongNumbers() {
       "-2824013958708217496949108842204627863351353911851577524683401930862693830361198499905873920995230135979350242643016761517910086527181505166477361617624937711255226127555345887008573074261857637333279171144375079265170433");
 }
 
-bool testMutliplication(string n1, string n2, string expected) {
+bool testMultiplication(string n1, string n2, string expected) {
   mul_ops++;
   string output = BigInt::multiply(BigInt(n1), BigInt(n2)).toDecimalString();
   bool correct = expected == output;
@@ -185,10 +183,10 @@ bool testMutliplication(string n1, string n2, string expected) {
   return !correct;
 }
 
-bool testMutliplicationSmallNumbers(long long n1_start, long long n2_start, long long steps) {
+bool testMultiplicationSmallNumbers(long long n1_start, long long n2_start, long long steps) {
   for (long long i = n1_start; i < n1_start + steps; ++i) {
     for (long long j = n2_start; j < n2_start + steps; ++j) {
-      bool bad = testMutliplication(to_string(i), to_string(j), to_string(i * j));
+      bool bad = testMultiplication(to_string(i), to_string(j), to_string(i * j));
       if (bad)
         return bad;
     }
@@ -196,8 +194,8 @@ bool testMutliplicationSmallNumbers(long long n1_start, long long n2_start, long
   return 0;
 }
 
-bool testMutliplicationLongNumbers() {
-  return testMutliplication(
+bool testMultiplicationLongNumbers() {
+  return testMultiplication(
       "49695700165340003591763298360793787790389700721006032962550750345751169893329781646405242590549172772653361935191472597091837344081386249491229556310016777875670909900770757760035554540680015525618951935911780761266142261603898700824084522153923122544256142742380519074007926967846888881440525780853947035022",
       "88352972791125599654602526729806289318058473276859480855617212988836676467159489722738068957562597567906068173874687651781669126218590167348485375483703607243201626118125468859381893195856552712039134967906750615111211852204440100709993128784338373228907267352165732599309856535472049222470403388325213434253",
       "4390762844544221301382902406733168845063887446673695681038901126589516324486872174593251287459038837673006252692795342760466061484950541992064671038090344069586993712870106532707591600212977801289036122525772195192015613446841363419443971696105292747800147575675918123780118961240020869192748281892848129172578166276883926228710835559697740220966300956149085285653936567962547064962956654474626823571911224071829917735208007842153479478149770430902294049999639836016794866595127246033598119912894381645536479187765278468631159417850565072273061142119867482306721963019196878894342252311339214292400044805671485408566");
@@ -299,10 +297,10 @@ void runBigIntTests() {
   testAdditionSubtractionSmallNumbers(4654321, 46512, 50);
   testAdditionLongNumbers();
 
-  testMutliplicationSmallNumbers(0, 0, 50);
-  testMutliplicationSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
-  testMutliplicationSmallNumbers(523432261, 467115341, 50);
-  testMutliplicationLongNumbers();
+  testMultiplicationSmallNumbers(0, 0, 50);
+  testMultiplicationSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
+  testMultiplicationSmallNumbers(523432261, 467115341, 50);
+  testMultiplicationLongNumbers();
 
   end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;

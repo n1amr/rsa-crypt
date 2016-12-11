@@ -1,7 +1,5 @@
 #include "tests.h"
 #include "bits/stdc++.h"
-#include "../bigint/BigInt.h"
-#include "../bigint/DecimalStringHelpers.h"
 #include "bigint/bigint_tests.h"
 using namespace std;
 

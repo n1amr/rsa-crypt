@@ -1,7 +1,7 @@
 #include "bigint_tests.h"
 #include "bits/stdc++.h"
 #include "../../bigint/BigInt.h"
-#include "../../bigint/DecimalStringHelpers.h"
+#include "../../bigint/DecimalHelpers.h"
 using namespace std;
 
 int mul_ops = 0;

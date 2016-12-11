@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "BigInt.h"
-#include "DecimalStringHelpers.h"
+#include "DecimalHelpers.h"
 using namespace std;
 
 CELLS_CONTAINER_T invert_cells(const CELLS_CONTAINER_T &cells);

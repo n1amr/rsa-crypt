@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DLOCAL_PC -DN1AMR -DN1AMR_f2
 set(SOURCE_FILES
         src/main.cpp
         src/bigint/BigInt.cpp
-        src/bigint/DecimalStringHelpers.cpp
+        src/bigint/DecimalHelpers.cpp
         src/tests/bigint/bigint_tests.cpp
         src/tests/tests.cpp)
 

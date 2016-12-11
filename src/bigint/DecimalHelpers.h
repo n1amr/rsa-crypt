@@ -1,5 +1,5 @@
-#ifndef RSA_DECIMAL_STRING_HELPERS_H
-#define RSA_DECIMAL_STRING_HELPERS_H
+#ifndef RSA_DECIMAL_HELPERS_H
+#define RSA_DECIMAL_HELPERS_H
 
 #include <bits/stdc++.h>
 #include "BigInt.h"

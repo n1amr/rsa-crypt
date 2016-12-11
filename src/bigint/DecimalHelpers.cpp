@@ -1,6 +1,6 @@
 #include <iostream>
 #include <bits/stdc++.h>
-#include "DecimalStringHelpers.h"
+#include "DecimalHelpers.h"
 using namespace std;
 
 string decimalVecToDecimalString(const vector<short> &v) {

@@ -201,6 +201,23 @@ BigInt BigInt::negate() const {
   return ans;
 }
 
+BigInt BigInt::shiftCells(int n_cells_left) const {
+  CELLS_CONTAINER_T tmp = data;
+
+  REVERSE(tmp);
+  if (n_cells_left > 0) {
+    for (int i = 0; i < n_cells_left; ++i)
+      tmp.push_back(0);
+  } else {
+    n_cells_left = -n_cells_left;
+    for (int i = 0; !tmp.empty() && i < n_cells_left; ++i)
+      tmp.pop_back();
+  }
+  REVERSE(tmp);
+
+  return BigInt(tmp, sign);
+}
+
 string BigInt::toCellsString() const {
   stringstream ss;
   ss << "BigInt(" << ((sign == POSITIVE) ? "+" : "-") << "{";

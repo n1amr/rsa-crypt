@@ -68,6 +68,8 @@ public:
   inline BigInt invert() const;
   inline BigInt negate() const;
 
+  BigInt shiftCells(int n_cells_left) const;
+
   string toCellsString() const;
   string toBitsString() const;
   vector<bool> toBitsVector() const;

@@ -421,6 +421,32 @@ bool testFactorial(long long n, string expected) {
   return !correct;
 }
 
+bool testShiftCells(string n, int n_cells_left, string expected) {
+  string output = BigInt(n).shiftCells(n_cells_left).toDecimalString();
+  bool correct = expected == output;
+  if (!correct)
+    if (n_cells_left >= 0)
+      cout << n << " << " << n_cells_left << " => " << expected << " != " << output << endl;
+    else
+      cout << n << " >> " << -n_cells_left << " => " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testShiftCellsSmallNumbers(long long start, int shifts, long long steps) {
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    for (int j = 0; j <= shifts; ++j) {
+      long long expected = (i) << (j * CELL_TYPE_LENGTH);
+      bool bad = testShiftCells(to_string(i), j, to_string(expected));
+      expected = ((i) >> (j * CELL_TYPE_LENGTH));
+      bad |= testShiftCells(to_string(i), -j, to_string(expected));
+      if (bad)
+        return bad;
+    }
+  }
+
+  return 0;
+}
+
 void runBigIntTests() {
   clock_t begin_time, end_time;
   begin_time = clock();
@@ -463,6 +489,9 @@ void runBigIntTests() {
 
   testFactorial(171,
                 "1241018070217667823424840524103103992616605577501693185388951803611996075221691752992751978120487585576464959501670387052809889858690710767331242032218484364310473577889968548278290754541561964852153468318044293239598173696899657235903947616152278558180061176365108428800000000000000000000000000000000000000000");
+
+  testShiftCellsSmallNumbers(0, 6, 256);
+  testShiftCellsSmallNumbers(MAX_CELL_VALUE, 6, 256);
 
   end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;

@@ -218,6 +218,53 @@ BigInt BigInt::shiftCells(int n_cells_left) const {
   return BigInt(tmp, sign);
 }
 
+BigInt BigInt::shiftBits(int n_bits_left) const {
+  CELLS_CONTAINER_T new_data = data;
+
+  bool left = n_bits_left > 0;
+  int n_bits = abs(n_bits_left);
+  int n_cells = (left ? 1 : -1) * (n_bits / CELL_TYPE_LENGTH);
+
+  if (n_cells) {
+    new_data = shiftCells(n_cells).data;
+    n_bits %= CELL_TYPE_LENGTH;
+  }
+
+  if (n_bits) {
+    if (left) {
+      CELL_T old_high_bits = 0;
+      for (int i = 0; i < new_data.size(); ++i) {
+        CELL_T current_cell = new_data[i];
+
+        DOUBLE_CELL_T pr = (DOUBLE_CELL_T) (sign == NEGATIVE && i == new_data.size() - 1 ? (CELL_T) ~0 : 0);
+        DOUBLE_CELL_T tmp = (pr << CELL_TYPE_LENGTH | current_cell) << n_bits | old_high_bits;
+
+        new_data[i] = (CELL_T) tmp;
+        old_high_bits = (CELL_T) (tmp >> CELL_TYPE_LENGTH);
+      }
+      if (old_high_bits)
+        new_data.push_back(old_high_bits);
+
+    } else {
+      REVERSE(new_data);
+
+      CELL_T old_low_bits = 0;
+      for (int i = 0; i < new_data.size(); ++i) {
+        DOUBLE_CELL_T pr = (DOUBLE_CELL_T)
+            (sign == NEGATIVE && i == 0 ? ((CELL_T) ~0) << (CELL_TYPE_LENGTH - n_bits) : 0);
+        DOUBLE_CELL_T tmp = (pr << CELL_TYPE_LENGTH)
+                            | (((DOUBLE_CELL_T) new_data[i] << CELL_TYPE_LENGTH) >> n_bits);
+
+        new_data[i] = old_low_bits | ((CELL_T) (tmp >> CELL_TYPE_LENGTH));
+        old_low_bits = (CELL_T) tmp;
+      }
+
+      REVERSE(new_data);
+    }
+  }
+  return BigInt(new_data, sign);
+}
+
 string BigInt::toCellsString() const {
   stringstream ss;
   ss << "BigInt(" << ((sign == POSITIVE) ? "+" : "-") << "{";

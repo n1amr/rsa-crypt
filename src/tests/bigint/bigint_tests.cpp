@@ -426,9 +426,9 @@ bool testShiftCells(string n, int n_cells_left, string expected) {
   bool correct = expected == output;
   if (!correct)
     if (n_cells_left >= 0)
-      cout << n << " << " << n_cells_left << " => " << expected << " != " << output << endl;
+      cout << n << " << " << n_cells_left * CELL_TYPE_LENGTH << " => " << expected << " != " << output << endl;
     else
-      cout << n << " >> " << -n_cells_left << " => " << expected << " != " << output << endl;
+      cout << n << " >> " << -n_cells_left * CELL_TYPE_LENGTH << " => " << expected << " != " << output << endl;
   return !correct;
 }
 
@@ -439,6 +439,33 @@ bool testShiftCellsSmallNumbers(long long start, int shifts, long long steps) {
       bool bad = testShiftCells(to_string(i), j, to_string(expected));
       expected = ((i) >> (j * CELL_TYPE_LENGTH));
       bad |= testShiftCells(to_string(i), -j, to_string(expected));
+      if (bad)
+        return bad;
+    }
+  }
+
+  return 0;
+}
+
+bool testShiftBits(string n, int n_bits_left, string expected) {
+  string output = BigInt(n).shiftBits(n_bits_left).toDecimalString();
+  bool correct = expected == output;
+  if (!correct)
+    if (n_bits_left >= 0)
+      cout << n << " << " << n_bits_left << " => " << expected << " != " << output << endl;
+    else
+      cout << n << " >> " << -n_bits_left << " => " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testShiftBitsSmallNumbers(long long start, int shifts, long long steps) {
+  for (long long i = start - steps; i <= start + steps; ++i) {
+    for (int j = 0; j <= shifts; ++j) {
+      long long expected = i << j;
+//      bool bad = 0;//TODO testShiftBits(to_string(i), j, to_string(expected));
+      bool bad = testShiftBits(to_string(i), j, to_string(expected));
+      expected = i >> j;
+      bad |= testShiftBits(to_string(i), -j, to_string(expected));
       if (bad)
         return bad;
     }
@@ -492,6 +519,9 @@ void runBigIntTests() {
 
   testShiftCellsSmallNumbers(0, 6, 256);
   testShiftCellsSmallNumbers(MAX_CELL_VALUE, 6, 256);
+
+  testShiftBitsSmallNumbers(0, 10, 256);
+  testShiftBitsSmallNumbers(MAX_CELL_VALUE, 10, 256);
 
   end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;

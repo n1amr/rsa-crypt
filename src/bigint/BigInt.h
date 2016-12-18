@@ -69,6 +69,7 @@ public:
   inline BigInt negate() const;
 
   BigInt shiftCells(int n_cells_left) const;
+  BigInt shiftBits(int n_bits_left) const;
 
   string toCellsString() const;
   string toBitsString() const;

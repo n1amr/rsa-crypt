@@ -51,6 +51,7 @@ public:
   static BigInt add(const BigInt &n1, const BigInt &n2);
   static BigInt multiply(const BigInt &n1, const BigInt &n2);
   static BigInt subtract(const BigInt &n1, const BigInt &n2);
+  static BigInt divide(const BigInt &n1, const BigInt &n2);
 
   bool isZero() const;
   bool isPositive() const;
@@ -63,6 +64,7 @@ public:
   inline BigInt add(const BigInt &n) const;
   inline BigInt multiply(const BigInt &n) const;
   inline BigInt subtract(const BigInt &n) const;
+  inline BigInt divide(const BigInt &n) const;
 
   inline BigInt copy() const;
   inline BigInt invert() const;
@@ -80,12 +82,14 @@ public:
   BigInt operator+(const BigInt &n) const;
   BigInt operator-(const BigInt &n) const;
   BigInt operator*(const BigInt &n) const;
+  BigInt operator/(const BigInt &n) const;
 
   BigInt operator-() const;
 
   BigInt &operator+=(const BigInt &n);
   BigInt &operator-=(const BigInt &n);
   BigInt &operator*=(const BigInt &n);
+  BigInt &operator/=(const BigInt &n);
 
   bool operator==(const BigInt &n) const;
   bool operator!=(const BigInt &n) const;

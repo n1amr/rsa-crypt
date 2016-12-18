@@ -148,6 +148,24 @@ BigInt BigInt::subtract(const BigInt &n1, const BigInt &n2) {
   return BigInt::add(n1, n2.negate());
 }
 
+// TODO not implemented
+BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
+  if (n1.isZero())
+    return BigInt::ZERO;
+  if (n2.isZero())
+    return -1;
+  BigInt result = 0;
+  bool sign = n1.sign ^n2.sign;
+  BigInt x1 = n1.isNegative() ? -n1 : n1;
+  BigInt x2 = n2.isNegative() ? -n2 : n2;
+  while (x1 >= x2) {
+    x1 -= x2;
+    result++;
+  }
+  result.sign = sign;
+  return result;
+}
+
 bool BigInt::isZero() const {
   return BigInt::isZero(*this);
 }
@@ -184,6 +202,10 @@ BigInt BigInt::subtract(const BigInt &n) const {
   return BigInt::subtract(*this, n);
 }
 
+BigInt BigInt::divide(const BigInt &n) const {
+  return BigInt::divide(*this, n);
+}
+
 BigInt BigInt::copy() const {
   return *this;
 }
@@ -202,20 +224,20 @@ BigInt BigInt::negate() const {
 }
 
 BigInt BigInt::shiftCells(int n_cells_left) const {
-  CELLS_CONTAINER_T tmp = cells;
+  CELLS_CONTAINER_T new_data = cells;
 
-  REVERSE(tmp);
+  REVERSE(new_data);
   if (n_cells_left > 0) {
     for (int i = 0; i < n_cells_left; ++i)
-      tmp.push_back(0);
+      new_data.push_back(0);
   } else {
     n_cells_left = -n_cells_left;
-    for (int i = 0; !tmp.empty() && i < n_cells_left; ++i)
-      tmp.pop_back();
+    for (int i = 0; !new_data.empty() && i < n_cells_left; ++i)
+      new_data.pop_back();
   }
-  REVERSE(tmp);
+  REVERSE(new_data);
 
-  return BigInt(tmp, sign);
+  return BigInt(new_data, sign);
 }
 
 BigInt BigInt::shiftBits(int n_bits_left) const {
@@ -329,6 +351,8 @@ BigInt BigInt::operator-(const BigInt &n) const { return this->subtract(n); }
 
 BigInt BigInt::operator*(const BigInt &n) const { return this->multiply(n); }
 
+BigInt BigInt::operator/(const BigInt &n) const { return this->divide(n); }
+
 BigInt BigInt::operator-() const { return this->negate(); }
 
 BigInt &BigInt::operator+=(const BigInt &n) { return *this = *this + n; }
@@ -336,6 +360,8 @@ BigInt &BigInt::operator+=(const BigInt &n) { return *this = *this + n; }
 BigInt &BigInt::operator-=(const BigInt &n) { return *this = *this - n; }
 
 BigInt &BigInt::operator*=(const BigInt &n) { return *this = *this * n; }
+
+BigInt &BigInt::operator/=(const BigInt &n) { return *this = *this / n; }
 
 bool BigInt::operator==(const BigInt &n) const { return this->equals(n); }
 

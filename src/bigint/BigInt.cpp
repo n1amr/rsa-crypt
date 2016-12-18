@@ -53,7 +53,7 @@ BigInt BigInt::ONE("1");
 
 bool BigInt::isZero(const BigInt &n) {
   return n.cells.rend() == find_if(n.cells.rbegin(), n.cells.rend(),
-                                  [](const CELL_T &x) { return x; }) // All zeros
+                                   [](const CELL_T &x) { return x; }) // All zeros
          && n.sign == POSITIVE;
 }
 
@@ -366,10 +366,7 @@ BigInt &BigInt::operator>>=(int n) {
 }
 
 BigInt BigInt::operator++() {
-  BigInt result = (*this) + BigInt::ONE;
-  cells = result.cells;
-  sign = result.sign;
-  return result;
+  return *this = *this + BigInt::ONE;
 }
 
 BigInt BigInt::operator++(int) {
@@ -379,10 +376,7 @@ BigInt BigInt::operator++(int) {
 }
 
 BigInt BigInt::operator--() {
-  BigInt result = (*this) - BigInt::ONE;
-  cells = result.cells;
-  sign = result.sign;
-  return result;
+  return *this = *this - BigInt::ONE;
 }
 
 BigInt BigInt::operator--(int) {

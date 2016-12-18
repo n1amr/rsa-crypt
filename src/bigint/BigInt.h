@@ -13,8 +13,8 @@ using namespace std;
 #define DOUBLE_CELL_T unsigned long long int
 #endif
 
-#define CELL_TYPE_LENGTH (sizeof(CELL_T) * 8)
-#define MAX_CELL_VALUE (1 << CELL_TYPE_LENGTH)
+#define CELL_BIT_LENGTH (sizeof(CELL_T) * 8)
+#define MAX_CELL_VALUE (1 << CELL_BIT_LENGTH)
 
 #define CONTAINER_T vector
 #define CELLS_CONTAINER_T CONTAINER_T<CELL_T>
@@ -25,7 +25,7 @@ using namespace std;
 
 class BigInt {
 private:
-  CELLS_CONTAINER_T data;
+  CELLS_CONTAINER_T cells;
   SIGN_T sign = POSITIVE;
 
 public:

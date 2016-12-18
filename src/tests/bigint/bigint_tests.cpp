@@ -426,18 +426,18 @@ bool testShiftCells(string n, int n_cells_left, string expected) {
   bool correct = expected == output;
   if (!correct)
     if (n_cells_left >= 0)
-      cout << n << " << " << n_cells_left * CELL_TYPE_LENGTH << " => " << expected << " != " << output << endl;
+      cout << n << " << " << n_cells_left * CELL_BIT_LENGTH << " => " << expected << " != " << output << endl;
     else
-      cout << n << " >> " << -n_cells_left * CELL_TYPE_LENGTH << " => " << expected << " != " << output << endl;
+      cout << n << " >> " << -n_cells_left * CELL_BIT_LENGTH << " => " << expected << " != " << output << endl;
   return !correct;
 }
 
 bool testShiftCellsSmallNumbers(long long start, int shifts, long long steps) {
   for (long long i = start - steps; i <= start + steps; ++i) {
     for (int j = 0; j <= shifts; ++j) {
-      long long expected = (i) << (j * CELL_TYPE_LENGTH);
+      long long expected = (i) << (j * CELL_BIT_LENGTH);
       bool bad = testShiftCells(to_string(i), j, to_string(expected));
-      expected = ((i) >> (j * CELL_TYPE_LENGTH));
+      expected = ((i) >> (j * CELL_BIT_LENGTH));
       bad |= testShiftCells(to_string(i), -j, to_string(expected));
       if (bad)
         return bad;
@@ -538,11 +538,11 @@ void runBigIntTests() {
   testFactorial(171,
                 "1241018070217667823424840524103103992616605577501693185388951803611996075221691752992751978120487585576464959501670387052809889858690710767331242032218484364310473577889968548278290754541561964852153468318044293239598173696899657235903947616152278558180061176365108428800000000000000000000000000000000000000000");
 
-  testShiftCellsSmallNumbers(0, sizeof(unsigned long long) / CELL_TYPE_LENGTH, 256);
-  testShiftCellsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_TYPE_LENGTH, 256);
+  testShiftCellsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
+  testShiftCellsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
 
-  testShiftBitsSmallNumbers(0, sizeof(unsigned long long) / CELL_TYPE_LENGTH, 256);
-  testShiftBitsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_TYPE_LENGTH, 256);
+  testShiftBitsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
+  testShiftBitsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
 
   testShiftBitsLarge();
 

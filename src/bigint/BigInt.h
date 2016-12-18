@@ -94,6 +94,12 @@ public:
   bool operator<=(const BigInt &n) const;
   bool operator>=(const BigInt &n) const;
 
+  BigInt operator<<(int n) const;
+  BigInt operator>>(int n) const;
+
+  BigInt &operator<<=(int n);
+  BigInt &operator>>=(int n);
+
   BigInt operator++();
   BigInt operator++(int);
   BigInt operator--();

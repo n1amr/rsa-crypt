@@ -349,6 +349,22 @@ bool BigInt::operator<=(const BigInt &n) const { return !((*this) > n); }
 
 bool BigInt::operator>=(const BigInt &n) const { return !((*this) < n); }
 
+BigInt BigInt::operator<<(int n) const {
+  return shiftBits(n);
+}
+
+BigInt BigInt::operator>>(int n) const {
+  return shiftBits(-n);
+}
+
+BigInt &BigInt::operator<<=(int n) {
+  return *this = *this << n;
+}
+
+BigInt &BigInt::operator>>=(int n) {
+  return *this = *this >> n;
+}
+
 BigInt BigInt::operator++() {
   BigInt result = (*this) + BigInt::ONE;
   data = result.data;

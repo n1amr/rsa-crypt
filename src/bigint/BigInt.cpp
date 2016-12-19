@@ -113,35 +113,39 @@ BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
 BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
   BigInt sum;
 
-  BigInt n_abs1 = n1.isNegative() ? n1.negate() : n1;
-  BigInt n_abs2 = n2.isNegative() ? n2.negate() : n2;
+  BigInt small = n1.isNegative() ? n1.negate() : n1;
+  BigInt large = n2.isNegative() ? n2.negate() : n2;
 
-  const CELLS_CONTAINER_T &cells_1 = n_abs1.cells;
-  const CELLS_CONTAINER_T &cells_2 = n_abs2.cells;
+  if (small > large)
+    swap(small, large);
 
-  CELLS_CONTAINER_T shifted_cells = cells_2;
-  CELLS_CONTAINER_T single_cell_product;
-  REVERSE(shifted_cells);
+  const CELLS_CONTAINER_T &small_cells = small.cells;
+  const CELLS_CONTAINER_T &large_cells = large.cells;
 
-  CELL_T c, c2, old_remainder, mul_remainder, add_remainder, product;
-  for (CELL_T c1 : cells_1) {
-    single_cell_product.clear();
+  int shift = 0;
+  CELLS_CONTAINER_T tmp_product;
+
+  CELL_T c, c1, c2, old_remainder, mul_remainder, add_remainder, product;
+  for (auto it1 = small_cells.begin(); it1 != small_cells.end(); ++it1) {
+    c1 = *it1;
+    tmp_product.clear();
+    tmp_product.insert(tmp_product.end(), shift, 0);
     old_remainder = mul_remainder = add_remainder = 0;
 
-    for (auto it = shifted_cells.rbegin(); it != shifted_cells.rend(); ++it) {
-      c2 = *it;
+    for (auto it2 = large_cells.begin(); it2 != large_cells.end(); ++it2) {
+      c2 = *it2;
 
       multiplyCells(c1, c2, product, mul_remainder);
       addCells(product, old_remainder, 0, c, add_remainder);
 
-      single_cell_product.push_back(c);
+      tmp_product.push_back(c);
       addCells(mul_remainder, add_remainder, 0, old_remainder, add_remainder);
     }
     if (old_remainder)
-      single_cell_product.push_back(old_remainder);
+      tmp_product.push_back(old_remainder);
 
-    sum = sum.add(BigInt(single_cell_product));
-    shifted_cells.push_back(0);
+    sum = add(sum, BigInt(tmp_product));
+    shift++;
   }
 
   if (n1.isNegative() ^ n2.isNegative())

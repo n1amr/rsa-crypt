@@ -8,7 +8,7 @@ set(SOURCE_FILES
         src/bigint/BigInt.cpp
         src/bigint/DecimalHelpers.cpp)
 
-add_executable(rsa ${SOURCE_FILES})
+add_executable(main ${SOURCE_FILES})
 
 set(TESTS_SOURCE_FILES
         src/tests/main.cpp

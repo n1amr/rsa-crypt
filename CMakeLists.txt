@@ -13,6 +13,15 @@ add_executable(rsa ${SOURCE_FILES})
 set(TESTS_SOURCE_FILES
         src/bigint/BigInt.cpp
         src/bigint/DecimalHelpers.cpp
+        src/tests/tests.cpp
+        src/tests/bigint/bigint_tests.cpp)
+
+add_executable(rsa ${SOURCE_FILES})
+
+set(TESTS_SOURCE_FILES
+        src/tests/main.cpp
+        src/bigint/BigInt.cpp
+        src/bigint/DecimalHelpers.cpp
         src/tests/bigint/bigint_tests.cpp
         src/tests/tests.cpp)
 

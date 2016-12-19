@@ -13,3 +13,7 @@ void runTests() {
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
   cout << "Total test time = " << elapsed_time << endl;
 }
+
+int main() {
+  runTests();
+}

@@ -20,7 +20,7 @@ bool testRepresentationOfANumber(string s) {
   correct = s == x.toDecimalString();
   clock_t end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
-  reasonable_time = elapsed_time < 0.07;
+  reasonable_time = elapsed_time < 0.2;
 
   if (!correct || !reasonable_time) {
     cout << endl << "=========================" << endl;
@@ -446,12 +446,10 @@ bool testPreDecrement(long long n1) {
 }
 
 bool testIncrements(long long n1) {
-  bool correct =
-      testPostIncrement(n1)
-      || testPreIncrement(n1)
-      || testPostDecrement(n1)
-      || testPreDecrement(n1);
-  return !correct;
+  return testPostIncrement(n1) ||
+         testPreIncrement(n1) ||
+         testPostDecrement(n1) ||
+         testPreDecrement(n1);
 }
 
 bool testIncrementsSmallNumbers(long long start, long long steps) {
@@ -558,125 +556,155 @@ bool testShiftBitsLarge() {
 void runBigIntTests() {
   clock_t begin_time, end_time;
   float elapsed_time;
+  bool tmp;
 
   begin_time = end_time = clock();
 
-  testRepresentationOfSmallNumbers();
-  testRepresentationOfLongNumbers();
-  testRepresentationOf1024BitNumber();
+  {
+    tmp = testRepresentationOfSmallNumbers() ||
+          testRepresentationOfLongNumbers() ||
+          testRepresentationOf1024BitNumber();
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testRepresentation time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testRepresentation time = " << elapsed_time << endl;
+  }
 
-  testConversionBetweenStringAndIntVectorShort();
-  testConversionBetweenStringAndIntVectorLong();
+  {
+    tmp = testConversionBetweenStringAndIntVectorShort() ||
+          testConversionBetweenStringAndIntVectorLong();
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testConversionBetweenStringAndIntVector time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testConversionBetweenStringAndIntVector time = " << elapsed_time << endl;
+  }
 
-  testIsZeroSmallNumbers(0, 1000);
-  testIsPositiveSmallNumbers(0, 1000);
-  testIsNegativeSmallNumbers(0, 1000);
+  {
+    tmp = testIsZeroSmallNumbers(0, 1000) ||
+          testIsPositiveSmallNumbers(0, 1000) ||
+          testIsNegativeSmallNumbers(0, 1000);
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testIsZero time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testIsZero time = " << elapsed_time << endl;
+  }
 
-  testEqualsSmallNumbers(0, 50);
-  testEqualsSmallNumbers(MAX_CELL_VALUE, 50);
+  {
+    tmp = testEqualsSmallNumbers(0, 50) ||
+          testEqualsSmallNumbers(MAX_CELL_VALUE, 50);
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testEquals time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testEquals time = " << elapsed_time << endl;
+  }
 
-  testIsLessThanSmallNumbers(0, 50);
-  testIsLessThanSmallNumbers(MAX_CELL_VALUE, 50);
+  {
+    tmp = testIsLessThanSmallNumbers(0, 50) ||
+          testIsLessThanSmallNumbers(MAX_CELL_VALUE, 50);
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testIsLessThan time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testIsLessThan time = " << elapsed_time << endl;
+  }
 
-  testIsGreaterThanSmallNumbers(0, 50);
-  testIsGreaterThanSmallNumbers(MAX_CELL_VALUE, 50);
+  {
+    tmp = testIsGreaterThanSmallNumbers(0, 50) ||
+          testIsGreaterThanSmallNumbers(MAX_CELL_VALUE, 50);
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testIsGreater time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testIsGreater time = " << elapsed_time << endl;
+  }
 
-  testIncrementsSmallNumbers(0, 50);
-  testIncrementsSmallNumbers(MAX_CELL_VALUE, 50);
+  {
+    tmp = testIncrementsSmallNumbers(0, 50) ||
+          testIncrementsSmallNumbers(MAX_CELL_VALUE, 50);
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testIncrements time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testIncrements time = " << elapsed_time << endl;
+  }
 
-  testNegationSmallNumbers(0, 500);
-  testNegationSmallNumbers(MAX_CELL_VALUE, 500);
+  {
+    tmp = testNegationSmallNumbers(0, 500) ||
+          testNegationSmallNumbers(MAX_CELL_VALUE, 500);
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testNegation time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testNegation time = " << elapsed_time << endl;
+  }
 
-  testAdditionSubtractionSmallNumbers(0, 0, 50);
-  testAdditionSubtractionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
-  testAdditionSubtractionSmallNumbers(4654321, 46512, 50);
-  testAdditionLongNumbers();
+  {
+    tmp = testAdditionSubtractionSmallNumbers(0, 0, 50) ||
+          testAdditionSubtractionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10) ||
+          testAdditionSubtractionSmallNumbers(4654321, 46512, 50) ||
+          testAdditionLongNumbers();
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testAdditionSubtraction time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testAdditionSubtraction time = " << elapsed_time << endl;
+  }
 
-  testMultiplicationSmallNumbers(0, 0, 50);
-  testMultiplicationSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
-  testMultiplicationSmallNumbers(523432261, 467115341, 50);
-  testMultiplicationLongNumbers();
+  {
+    tmp = testMultiplicationSmallNumbers(0, 0, 50) ||
+          testMultiplicationSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10) ||
+          testMultiplicationSmallNumbers(523432261, 467115341, 50) ||
+          testMultiplicationLongNumbers();
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testMultiplication time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testMultiplication time = " << elapsed_time << endl;
+  }
 
-  testDivisionSmallNumbers(0, 0, 50);
-  testDivisionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
-  testDivisionSmallNumbers(523432261, 467115341, 50);
-  testDivisionLongNumbers();
+  {
+    tmp = testDivisionSmallNumbers(0, 0, 50) ||
+          testDivisionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10) ||
+          testDivisionSmallNumbers(523432261, 467115341, 50) ||
+          testDivisionLongNumbers();
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testDivision time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testDivision time = " << elapsed_time << endl;
+  }
 
-  testModSmallNumbers(0, 0, 50);
-  testModSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
-  testModSmallNumbers(523432261, 467115341, 50);
-  testModLongNumbers();
+  {
+    tmp = testModSmallNumbers(0, 0, 50) ||
+          testModSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10) ||
+          testModSmallNumbers(523432261, 467115341, 50) ||
+          testModLongNumbers();
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testMod time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testMod time = " << elapsed_time << endl;
+  }
 
-  testFactorial(171,
-                "1241018070217667823424840524103103992616605577501693185388951803611996075221691752992751978120487585576464959501670387052809889858690710767331242032218484364310473577889968548278290754541561964852153468318044293239598173696899657235903947616152278558180061176365108428800000000000000000000000000000000000000000");
+  {
+    tmp = testFactorial(171,
+                        "1241018070217667823424840524103103992616605577501693185388951803611996075221691752992751978120487585576464959501670387052809889858690710767331242032218484364310473577889968548278290754541561964852153468318044293239598173696899657235903947616152278558180061176365108428800000000000000000000000000000000000000000");
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testFactorial time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testFactorial time = " << elapsed_time << endl;
+  }
 
-  testShiftCellsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
-  testShiftCellsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
+  {
+    tmp = testShiftCellsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256) ||
+          testShiftCellsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testShiftCells time = " << elapsed_time << endl;
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testShiftCells time = " << elapsed_time << endl;
+  }
 
-  testShiftBitsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
-  testShiftBitsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
-  testShiftBitsLarge();
+  {
+    tmp = testShiftBitsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256) ||
+          testShiftBitsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256) ||
+          testShiftBitsLarge();
 
-  elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-  end_time = clock();
-  cout << "testShiftBits time = " << elapsed_time << endl;
-
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testShiftBits time = " << elapsed_time << endl;
+  }
   end_time = clock();
   elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
 

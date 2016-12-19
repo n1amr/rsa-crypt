@@ -84,9 +84,15 @@ vector<bool> decimalVecToBitsVec(const vector<short> &v) {
   return ans;
 }
 
-void printVectorReversed(string name, CELLS_CONTAINER_T v) {
+void printVectorReversed(CELLS_CONTAINER_T v, string name) {
   cout << name << " = ";
   for (auto it = v.rbegin(); it != v.rend(); ++it)
     cout << ((long long) *it) << " ";
   cout << endl;
+}
+
+void printVector(CELLS_CONTAINER_T v, string name) {
+  REVERSE(v);
+  printVectorReversed(v, name);
+  REVERSE(v);
 }

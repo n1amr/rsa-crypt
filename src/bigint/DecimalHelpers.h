@@ -16,6 +16,7 @@ vector<short> halveDecimalVec(const vector<short> &v);
 inline bool isDecimalVecOdd(const vector<short> &s);
 vector<bool> decimalVecToBitsVec(const vector<short> &s);
 
-void printVectorReversed(string name, CELLS_CONTAINER_T v);
+void printVectorReversed(CELLS_CONTAINER_T v, string name = "");
+void printVector(CELLS_CONTAINER_T v, string name = "");
 
 #endif //RSA_DECIMALSTRINGHELPERS_H

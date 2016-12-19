@@ -181,7 +181,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   BigInt denominator = n2.isNegative() ? n2.negate() : n2;
   BigInt available;
   BigInt result;
-  
+
   const CELLS_CONTAINER_T &denominator_cells = denominator.cells;
   CELLS_CONTAINER_T remaining_cells = numerator.cells;
   CELLS_CONTAINER_T &available_cells = available.cells;

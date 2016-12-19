@@ -157,7 +157,15 @@ void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
   }
 }
 
-int binary_find(CELLS_CONTAINER_T lookup, BigInt x) {
+CELL_T linear_find(const vector<BigInt> &lookup, BigInt &x) {
+  for (CELL_T j = MAX_CELL_VALUE; j >= 0; --j) {
+    if (x >= lookup[j]) {
+      return j;
+    }
+  }
+}
+
+CELL_T binary_find(const vector<BigInt> &lookup, BigInt &x) {
   return 0;
 }
 
@@ -197,14 +205,8 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
 
 
 //    CELL_T d2 = (CELL_T) (binary_find(lookup.begin(), lookup.end(), BigInt(available_cells)) - lookup.begin());
-    CELL_T d = 0;
-    for (CELL_T j = 255; j >= 0; --j) {
-      if (lookup[j] <= available) {
-        d = j;
-//        cout << ((int) d) << " " << ((int) d2) << endl;
-        break;
-      }
-    }
+    CELL_T d = linear_find(lookup, available);
+    CELL_T d2 = binary_find(lookup, available);
 
     result_cells.push_back(d);
     available -= n_abs2 * d;

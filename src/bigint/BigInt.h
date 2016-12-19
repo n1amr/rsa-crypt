@@ -14,7 +14,7 @@ using namespace std;
 #endif
 
 #define CELL_BIT_LENGTH (sizeof(CELL_T) * 8)
-#define MAX_CELL_VALUE (1 << CELL_BIT_LENGTH)
+#define MAX_CELL_VALUE ((1 << CELL_BIT_LENGTH) - 1)
 
 #define CONTAINER_T vector
 #define CELLS_CONTAINER_T CONTAINER_T<CELL_T>

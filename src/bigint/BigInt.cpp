@@ -177,34 +177,31 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
     return -1;
 
   bool sign = n1.isNegative() ^n2.isNegative();
-  BigInt n_abs1 = n1.isNegative() ? n1.negate() : n1;
-  BigInt n_abs2 = n2.isNegative() ? n2.negate() : n2;
-
-  const CELLS_CONTAINER_T &cells_1 = n_abs1.cells;
-  const CELLS_CONTAINER_T &cells_2 = n_abs2.cells;
-
+  BigInt numerator = n1.isNegative() ? n1.negate() : n1;
+  BigInt denominator = n2.isNegative() ? n2.negate() : n2;
   BigInt available;
   BigInt result;
 
-  CELLS_CONTAINER_T remaining_cells = cells_1;
+  const CELLS_CONTAINER_T &numerator_cells = numerator.cells;
+  const CELLS_CONTAINER_T &denominator_cells = denominator.cells;
+  CELLS_CONTAINER_T remaining_cells = numerator_cells;
   CELLS_CONTAINER_T &available_cells = available.cells;
   CELLS_CONTAINER_T &result_cells = result.cells;
 
   vector<BigInt> lookup;
   lookup.reserve(256);
   for (int i = 0; i < 256; ++i)
-    lookup.push_back(n_abs2 * BigInt(i));
+    lookup.push_back(denominator * BigInt(i));
 
   divisionMoveCell(remaining_cells, available_cells);
 
-  while (!remaining_cells.empty() || available >= n_abs2) {
-    while (!remaining_cells.empty() && available < n_abs2) {
-      divisionMoveCell(remaining_cells, available_cells);
+  while (!remaining_cells.empty() || available >= denominator) {
+    while (!remaining_cells.empty() && available < denominator) {
       result_cells.push_back(0);
+      divisionMoveCell(remaining_cells, available_cells);
     }
 
     CELL_T d = binary_find(lookup, available);
-
     result_cells.push_back(d);
     available -= lookup[d];
     divisionMoveCell(remaining_cells, available_cells);

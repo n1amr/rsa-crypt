@@ -148,6 +148,15 @@ BigInt BigInt::subtract(const BigInt &n1, const BigInt &n2) {
   return BigInt::add(n1, n2.negate());
 }
 
+void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
+  if (!from.empty()) {
+    REVERSE(to);
+    to.push_back(from.back());
+    REVERSE(to);
+    from.pop_back();
+  }
+}
+
 // TODO not implemented
 BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   if (n1.isZero())
@@ -155,7 +164,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   if (n2.isZero())
     return -1;
 
-  bool sign = n1.isNegative() ^ n2.isNegative();
+  bool sign = n1.isNegative() ^n2.isNegative();
   BigInt n_abs1 = n1.isNegative() ? n1.negate() : n1;
   BigInt n_abs2 = n2.isNegative() ? n2.negate() : n2;
 
@@ -164,25 +173,20 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
 
   vector<BigInt> lookup;
   lookup.reserve(256);
-
-  for (int i = 0; i < 256; ++i) {
+  for (int i = 0; i < 256; ++i)
     lookup.push_back(n_abs2 * BigInt(i));
-  }
+
 
   CELLS_CONTAINER_T stack_cells = cells_1;
   CELLS_CONTAINER_T used_cells;
   CELLS_CONTAINER_T result_cells;
 
-  used_cells.push_back(stack_cells.back());
-  stack_cells.pop_back();
+  divisionMoveCell(stack_cells, used_cells);
 
   for (int z = 0; z < 3; ++z) {
     while (!stack_cells.empty() && BigInt(used_cells) < n_abs2) {
       result_cells.push_back(0);
-      REVERSE(used_cells);
-      used_cells.push_back(stack_cells.back());
-      REVERSE(used_cells);
-      stack_cells.pop_back();
+      divisionMoveCell(stack_cells, used_cells);
     }
 
     CELL_T t = 0;
@@ -200,12 +204,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
     while (used_cells.size() > 1 && used_cells.back() == 0)
       used_cells.pop_back();
 
-    if (!stack_cells.empty()) {
-      REVERSE(used_cells);
-      used_cells.push_back(stack_cells.back());
-      REVERSE(used_cells);
-      stack_cells.pop_back();
-    }
+    divisionMoveCell(stack_cells, used_cells);
   }
 
   while (result_cells.size() > 1 && result_cells.back() == 0)

@@ -185,10 +185,9 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
 
   divisionMoveCell(stack_cells, used_cells);
 
-  for (int z = 0; z < 3; ++z) {
-    while (!stack_cells.empty() && used < n_abs2) {
+  while (!stack_cells.empty() || used >= n_abs2) {
+    while (!stack_cells.empty() && used < n_abs2)
       divisionMoveCell(stack_cells, used_cells);
-    }
 
     CELL_T d = 0;
     for (CELL_T j = 255; j >= 0; --j) {

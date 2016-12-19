@@ -157,19 +157,10 @@ void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
   }
 }
 
-CELL_T linear_find(const vector<BigInt> &lookup, BigInt &x) {
-  for (CELL_T j = MAX_CELL_VALUE; j >= 0; --j) {
-    if (x >= lookup[j]) {
-      return j;
-    }
-  }
-}
-
 CELL_T binary_find(const vector<BigInt> &lookup, BigInt &x) {
-  int l = 0;
-  int r = (int) lookup.size();
+  CELL_T l = 0, r = MAX_CELL_VALUE, m;
   while (l + 1 < r) {
-    int m = (l + r) / 2;
+    m = (CELL_T) ((l + r) / 2);
     if (lookup[m] <= x)
       l = m;
     else

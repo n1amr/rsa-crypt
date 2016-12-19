@@ -53,7 +53,7 @@ BigInt BigInt::ONE("1");
 
 bool BigInt::isZero(const BigInt &n) {
   return n.cells.rend() == find_if(n.cells.rbegin(), n.cells.rend(),
-                                   [](const CELL_T &x) { return x; }) // All zeros
+                                                          [](const CELL_T &x) { return x; }) // All zeros
          && n.sign == POSITIVE;
 }
 
@@ -105,6 +105,9 @@ BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
   }
 }
 
+#define NAIVE_MULTIPLICATION 0
+#if NAIVE_MULTIPLICATION == 1
+
 BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
   BigInt sum;
 
@@ -143,6 +146,50 @@ BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
     sum = sum.negate();
   return sum;
 }
+
+#else
+
+// TODO
+BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
+  BigInt sum;
+
+  BigInt n_abs1 = n1.isNegative() ? n1.negate() : n1;
+  BigInt n_abs2 = n2.isNegative() ? n2.negate() : n2;
+
+  const CELLS_CONTAINER_T &cells_1 = n_abs1.cells;
+  const CELLS_CONTAINER_T &cells_2 = n_abs2.cells;
+
+  CELLS_CONTAINER_T shifted_cells = cells_2;
+  CELLS_CONTAINER_T single_cell_product;
+  REVERSE(shifted_cells);
+
+  CELL_T c, c2, old_remainder, mul_remainder, add_remainder, product;
+  for (CELL_T c1 : cells_1) {
+    single_cell_product.clear();
+    old_remainder = mul_remainder = add_remainder = 0;
+
+    for (auto it = shifted_cells.rbegin(); it != shifted_cells.rend(); ++it) {
+      c2 = *it;
+
+      multiplyCells(c1, c2, product, mul_remainder);
+      addCells(product, old_remainder, 0, c, add_remainder);
+
+      single_cell_product.push_back(c);
+      addCells(mul_remainder, add_remainder, 0, old_remainder, add_remainder);
+    }
+    if (old_remainder)
+      single_cell_product.push_back(old_remainder);
+
+    sum = sum.add(BigInt(single_cell_product));
+    shifted_cells.push_back(0);
+  }
+
+  if (n1.isNegative() ^ n2.isNegative())
+    sum = sum.negate();
+  return sum;
+}
+
+#endif
 
 BigInt BigInt::subtract(const BigInt &n1, const BigInt &n2) {
   return BigInt::add(n1, n2.negate());

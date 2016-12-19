@@ -163,7 +163,7 @@ CELL_T binary_find(const BigInt &x, const BigInt &denominator) {
   CELL_T l = 0, r = MAX_CELL_VALUE, m;
   while (l + 1 < r) {
     m = (CELL_T) ((l + r) / 2);
-    if ((lookup[m] = lookup.count(m) > 0 ? lookup[m] : denominator * BigInt(m)) <= x)
+    if (x >= (lookup[m] = lookup.count(m) > 0 ? lookup[m] : denominator * BigInt(m)))
       l = m;
     else
       r = m;
@@ -191,7 +191,6 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   CELLS_CONTAINER_T &available_cells = available.cells;
   CELLS_CONTAINER_T &result_cells = result.cells;
 
-  divisionMoveCell(remaining_cells, available_cells);
   while (!remaining_cells.empty() || available >= denominator) {
     while (!remaining_cells.empty() && available < denominator) {
       result_cells.push_back(0);

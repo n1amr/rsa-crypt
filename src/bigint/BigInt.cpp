@@ -157,11 +157,13 @@ void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
   }
 }
 
+map<CELL_T, BigInt> lookup;
+
 CELL_T binary_find(const BigInt &x, const BigInt &denominator) {
   CELL_T l = 0, r = MAX_CELL_VALUE, m;
   while (l + 1 < r) {
     m = (CELL_T) ((l + r) / 2);
-    if (denominator * BigInt(m) <= x)
+    if ((lookup[m] = lookup.count(m) > 0 ? lookup[m] : denominator * BigInt(m)) <= x)
       l = m;
     else
       r = m;
@@ -171,6 +173,8 @@ CELL_T binary_find(const BigInt &x, const BigInt &denominator) {
 
 // TODO not implemented
 BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
+  lookup.clear();
+
   if (n1.isZero())
     return BigInt::ZERO;
   if (n2.isZero())
@@ -188,7 +192,6 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   CELLS_CONTAINER_T &result_cells = result.cells;
 
   divisionMoveCell(remaining_cells, available_cells);
-
   while (!remaining_cells.empty() || available >= denominator) {
     while (!remaining_cells.empty() && available < denominator) {
       result_cells.push_back(0);
@@ -197,7 +200,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
 
     CELL_T d = binary_find(available, denominator);
     result_cells.push_back(d);
-    available -= denominator * BigInt(d);
+    available -= lookup[d];
     divisionMoveCell(remaining_cells, available_cells);
   }
 

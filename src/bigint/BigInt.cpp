@@ -197,22 +197,16 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
         break;
       }
     }
-    result_cells.push_back(d);
-    BigInt x = used - n_abs2 * d;
-    used_cells = x.cells;
-    while (used_cells.size() > 1 && used_cells.back() == 0)
-      used_cells.pop_back();
 
+    result_cells.push_back(d);
+    used -= n_abs2 * d;
     divisionMoveCell(stack_cells, used_cells);
   }
 
   while (result_cells.size() > 1 && result_cells.back() == 0)
     result_cells.pop_back();
   REVERSE(result_cells);
-  BigInt result2(result_cells);
-  if (sign)
-    result2 = result2.negate();
-  return result2;
+  return sign ? result.negate() : result;
 }
 
 bool BigInt::isZero() const {

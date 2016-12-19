@@ -52,29 +52,27 @@ BigInt BigInt::ZERO("0");
 BigInt BigInt::ONE("1");
 
 bool BigInt::isZero(const BigInt &n) {
-  return n.cells.rend() == find_if(n.cells.rbegin(), n.cells.rend(),
-                                                          [](const CELL_T &x) { return x; }) // All zeros
-         && n.sign == POSITIVE;
+  return equals(n, BigInt::ZERO);
 }
 
 bool BigInt::isPositive(const BigInt &n) {
-  return !isZero(n) && n.sign == POSITIVE;
+  return n.sign == POSITIVE && !isZero(n);
 }
 
 bool BigInt::isNegative(const BigInt &n) {
-  return !isZero(n) && n.sign == NEGATIVE;
+  return n.sign == NEGATIVE;
 }
 
 bool BigInt::equals(const BigInt &n1, const BigInt &n2) {
-  return isZero(n1.subtract(n2));
+  return n1.sign == n2.sign && n1.cells == n2.cells;
 }
 
 bool BigInt::isLessThan(const BigInt &n1, const BigInt &n2) {
-  return isNegative(n1.subtract(n2));
+  return isNegative(subtract(n1, n2));
 }
 
 bool BigInt::isGreaterThan(const BigInt &n1, const BigInt &n2) {
-  return isPositive(n1.subtract(n2));
+  return isPositive(subtract(n1, n2));
 }
 
 BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
@@ -89,25 +87,29 @@ BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
     c1 = (CELL_T) (i < cells_1.size() ? cells_1[i++] : n1.sign == POSITIVE ? 0 : ~0);
     c2 = (CELL_T) (j < cells_2.size() ? cells_2[j++] : n2.sign == POSITIVE ? 0 : ~0);
 
-    addCells(c1, c2, remainder, ans, remainder);
+    DOUBLE_CELL_T sum = (DOUBLE_CELL_T) c1 + c2 + remainder;
+    ans = (CELL_T) sum;
+    remainder = (CELL_T) (sum >> (CELL_BIT_LENGTH));
     result_cells.push_back(ans);
   }
 
   if (n1.sign == n2.sign) {
-    if (n1.sign == POSITIVE && remainder)  // POSITIVE + POSITIVE
-      result_cells.push_back(remainder);
-    else if (n1.sign == NEGATIVE && !remainder)  // NEGATIVE + NEGATIVE
-      result_cells.push_back((CELL_T) (-2));
-
+    if (n1.sign == POSITIVE) {  // POSITIVE + POSITIVE
+      if (remainder)
+        result_cells.push_back(remainder);
+      while (result_cells.size() > 1 && result_cells.back() == 0) result_cells.pop_back();
+    } else if (n1.sign == NEGATIVE) { // NEGATIVE + NEGATIVE
+      if (!remainder)
+        result_cells.push_back((CELL_T) (-2));
+      while (result_cells.size() > 1 && result_cells.back() == (CELL_T) ~0) result_cells.pop_back();
+    }
     return BigInt(result_cells, n1.sign);
   } else { // POSITIVE + NEGATIVE
+    while (result_cells.size() > 1 && result_cells.back() == 0) result_cells.pop_back();
     return BigInt(result_cells, (SIGN_T) (remainder ? POSITIVE : NEGATIVE));
   }
 }
 
-#define NAIVE_MULTIPLICATION 0
-#if NAIVE_MULTIPLICATION == 1
-
 BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
   BigInt sum;
 
@@ -146,53 +148,9 @@ BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
     sum = sum.negate();
   return sum;
 }
-
-#else
-
-// TODO
-BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
-  BigInt sum;
-
-  BigInt n_abs1 = n1.isNegative() ? n1.negate() : n1;
-  BigInt n_abs2 = n2.isNegative() ? n2.negate() : n2;
-
-  const CELLS_CONTAINER_T &cells_1 = n_abs1.cells;
-  const CELLS_CONTAINER_T &cells_2 = n_abs2.cells;
-
-  CELLS_CONTAINER_T shifted_cells = cells_2;
-  CELLS_CONTAINER_T single_cell_product;
-  REVERSE(shifted_cells);
-
-  CELL_T c, c2, old_remainder, mul_remainder, add_remainder, product;
-  for (CELL_T c1 : cells_1) {
-    single_cell_product.clear();
-    old_remainder = mul_remainder = add_remainder = 0;
-
-    for (auto it = shifted_cells.rbegin(); it != shifted_cells.rend(); ++it) {
-      c2 = *it;
-
-      multiplyCells(c1, c2, product, mul_remainder);
-      addCells(product, old_remainder, 0, c, add_remainder);
-
-      single_cell_product.push_back(c);
-      addCells(mul_remainder, add_remainder, 0, old_remainder, add_remainder);
-    }
-    if (old_remainder)
-      single_cell_product.push_back(old_remainder);
-
-    sum = sum.add(BigInt(single_cell_product));
-    shifted_cells.push_back(0);
-  }
-
-  if (n1.isNegative() ^ n2.isNegative())
-    sum = sum.negate();
-  return sum;
-}
-
-#endif
 
 BigInt BigInt::subtract(const BigInt &n1, const BigInt &n2) {
-  return BigInt::add(n1, n2.negate());
+  return add(n1, n2.negate());
 }
 
 void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
@@ -267,47 +225,47 @@ BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
 }
 
 bool BigInt::isZero() const {
-  return BigInt::isZero(*this);
+  return isZero(*this);
 }
 
 bool BigInt::isPositive() const {
-  return BigInt::isPositive(*this);
+  return isPositive(*this);
 }
 
 bool BigInt::isNegative() const {
-  return BigInt::isNegative(*this);
+  return isNegative(*this);
 }
 
 bool BigInt::equals(const BigInt &n) const {
-  return BigInt::equals(*this, n);
+  return equals(*this, n);
 }
 
 bool BigInt::isLessThan(const BigInt &n) const {
-  return BigInt::isLessThan(*this, n);
+  return isLessThan(*this, n);
 }
 
 bool BigInt::isGreaterThan(const BigInt &n) const {
-  return BigInt::isGreaterThan(*this, n);
+  return isGreaterThan(*this, n);
 }
 
 BigInt BigInt::add(const BigInt &n) const {
-  return BigInt::add(*this, n);
+  return add(*this, n);
 }
 
 BigInt BigInt::multiply(const BigInt &n) const {
-  return BigInt::multiply(*this, n);
+  return multiply(*this, n);
 }
 
 BigInt BigInt::subtract(const BigInt &n) const {
-  return BigInt::subtract(*this, n);
+  return subtract(*this, n);
 }
 
 BigInt BigInt::divide(const BigInt &n) const {
-  return BigInt::divide(*this, n);
+  return divide(*this, n);
 }
 
 BigInt BigInt::mod(const BigInt &n) const {
-  return BigInt::mod(*this, n);
+  return mod(*this, n);
 }
 
 BigInt BigInt::copy() const {
@@ -321,7 +279,6 @@ BigInt BigInt::invert() const {
 BigInt BigInt::negate() const {
   if (isZero())
     return copy();
-
   BigInt ans = BigInt::add(this->invert(), BigInt::ONE);
   ans.sign = !sign;
   return ans;

@@ -148,22 +148,68 @@ BigInt BigInt::subtract(const BigInt &n1, const BigInt &n2) {
   return BigInt::add(n1, n2.negate());
 }
 
+void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
+  if (!from.empty()) {
+    REVERSE(to);
+    to.push_back(from.back());
+    REVERSE(to);
+    from.pop_back();
+  }
+}
+
+CELL_T binary_find(const vector<BigInt> &lookup, BigInt &x) {
+  CELL_T l = 0, r = MAX_CELL_VALUE, m;
+  while (l + 1 < r) {
+    m = (CELL_T) ((l + r) / 2);
+    if (lookup[m] <= x)
+      l = m;
+    else
+      r = m;
+  }
+  return l;
+}
+
 // TODO not implemented
 BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   if (n1.isZero())
     return BigInt::ZERO;
   if (n2.isZero())
     return -1;
-  BigInt result = 0;
-  bool sign = n1.sign ^n2.sign;
-  BigInt x1 = n1.isNegative() ? -n1 : n1;
-  BigInt x2 = n2.isNegative() ? -n2 : n2;
-  while (x1 >= x2) {
-    x1 -= x2;
-    result++;
+
+  bool sign = n1.isNegative() ^n2.isNegative();
+  BigInt numerator = n1.isNegative() ? n1.negate() : n1;
+  BigInt denominator = n2.isNegative() ? n2.negate() : n2;
+  BigInt available;
+  BigInt result;
+
+  const CELLS_CONTAINER_T &denominator_cells = denominator.cells;
+  CELLS_CONTAINER_T remaining_cells = numerator.cells;
+  CELLS_CONTAINER_T &available_cells = available.cells;
+  CELLS_CONTAINER_T &result_cells = result.cells;
+
+  vector<BigInt> lookup;
+  lookup.reserve(256);
+  for (int i = 0; i < 256; ++i)
+    lookup.push_back(denominator * BigInt(i));
+
+  divisionMoveCell(remaining_cells, available_cells);
+
+  while (!remaining_cells.empty() || available >= denominator) {
+    while (!remaining_cells.empty() && available < denominator) {
+      result_cells.push_back(0);
+      divisionMoveCell(remaining_cells, available_cells);
+    }
+
+    CELL_T d = binary_find(lookup, available);
+    result_cells.push_back(d);
+    available -= lookup[d];
+    divisionMoveCell(remaining_cells, available_cells);
   }
-  result.sign = sign;
-  return result;
+
+  while (result_cells.size() > 1 && result_cells.back() == 0)
+    result_cells.pop_back();
+  REVERSE(result_cells);
+  return sign ? result.negate() : result;
 }
 
 bool BigInt::isZero() const {

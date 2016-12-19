@@ -4,6 +4,7 @@
 #include "../../bigint/DecimalHelpers.h"
 using namespace std;
 
+int div_ops = 0;
 int mul_ops = 0;
 int add_ops = 0;
 
@@ -202,7 +203,7 @@ bool testMultiplicationLongNumbers() {
 }
 
 bool testDivision(string n1, string n2, string expected) {
-  mul_ops++;
+  div_ops++;
   string output = (BigInt(n1) / BigInt(n2)).toDecimalString();
   bool correct = expected == output;
   if (!correct)
@@ -577,12 +578,12 @@ void runBigIntTests() {
 
   testShiftBitsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
   testShiftBitsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
-
   testShiftBitsLarge();
 
   end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
   cout << "Total BigInt tests time = " << elapsed_time
        << "(" << add_ops << " addition operations"
-       << ", " << mul_ops << " multiplication operations" << ")" << endl;
+       << ", " << mul_ops  << " multiplication operations"
+       << ", " << div_ops << " division operations" << ")" << endl;
 }

@@ -8,24 +8,7 @@ set(SOURCE_FILES
         src/bigint/BigInt.cpp
         src/bigint/DecimalHelpers.cpp)
 
-add_executable(rsa ${SOURCE_FILES})
-
-set(TESTS_SOURCE_FILES
-        src/bigint/BigInt.cpp
-        src/bigint/DecimalHelpers.cpp
-        src/tests/tests.cpp
-        src/tests/bigint/bigint_tests.cpp)
-
-add_executable(rsa ${SOURCE_FILES})
-
-set(TESTS_SOURCE_FILES
-        src/tests/main.cpp
-        src/bigint/BigInt.cpp
-        src/bigint/DecimalHelpers.cpp
-        src/tests/tests.cpp
-        src/tests/bigint/bigint_tests.cpp)
-
-add_executable(rsa ${SOURCE_FILES})
+add_executable(main ${SOURCE_FILES})
 
 set(TESTS_SOURCE_FILES
         src/tests/main.cpp
@@ -35,7 +18,3 @@ set(TESTS_SOURCE_FILES
         src/tests/tests.cpp)
 
 add_executable(tests ${TESTS_SOURCE_FILES})
-
-
-
-

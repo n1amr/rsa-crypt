@@ -203,8 +203,6 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
       result_cells.push_back(0);
     }
 
-
-//    CELL_T d2 = (CELL_T) (binary_find(lookup.begin(), lookup.end(), BigInt(available_cells)) - lookup.begin());
     CELL_T d = linear_find(lookup, available);
     CELL_T d2 = binary_find(lookup, available);
 

@@ -155,7 +155,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   if (n2.isZero())
     return -1;
 
-  bool sign = n1.isNegative() ^n2.isNegative();
+  bool sign = n1.isNegative() ^ n2.isNegative();
   BigInt n_abs1 = n1.isNegative() ? n1.negate() : n1;
   BigInt n_abs2 = n2.isNegative() ? n2.negate() : n2;
 
@@ -167,39 +167,22 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
 
   for (int i = 0; i < 256; ++i) {
     lookup.push_back(n_abs2 * BigInt(i));
-//    cout << i << ": " << lookup[i] << endl;
   }
 
   CELLS_CONTAINER_T stack_cells = cells_1;
   CELLS_CONTAINER_T used_cells;
   CELLS_CONTAINER_T result_cells;
 
-//  printVectorReversed(cells_1, "cells_1");
-//  printVectorReversed(cells_2, "cells_2");
-//
-//  printVectorReversed(stack_cells, "stack_cells");
-//  printVectorReversed(used_cells, "used_cells");
-//  printVectorReversed(result_cells, "result_cells");
-
   used_cells.push_back(stack_cells.back());
   stack_cells.pop_back();
 
   for (int z = 0; z < 3; ++z) {
-//    cout << "new iteration " << z << endl;
-//    printVectorReversed(stack_cells, "stack_cells");
-//    printVectorReversed(used_cells, "used_cells");
-//    printVectorReversed(result_cells, "result_cells");
-
     while (!stack_cells.empty() && BigInt(used_cells) < n_abs2) {
       result_cells.push_back(0);
       REVERSE(used_cells);
       used_cells.push_back(stack_cells.back());
       REVERSE(used_cells);
       stack_cells.pop_back();
-//      cout << "added cell" << endl;
-//      printVectorReversed(stack_cells, "stack_cells");
-//      printVectorReversed(used_cells, "used_cells");
-//      printVectorReversed(result_cells, "result_cells");
     }
 
     CELL_T t = 0;
@@ -209,25 +192,13 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
         break;
       }
     }
-//    cout << "divides by " << ((int) t) << endl;
     result_cells.push_back(t);
-//    printVectorReversed(result_cells, "new result");
     BigInt x(cells_2);
-//    cout << x << endl;
     x = x * t;
-//    cout << "x * t" << endl;
-//    cout << x << endl;
     x = BigInt(used_cells) - x;
-//    cout << "x = used - x" << endl;
-//    cout << x << endl;
-//    cout << x.toCellsString() << endl;
     used_cells = x.cells;
     while (used_cells.size() > 1 && used_cells.back() == 0)
       used_cells.pop_back();
-
-//    printVectorReversed(stack_cells, "stack_cells");
-//    printVectorReversed(used_cells, "used_cells");
-//    printVectorReversed(result_cells, "result_cells");
 
     if (!stack_cells.empty()) {
       REVERSE(used_cells);

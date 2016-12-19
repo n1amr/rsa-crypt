@@ -6,7 +6,6 @@
 using namespace std;
 
 int main() {
-  cout << BigInt(-546310) / BigInt(-321) << endl;
   runTests();
   return 0;
 }

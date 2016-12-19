@@ -182,12 +182,16 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   lookup.reserve(256);
   for (int i = 0; i < 256; ++i)
     lookup.push_back(n_abs2 * BigInt(i));
-  
+
   divisionMoveCell(remaining_cells, available_cells);
 
   while (!remaining_cells.empty() || available >= n_abs2) {
-    while (!remaining_cells.empty() && available < n_abs2)
+    while (!remaining_cells.empty() && available < n_abs2) {
       divisionMoveCell(remaining_cells, available_cells);
+      result_cells.push_back(0);
+    }
+
+    
 
     CELL_T d = 0;
     for (CELL_T j = 255; j >= 0; --j) {

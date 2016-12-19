@@ -157,6 +157,10 @@ void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
   }
 }
 
+int binary_find(CELLS_CONTAINER_T lookup, BigInt x) {
+  return 0;
+}
+
 // TODO not implemented
 BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   if (n1.isZero())
@@ -191,12 +195,13 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
       result_cells.push_back(0);
     }
 
-    
 
+//    CELL_T d2 = (CELL_T) (binary_find(lookup.begin(), lookup.end(), BigInt(available_cells)) - lookup.begin());
     CELL_T d = 0;
     for (CELL_T j = 255; j >= 0; --j) {
-      if (lookup[j] <= BigInt(available_cells)) {
+      if (lookup[j] <= available) {
         d = j;
+//        cout << ((int) d) << " " << ((int) d2) << endl;
         break;
       }
     }

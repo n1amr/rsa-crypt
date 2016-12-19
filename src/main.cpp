@@ -4,8 +4,8 @@
 #include "bigint/DecimalHelpers.h"
 #include "tests/tests.h"
 using namespace std;
+#define Int BigInt
 
 int main() {
-  runTests();
   return 0;
 }

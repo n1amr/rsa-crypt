@@ -166,7 +166,16 @@ CELL_T linear_find(const vector<BigInt> &lookup, BigInt &x) {
 }
 
 CELL_T binary_find(const vector<BigInt> &lookup, BigInt &x) {
-  return 0;
+  int l = 0;
+  int r = (int) lookup.size();
+  while (l + 1 < r) {
+    int m = (l + r) / 2;
+    if (lookup[m] <= x)
+      l = m;
+    else
+      r = m;
+  }
+  return l;
 }
 
 // TODO not implemented
@@ -203,11 +212,10 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
       result_cells.push_back(0);
     }
 
-    CELL_T d = linear_find(lookup, available);
-    CELL_T d2 = binary_find(lookup, available);
+    CELL_T d = binary_find(lookup, available);
 
     result_cells.push_back(d);
-    available -= n_abs2 * d;
+    available -= lookup[d];
     divisionMoveCell(remaining_cells, available_cells);
   }
 

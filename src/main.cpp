@@ -7,5 +7,6 @@ using namespace std;
 #define Int BigInt
 
 int main() {
+  cout << (Int(-255).shiftBits(-8)) << endl;
   return 0;
 }

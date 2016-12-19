@@ -591,7 +591,8 @@ void runBigIntTests() {
 
   {
     tmp = testEqualsSmallNumbers(0, 50) ||
-          testEqualsSmallNumbers(MAX_CELL_VALUE, 50);
+          testEqualsSmallNumbers(MAX_CELL_VALUE, 50) ||
+          testEquals("-1", "255", "0");
 
     elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
     end_time = clock();

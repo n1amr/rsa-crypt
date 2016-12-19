@@ -209,6 +209,16 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   return sign ? result.negate() : result;
 }
 
+// TODO not implemented
+BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
+  if (n1.isZero())
+    return BigInt::ZERO;
+  if (n2.isZero())
+    return -1;
+
+  return n1 - (n1 / n2) * n2;
+}
+
 bool BigInt::isZero() const {
   return BigInt::isZero(*this);
 }
@@ -247,6 +257,10 @@ BigInt BigInt::subtract(const BigInt &n) const {
 
 BigInt BigInt::divide(const BigInt &n) const {
   return BigInt::divide(*this, n);
+}
+
+BigInt BigInt::mod(const BigInt &n) const {
+  return BigInt::mod(*this, n);
 }
 
 BigInt BigInt::copy() const {
@@ -396,6 +410,8 @@ BigInt BigInt::operator*(const BigInt &n) const { return this->multiply(n); }
 
 BigInt BigInt::operator/(const BigInt &n) const { return this->divide(n); }
 
+BigInt BigInt::operator%(const BigInt &n) const { return this->mod(n); }
+
 BigInt BigInt::operator-() const { return this->negate(); }
 
 BigInt &BigInt::operator+=(const BigInt &n) { return *this = *this + n; }
@@ -405,6 +421,8 @@ BigInt &BigInt::operator-=(const BigInt &n) { return *this = *this - n; }
 BigInt &BigInt::operator*=(const BigInt &n) { return *this = *this * n; }
 
 BigInt &BigInt::operator/=(const BigInt &n) { return *this = *this / n; }
+
+BigInt &BigInt::operator%=(const BigInt &n) { return *this = *this % n; }
 
 bool BigInt::operator==(const BigInt &n) const { return this->equals(n); }
 

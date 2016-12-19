@@ -197,9 +197,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
       }
     }
     result_cells.push_back(t);
-    BigInt x(cells_2);
-    x = x * t;
-    x = BigInt(used_cells) - x;
+    BigInt x = BigInt(used_cells) - BigInt(cells_2) * t;
     used_cells = x.cells;
     while (used_cells.size() > 1 && used_cells.back() == 0)
       used_cells.pop_back();

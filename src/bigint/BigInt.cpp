@@ -176,28 +176,29 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   for (int i = 0; i < 256; ++i)
     lookup.push_back(n_abs2 * BigInt(i));
 
+  BigInt used;
+  BigInt result;
 
   CELLS_CONTAINER_T stack_cells = cells_1;
-  CELLS_CONTAINER_T used_cells;
-  CELLS_CONTAINER_T result_cells;
+  CELLS_CONTAINER_T &used_cells = used.cells;
+  CELLS_CONTAINER_T &result_cells = result.cells;
 
   divisionMoveCell(stack_cells, used_cells);
 
   for (int z = 0; z < 3; ++z) {
-    while (!stack_cells.empty() && BigInt(used_cells) < n_abs2) {
-      result_cells.push_back(0);
+    while (!stack_cells.empty() && used < n_abs2) {
       divisionMoveCell(stack_cells, used_cells);
     }
 
-    CELL_T t = 0;
-    for (int j = 255; j >= 0; --j) {
+    CELL_T d = 0;
+    for (CELL_T j = 255; j >= 0; --j) {
       if (lookup[j] <= BigInt(used_cells)) {
-        t = (CELL_T) j;
+        d = j;
         break;
       }
     }
-    result_cells.push_back(t);
-    BigInt x = BigInt(used_cells) - BigInt(cells_2) * t;
+    result_cells.push_back(d);
+    BigInt x = used - n_abs2 * d;
     used_cells = x.cells;
     while (used_cells.size() > 1 && used_cells.back() == 0)
       used_cells.pop_back();
@@ -208,10 +209,10 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   while (result_cells.size() > 1 && result_cells.back() == 0)
     result_cells.pop_back();
   REVERSE(result_cells);
-  BigInt result(result_cells);
+  BigInt result2(result_cells);
   if (sign)
-    result = result.negate();
-  return result;
+    result2 = result2.negate();
+  return result2;
 }
 
 bool BigInt::isZero() const {

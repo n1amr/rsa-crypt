@@ -171,35 +171,35 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   const CELLS_CONTAINER_T &cells_1 = n_abs1.cells;
   const CELLS_CONTAINER_T &cells_2 = n_abs2.cells;
 
+  BigInt available;
+  BigInt result;
+
+  CELLS_CONTAINER_T remaining_cells = cells_1;
+  CELLS_CONTAINER_T &available_cells = available.cells;
+  CELLS_CONTAINER_T &result_cells = result.cells;
+
   vector<BigInt> lookup;
   lookup.reserve(256);
   for (int i = 0; i < 256; ++i)
     lookup.push_back(n_abs2 * BigInt(i));
+  
+  divisionMoveCell(remaining_cells, available_cells);
 
-  BigInt used;
-  BigInt result;
-
-  CELLS_CONTAINER_T stack_cells = cells_1;
-  CELLS_CONTAINER_T &used_cells = used.cells;
-  CELLS_CONTAINER_T &result_cells = result.cells;
-
-  divisionMoveCell(stack_cells, used_cells);
-
-  while (!stack_cells.empty() || used >= n_abs2) {
-    while (!stack_cells.empty() && used < n_abs2)
-      divisionMoveCell(stack_cells, used_cells);
+  while (!remaining_cells.empty() || available >= n_abs2) {
+    while (!remaining_cells.empty() && available < n_abs2)
+      divisionMoveCell(remaining_cells, available_cells);
 
     CELL_T d = 0;
     for (CELL_T j = 255; j >= 0; --j) {
-      if (lookup[j] <= BigInt(used_cells)) {
+      if (lookup[j] <= BigInt(available_cells)) {
         d = j;
         break;
       }
     }
 
     result_cells.push_back(d);
-    used -= n_abs2 * d;
-    divisionMoveCell(stack_cells, used_cells);
+    available -= n_abs2 * d;
+    divisionMoveCell(remaining_cells, available_cells);
   }
 
   while (result_cells.size() > 1 && result_cells.back() == 0)

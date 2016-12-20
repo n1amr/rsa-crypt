@@ -186,8 +186,8 @@ bool testMultiplication(string n1, string n2, string expected) {
 }
 
 bool testMultiplicationSmallNumbers(long long n1_start, long long n2_start, long long steps) {
-  for (long long i = n1_start; i < n1_start + steps; ++i) {
-    for (long long j = n2_start; j < n2_start + steps; ++j) {
+  for (long long i = n1_start - steps; i < n1_start + steps; ++i) {
+    for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
       bool bad = testMultiplication(to_string(i), to_string(j), to_string(i * j));
       if (bad)
         return bad;

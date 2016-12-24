@@ -54,7 +54,7 @@ public:
   inline static bool isGreaterThan(const BigInt &n1, const BigInt &n2);
 
   static BigInt add(const BigInt &a, const BigInt &b);
-  static BigInt multiply(const BigInt &n1, const BigInt &n2);
+  static BigInt multiply(const BigInt &a, const BigInt &b);
   static BigInt subtract(const BigInt &n1, const BigInt &n2);
   static BigInt divide(const BigInt &n1, const BigInt &n2);
   static BigInt mod(const BigInt &n1, const BigInt &n2);

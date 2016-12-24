@@ -123,47 +123,32 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
 }
 
 // TODO
-BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
-  BigInt sum;
+BigInt BigInt::multiply(const BigInt &a, const BigInt &b) {
+  if (a.isZero() || b.isZero())
+    return BigInt::ZERO;
 
-  BigInt small = n1.isNegative() ? n1.negate() : n1;
-  BigInt large = n2.isNegative() ? n2.negate() : n2;
+  int m = (int) a.cells.size();
+  int n = (int) b.cells.size();
+  int k = m + n - 1;
 
-  if (small > large)
-    swap(small, large);
+  BigInt c;
+  c.cells.reserve((unsigned long) (k + 1));
+  c.cells.resize((unsigned long) k, 0);
+  c.sign = a.sign ^ b.sign;
 
-  const CELLS_CONTAINER_T &small_cells = small.cells;
-  const CELLS_CONTAINER_T &large_cells = large.cells;
-
-  int shift = 0;
-  CELLS_CONTAINER_T tmp_product;
-
-  CELL_T c, c1, c2, old_remainder, mul_remainder, add_remainder, product;
-  for (auto it1 = small_cells.begin(); it1 != small_cells.end(); ++it1) {
-    c1 = *it1;
-    tmp_product.clear();
-    tmp_product.insert(tmp_product.end(), shift, 0);
-    old_remainder = mul_remainder = add_remainder = 0;
-
-    for (auto it2 = large_cells.begin(); it2 != large_cells.end(); ++it2) {
-      c2 = *it2;
-
-      multiplyCells(c1, c2, product, mul_remainder);
-      addCells(product, old_remainder, 0, c, add_remainder);
-
-      tmp_product.push_back(c);
-      addCells(mul_remainder, add_remainder, 0, old_remainder, add_remainder);
+  DOUBLE_CELL_T r = 0;
+  for (int h = 0; h < k; ++h) {
+    long long s = r;
+    for (int i = max(0, h - n + 1); i <= min(h, m - 1); ++i) {
+      s += (long long) a.cells[i] * b.cells[h - i];
     }
-    if (old_remainder)
-      tmp_product.push_back(old_remainder);
-
-    sum = add(sum, BigInt(tmp_product));
-    shift++;
+    r = (DOUBLE_CELL_T) (s >> CELL_BIT_LENGTH);
+    c.cells[h] = (CELL_T) (s);
   }
-
-  if (n1.isNegative() ^ n2.isNegative())
-    sum = sum.negate();
-  return sum;
+  if (r) {
+    c.cells.push_back(r);
+  }
+  return c;
 }
 
 BigInt BigInt::subtract(const BigInt &n1, const BigInt &n2) {

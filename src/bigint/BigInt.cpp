@@ -166,7 +166,6 @@ BigInt BigInt::multiply(const BigInt &n1, const BigInt &n2) {
   return sum;
 }
 
-// TODO
 BigInt BigInt::subtract(const BigInt &n1, const BigInt &n2) {
   return add(n1, n2.negate());
 }
@@ -268,27 +267,22 @@ bool BigInt::isGreaterThan(const BigInt &n) const {
   return isGreaterThan(*this, n);
 }
 
-// TODO
 BigInt BigInt::add(const BigInt &n) const {
   return add(*this, n);
 }
 
-// TODO
 BigInt BigInt::multiply(const BigInt &n) const {
   return multiply(*this, n);
 }
 
-// TODO
 BigInt BigInt::subtract(const BigInt &n) const {
   return subtract(*this, n);
 }
 
-// TODO
 BigInt BigInt::divide(const BigInt &n) const {
   return divide(*this, n);
 }
 
-// TODO
 BigInt BigInt::mod(const BigInt &n) const {
   return mod(*this, n);
 }
@@ -435,95 +429,70 @@ string BigInt::toDecimalString() const {
   }
 }
 
-// TODO
 BigInt BigInt::operator+(const BigInt &n) const { return this->add(n); }
 
-// TODO
 BigInt BigInt::operator-(const BigInt &n) const { return this->subtract(n); }
 
-// TODO
 BigInt BigInt::operator*(const BigInt &n) const { return this->multiply(n); }
 
-// TODO
 BigInt BigInt::operator/(const BigInt &n) const { return this->divide(n); }
 
-// TODO
 BigInt BigInt::operator%(const BigInt &n) const { return this->mod(n); }
 
-// TODO
 BigInt BigInt::operator-() const { return this->negate(); }
 
-// TODO
 BigInt &BigInt::operator+=(const BigInt &n) { return *this = *this + n; }
 
-// TODO
 BigInt &BigInt::operator-=(const BigInt &n) { return *this = *this - n; }
 
-// TODO
 BigInt &BigInt::operator*=(const BigInt &n) { return *this = *this * n; }
 
-// TODO
 BigInt &BigInt::operator/=(const BigInt &n) { return *this = *this / n; }
 
-// TODO
 BigInt &BigInt::operator%=(const BigInt &n) { return *this = *this % n; }
 
-// TODO
 bool BigInt::operator==(const BigInt &n) const { return this->equals(n); }
 
-// TODO
 bool BigInt::operator!=(const BigInt &n) const { return !(*this == n); }
 
-// TODO
 bool BigInt::operator<(const BigInt &n) const { return this->isLessThan(n); }
 
-// TODO
 bool BigInt::operator>(const BigInt &n) const { return this->isGreaterThan(n); }
 
-// TODO
 bool BigInt::operator<=(const BigInt &n) const { return !((*this) > n); }
 
-// TODO
 bool BigInt::operator>=(const BigInt &n) const { return !((*this) < n); }
 
-// TODO
 BigInt BigInt::operator<<(int n) const {
   return shiftBits(n);
 }
 
-// TODO
 BigInt BigInt::operator>>(int n) const {
   return shiftBits(-n);
 }
 
-// TODO
 BigInt &BigInt::operator<<=(int n) {
   return *this = *this << n;
 }
 
-// TODO
 BigInt &BigInt::operator>>=(int n) {
   return *this = *this >> n;
 }
 
-// TODO
 BigInt BigInt::operator++() {
   return *this = *this + BigInt::ONE;
 }
 
-// TODO
 BigInt BigInt::operator++(int) {
   BigInt tmp = *this;
   operator++();
   return tmp;
 }
 
-// TODO
 BigInt BigInt::operator--() {
   return *this = *this - BigInt::ONE;
 }
 
-// TODO
 BigInt BigInt::operator--(int) {
   BigInt tmp = *this;
   operator--();
@@ -548,7 +517,6 @@ int BigInt::compare(const BigInt &a, const BigInt &b) {
 
   int m = (int) a.cells.size() - 1;
   int n = (int) b.cells.size() - 1;
-
 
   if (m != n)
     return sign_l(m - n);

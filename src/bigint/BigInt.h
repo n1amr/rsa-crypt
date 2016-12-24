@@ -6,12 +6,15 @@ using namespace std;
 
 #define SMALL_CELL 1
 #if SMALL_CELL
-#define CELL_T unsigned char
-#define DOUBLE_CELL_T unsigned short int
+#define SIGNED_CELL_T char
+#define SIGNED_DOUBLE_CELL_T short int
 #else
-#define CELL_T unsigned int
-#define DOUBLE_CELL_T unsigned long long int
+#define SIGNED_CELL_T int
+#define SIGNED_DOUBLE_CELL_T long long int
 #endif
+
+#define CELL_T unsigned SIGNED_CELL_T
+#define DOUBLE_CELL_T unsigned SIGNED_DOUBLE_CELL_T
 
 #define CELL_BIT_LENGTH (sizeof(CELL_T) * 8)
 #define MAX_CELL_VALUE ((1 << CELL_BIT_LENGTH) - 1)
@@ -116,6 +119,12 @@ public:
   friend ostream &operator<<(ostream &os, const BigInt &x) {
     return os << x.toDecimalString();
   }
+
+//private:
+  inline static int sign_l(long long c);
+  inline static int sign_(SIGNED_DOUBLE_CELL_T c);
+  inline static int compare_cells(CELL_T c1, CELL_T c2);
+  inline static int compare(const BigInt &a, const BigInt &b);
 };
 
 #endif //RSA_BIGINT_H

@@ -122,7 +122,6 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
   return result;
 }
 
-// TODO
 BigInt BigInt::multiply(const BigInt &a, const BigInt &b) {
   if (a.isZero() || b.isZero())
     return BigInt::ZERO;
@@ -132,22 +131,23 @@ BigInt BigInt::multiply(const BigInt &a, const BigInt &b) {
   int k = m + n - 1;
 
   BigInt c;
-  c.cells.reserve((unsigned long) (k + 1));
-  c.cells.resize((unsigned long) k, 0);
+  c.cells.resize((unsigned long) k + 1, 0);
   c.sign = a.sign ^ b.sign;
 
-  DOUBLE_CELL_T r = 0;
-  for (int h = 0; h < k; ++h) {
-    long long s = r;
-    for (int i = max(0, h - n + 1); i <= min(h, m - 1); ++i) {
-      s += (long long) a.cells[i] * b.cells[h - i];
+  DOUBLE_CELL_T s, r = 0;
+  for (int j = 0; j < n; ++j) {
+    r = 0;
+    for (int i = 0; i < m; ++i) {
+      s = (DOUBLE_CELL_T) a.cells[i] * b.cells[j] + c.cells[i + j] + r;
+      c.cells[i + j] = (CELL_T) s;
+      r = s >> CELL_BIT_LENGTH;
     }
-    r = (DOUBLE_CELL_T) (s >> CELL_BIT_LENGTH);
-    c.cells[h] = (CELL_T) (s);
+    c.cells[j + m] = (CELL_T) r;
   }
-  if (r) {
-    c.cells.push_back(r);
+  if (r == 0) {
+    c.cells.pop_back();
   }
+
   return c;
 }
 
@@ -302,56 +302,52 @@ BigInt BigInt::shiftCells(int n_cells_left) const {
   }
   REVERSE(new_data);
 
+  if (new_data.size() == 0)
+    return BigInt::ZERO;
+
   return BigInt(new_data, sign);
 }
 
-// TODO
 BigInt BigInt::shiftBits(int n_bits_left) const {
-  CELLS_CONTAINER_T new_data = cells;
+  if (n_bits_left == 0)
+    return copy();
+
+  unsigned long m = (int) cells.size();
 
   bool left = n_bits_left > 0;
-  int n_bits = abs(n_bits_left);
-  int n_cells = (left ? 1 : -1) * (n_bits / CELL_BIT_LENGTH);
+  int n_bits = left ? n_bits_left : -n_bits_left;
+  int n_cells = n_bits / CELL_BIT_LENGTH;
+  n_bits %= CELL_BIT_LENGTH;
 
-  if (n_cells) {
-    new_data = shiftCells(n_cells).cells;
-    n_bits %= CELL_BIT_LENGTH;
-  }
+  CELLS_CONTAINER_T c;
+  if (left) {
+    c.reserve(m + n_cells + 1);
+    c.resize((unsigned long) n_cells, 0);
 
-  if (n_bits) {
-    if (left) {
-      CELL_T old_high_bits = 0;
-      for (int i = 0; i < new_data.size(); ++i) {
-        CELL_T current_cell = new_data[i];
-
-        DOUBLE_CELL_T
-            pr = (DOUBLE_CELL_T) (sign == NEGATIVE && i == new_data.size() - 1 ? (CELL_T) ~0 : 0);
-        DOUBLE_CELL_T tmp = (pr << CELL_BIT_LENGTH | current_cell) << n_bits | old_high_bits;
-
-        new_data[i] = (CELL_T) tmp;
-        old_high_bits = (CELL_T) (tmp >> CELL_BIT_LENGTH);
-      }
-      if (old_high_bits)
-        new_data.push_back(old_high_bits);
-
-    } else {
-      REVERSE(new_data);
-
-      CELL_T old_low_bits = 0;
-      for (int i = 0; i < new_data.size(); ++i) {
-        DOUBLE_CELL_T pr = (DOUBLE_CELL_T)
-            (sign == NEGATIVE && i == 0 ? ((CELL_T) ~0) << (CELL_BIT_LENGTH - n_bits) : 0);
-        DOUBLE_CELL_T tmp = (pr << CELL_BIT_LENGTH)
-                            | (((DOUBLE_CELL_T) new_data[i] << CELL_BIT_LENGTH) >> n_bits);
-
-        new_data[i] = old_low_bits | ((CELL_T) (tmp >> CELL_BIT_LENGTH));
-        old_low_bits = (CELL_T) tmp;
-      }
-
-      REVERSE(new_data);
+    CELL_T r = 0;
+    for (int i = 0; i < m; ++i) {
+      DOUBLE_CELL_T s = ((DOUBLE_CELL_T) cells[i] << n_bits) | r;
+      c.push_back((CELL_T) s);
+      r = (CELL_T) (s >> CELL_BIT_LENGTH);
     }
+    if (r)
+      c.push_back(r);
+
+    while (c.size() > 1 && c.back() == 0)
+      c.pop_back();
+  } else { // Right
+    if (n_bits >= m * CELL_BIT_LENGTH)
+      return BigInt::ZERO;
+
+    c.reserve(m - n_cells + 1);
+
+    for (int i = n_cells; i < m - 1; ++i)
+      c.push_back((CELL_T) (((DOUBLE_CELL_T) cells[i] | (DOUBLE_CELL_T) cells[i + 1] << CELL_BIT_LENGTH) >> n_bits));
+    CELL_T r = cells.back() >> n_bits;
+    if (r)
+      c.push_back(r);
   }
-  return BigInt(new_data, sign);
+  return BigInt(c, sign);
 }
 
 string BigInt::toCellsString() const {

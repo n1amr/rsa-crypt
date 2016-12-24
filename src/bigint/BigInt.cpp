@@ -186,17 +186,22 @@ CELL_T BigInt::alg(const BigInt &u, const BigInt &v) {
 
   DOUBLE_CELL_T qhat = (DOUBLE_CELL_T) min(
       BASE - 1,
-      (u.cells[m - 1] * BASE + u.cells[m - 2]) / v.cells[n - 1]
+      ((DOUBLE_CELL_T) u.cells[m - 1] * BASE + u.cells[m - 2]) / v.cells[n - 1]
   );
 
-  DOUBLE_CELL_T q = qhat;
-  BigInt r = u - BigInt(q) * v;
-  while (r < 0) {
-    q = (DOUBLE_CELL_T) (q - 1);
-    r = r + v;
-  }
+  int cnt = 0;
 
-  return (CELL_T) q;
+  BigInt Q((int) qhat);
+  BigInt R = u - Q * v;
+  while (R < 0) {
+    Q = Q - 1;
+    R = R + v;
+    cnt++;
+    if (cnt > -1) {
+      cout << "cnt= " << cnt << endl;
+    }
+  }
+  return (CELL_T) Q.cells.back();
 }
 
 
@@ -206,13 +211,20 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
     return BigInt::ZERO;
   if (n1 == n2)
     return BigInt::ONE;
+  if (n1 == BigInt::ZERO)
+    return BigInt::ZERO;
+  if (n2 == BigInt::ZERO)
+    return -BigInt::ONE;
 
-  CELLS_CONTAINER_T a_r_cells = n1.cells;
-  CELLS_CONTAINER_T b_r_cells = n2.cells;
+  CELL_T d = (CELL_T) (BASE / (1 + n2.cells.back()));
+  BigInt a = n1 * BigInt(d);
+  BigInt b = n2 * BigInt(d);
+
+  int m = (int) a.cells.size();
+  int n = (int) b.cells.size();
+
+  CELLS_CONTAINER_T a_r_cells = a.cells;
   REVERSE(a_r_cells);
-  REVERSE(b_r_cells);
-  int m = (int) a_r_cells.size();
-  int n = (int) b_r_cells.size();
 
   int k = m - n + 1;
   CELLS_CONTAINER_T q_cells;
@@ -228,16 +240,16 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   BigInt r(r_cells);
 
   for (int i = 0; i < k; ++i) {
-    CELL_T q_i = alg(r, n2);
+    CELL_T q_i = alg(r, b);
     q_cells.push_back(q_i);
-    r = r - BigInt(q_i) * n2;
+    r = r - BigInt(q_i) * b;
     if (i != k - 1) {
       r = r << CELL_BIT_LENGTH;
       r += a_r_cells[m - k + 1 + i];
     }
   }
   REVERSE(q_cells);
-  return BigInt(q_cells);
+  return BigInt(q_cells, n1.sign ^ n2.sign);
 }
 
 //// TODO not implemented

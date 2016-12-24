@@ -129,6 +129,7 @@ public:
   inline static int compare(const BigInt &a, const BigInt &b);
 
   static BigInt absolute(const BigInt &a);
+  static CELL_T alg(const BigInt &u, const BigInt &v);
 };
 
 #endif //RSA_BIGINT_H

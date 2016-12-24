@@ -180,43 +180,103 @@ CELL_T binary_find(const BigInt &x, const BigInt &denominator) {
   return l;
 }
 
-// TODO not implemented
-BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
-  lookup.clear();
+CELL_T BigInt::alg(const BigInt &u, const BigInt &v) {
+  int m = (int) u.cells.size();
+  int n = (int) v.cells.size();
 
-  if (n1.isZero())
-    return BigInt::ZERO;
-  if (n2.isZero())
-    return -1;
+  DOUBLE_CELL_T qhat = (DOUBLE_CELL_T) min(
+      BASE - 1,
+      (u.cells[m - 1] * BASE + u.cells[m - 2]) / v.cells[n - 1]
+  );
 
-  bool sign = n1.isNegative() ^n2.isNegative();
-  BigInt numerator = n1.isNegative() ? n1.negate() : n1;
-  BigInt denominator = n2.isNegative() ? n2.negate() : n2;
-  BigInt available;
-  BigInt result;
-
-  const CELLS_CONTAINER_T &denominator_cells = denominator.cells;
-  CELLS_CONTAINER_T remaining_cells = numerator.cells;
-  CELLS_CONTAINER_T &available_cells = available.cells;
-  CELLS_CONTAINER_T &result_cells = result.cells;
-
-  while (!remaining_cells.empty() || available >= denominator) {
-    while (!remaining_cells.empty() && available < denominator) {
-      result_cells.push_back(0);
-      divisionMoveCell(remaining_cells, available_cells);
-    }
-
-    CELL_T d = binary_find(available, denominator);
-    result_cells.push_back(d);
-    available -= lookup[d];
-    divisionMoveCell(remaining_cells, available_cells);
+  DOUBLE_CELL_T q = qhat;
+  BigInt r = u - BigInt(q) * v;
+  while (r < 0) {
+    q = (DOUBLE_CELL_T) (q - 1);
+    r = r + v;
   }
 
-  while (result_cells.size() > 1 && result_cells.back() == 0)
-    result_cells.pop_back();
-  REVERSE(result_cells);
-  return sign ? result.negate() : result;
+  return (CELL_T) q;
 }
+
+
+// TODO not implemented
+BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
+  if (n1 < n2)
+    return BigInt::ZERO;
+  if (n1 == n2)
+    return BigInt::ONE;
+
+  CELLS_CONTAINER_T a_r_cells = n1.cells;
+  CELLS_CONTAINER_T b_r_cells = n2.cells;
+  REVERSE(a_r_cells);
+  REVERSE(b_r_cells);
+  int m = (int) a_r_cells.size();
+  int n = (int) b_r_cells.size();
+
+  int k = m - n + 1;
+  CELLS_CONTAINER_T q_cells;
+
+  CELLS_CONTAINER_T r_cells;
+  r_cells.reserve((unsigned long) (n + 1));
+  r_cells.push_back(0);
+  for (int i = 0; i < n; ++i) {
+    r_cells.push_back(a_r_cells[i]);
+  }
+  REVERSE(r_cells);
+
+  BigInt r(r_cells);
+
+  for (int i = 0; i < k; ++i) {
+    CELL_T q_i = alg(r, n2);
+    q_cells.push_back(q_i);
+    r = r - BigInt(q_i) * n2;
+    if (i != k - 1) {
+      r = r << CELL_BIT_LENGTH;
+      r += a_r_cells[m - k + 1 + i];
+    }
+  }
+  REVERSE(q_cells);
+  return BigInt(q_cells);
+}
+
+//// TODO not implemented
+//BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
+//  lookup.clear();
+//
+//  if (n1.isZero())
+//    return BigInt::ZERO;
+//  if (n2.isZero())
+//    return -1;
+//
+//  bool sign = n1.isNegative() ^n2.isNegative();
+//  BigInt numerator = n1.isNegative() ? n1.negate() : n1;
+//  BigInt denominator = n2.isNegative() ? n2.negate() : n2;
+//  BigInt available;
+//  BigInt result;
+//
+//  const CELLS_CONTAINER_T &denominator_cells = denominator.cells;
+//  CELLS_CONTAINER_T remaining_cells = numerator.cells;
+//  CELLS_CONTAINER_T &available_cells = available.cells;
+//  CELLS_CONTAINER_T &result_cells = result.cells;
+//
+//  while (!remaining_cells.empty() || available >= denominator) {
+//    while (!remaining_cells.empty() && available < denominator) {
+//      result_cells.push_back(0);
+//      divisionMoveCell(remaining_cells, available_cells);
+//    }
+//
+//    CELL_T d = binary_find(available, denominator);
+//    result_cells.push_back(d);
+//    available -= lookup[d];
+//    divisionMoveCell(remaining_cells, available_cells);
+//  }
+//
+//  while (result_cells.size() > 1 && result_cells.back() == 0)
+//    result_cells.pop_back();
+//  REVERSE(result_cells);
+//  return sign ? result.negate() : result;
+//}
 
 // TODO not implemented
 BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {

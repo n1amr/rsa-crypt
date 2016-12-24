@@ -493,9 +493,10 @@ bool testShiftCells(string n, int n_cells_left, string expected) {
 bool testShiftCellsSmallNumbers(long long start, int shifts, long long steps) {
   for (long long i = start - steps; i <= start + steps; ++i) {
     for (int j = 0; j <= shifts; ++j) {
-      long long expected = (i) << (j * CELL_BIT_LENGTH);
+      bool negative = i < 0;
+      long long expected = (negative ? -1 : 1) * ((negative ? -i : i) << (j * CELL_BIT_LENGTH));
       bool bad = testShiftCells(to_string(i), j, to_string(expected));
-      expected = ((i) >> (j * CELL_BIT_LENGTH));
+      expected = (negative ? -1 : 1) * ((negative ? -i : i) >> (j * CELL_BIT_LENGTH));
       bad |= testShiftCells(to_string(i), -j, to_string(expected));
       if (bad)
         return bad;
@@ -519,11 +520,12 @@ bool testShiftBits(string n, int n_bits_left, string expected) {
 bool testShiftBitsSmallNumbers(long long start, int shifts, long long steps) {
   for (long long i = start - steps; i <= start + steps; ++i) {
     for (int j = 0; j <= shifts; ++j) {
-      long long expected = i << j;
+      bool negative = i < 0;
+      long long expected = ((abs(i)) << j) * (negative ? -1 : 1);
 //      bool bad = 0;//TODO testShiftBits(to_string(i), j, to_string(expected));
       bool bad = testShiftBits(to_string(i), j, to_string(expected));
-      expected = i >> j;
-      bad |= testShiftBits(to_string(i), -j, to_string(expected));
+//      expected = ((abs(i)) >> j) * (negative ? -1 : 1);
+//      bad |= testShiftBits(to_string(i), -j, to_string(expected));
       if (bad)
         return bad;
     }

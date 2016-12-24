@@ -75,7 +75,6 @@ bool BigInt::isGreaterThan(const BigInt &n1, const BigInt &n2) {
   return compare(n1, n2) > 0;
 }
 
-// TODO
 BigInt BigInt::add(const BigInt &a, const BigInt &b) {
   int m = (int) a.cells.size();
   int n = (int) b.cells.size();
@@ -563,51 +562,6 @@ int BigInt::compare(const BigInt &a, const BigInt &b) {
     }
     return a.sign == POSITIVE ? r : -r;
   }
-}
-
-// TODO
-BigInt BigInt::add_pos(const BigInt &a, const BigInt &b) {
-  int m = (int) a.cells.size();
-  int n = (int) b.cells.size();
-  int k = max(m, n);
-
-  BigInt result;
-  result.cells.reserve((unsigned long) (k + 1));
-  result.cells.resize((unsigned long) k, 0);
-
-  CELL_T r = 0;
-  for (int i = 0; i < k; ++i) {
-    CELL_T a_i = (CELL_T) (i < m ? a.cells[i] : 0);
-    CELL_T b_i = (CELL_T) (i < n ? b.cells[i] : 0);
-    DOUBLE_CELL_T s = a_i + b_i + r;
-    result.cells[i] = (CELL_T) (s);
-    r = (CELL_T) (s >> CELL_BIT_LENGTH);
-  }
-  if (r)
-    result.cells.push_back(r);
-  return result;
-}
-
-// must have a >= b
-BigInt BigInt::sub_pos(const BigInt &a, const BigInt &b) {
-  int m = (int) a.cells.size();
-  int n = (int) b.cells.size();
-  int k = max(m, n);
-
-  BigInt result;
-  result.cells.reserve((unsigned long) (k + 1));
-  result.cells.resize((unsigned long) k, 0);
-
-  CELL_T r = 0;
-  for (int i = 0; i < k; ++i) {
-    CELL_T a_i = (CELL_T) (i < m ? a.cells[i] : 0);
-    CELL_T b_i = (CELL_T) (i < n ? b.cells[i] : 0);
-
-    SIGNED_DOUBLE_CELL_T s = a_i - b_i - r;
-    result.cells[i] = (CELL_T) (s);
-    r = (CELL_T) (s < 0);
-  }
-  return result;
 }
 
 BigInt BigInt::absolute(const BigInt &a) {

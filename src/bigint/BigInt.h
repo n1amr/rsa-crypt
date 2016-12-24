@@ -128,8 +128,6 @@ public:
   inline static int compare_cells(CELL_T c1, CELL_T c2);
   inline static int compare(const BigInt &a, const BigInt &b);
 
-  static BigInt add_pos(const BigInt &a, const BigInt &b);
-  static BigInt sub_pos(const BigInt &a, const BigInt &b);
   static BigInt absolute(const BigInt &a);
 };
 

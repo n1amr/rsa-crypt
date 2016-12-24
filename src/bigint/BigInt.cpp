@@ -217,8 +217,9 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
     return -BigInt::ONE;
 
   CELL_T d = (CELL_T) (BASE / (1 + n2.cells.back()));
-  BigInt a = n1 * BigInt(d);
-  BigInt b = n2 * BigInt(d);
+  BigInt D(d);
+  BigInt a = n1 * D;
+  BigInt b = n2 * D;
 
   int m = (int) a.cells.size();
   int n = (int) b.cells.size();
@@ -244,11 +245,13 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
     q_cells.push_back(q_i);
     r = r - BigInt(q_i) * b;
     if (i != k - 1) {
-      r = r << CELL_BIT_LENGTH;
-      r += a_r_cells[m - k + 1 + i];
+      r <<= CELL_BIT_LENGTH;
+      r.cells[0] = a_r_cells[m - k + 1 + i];
     }
   }
   REVERSE(q_cells);
+  while (q_cells.size() > 1 && q_cells.back() == 0) // TODO
+    q_cells.pop_back();
   return BigInt(q_cells, n1.sign ^ n2.sign);
 }
 

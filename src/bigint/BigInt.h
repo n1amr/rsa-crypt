@@ -17,7 +17,8 @@ using namespace std;
 #define DOUBLE_CELL_T unsigned SIGNED_DOUBLE_CELL_T
 
 #define CELL_BIT_LENGTH (sizeof(CELL_T) * 8)
-#define MAX_CELL_VALUE ((1 << CELL_BIT_LENGTH) - 1)
+#define BASE ((1 << CELL_BIT_LENGTH))
+#define MAX_CELL_VALUE (BASE - 1)
 
 #define CONTAINER_T vector
 #define CELLS_CONTAINER_T CONTAINER_T<CELL_T>
@@ -35,6 +36,7 @@ public:
   BigInt();
   BigInt(const CELLS_CONTAINER_T &init, SIGN_T sign = POSITIVE);
   BigInt(const BigInt &n);
+  BigInt(const BigInt &n, SIGN_T sign);
   BigInt(int n);
   BigInt(long long n);
   BigInt(const char *s);
@@ -51,7 +53,7 @@ public:
   inline static bool isLessThan(const BigInt &n1, const BigInt &n2);
   inline static bool isGreaterThan(const BigInt &n1, const BigInt &n2);
 
-  static BigInt add(const BigInt &n1, const BigInt &n2);
+  static BigInt add(const BigInt &a, const BigInt &b);
   static BigInt multiply(const BigInt &n1, const BigInt &n2);
   static BigInt subtract(const BigInt &n1, const BigInt &n2);
   static BigInt divide(const BigInt &n1, const BigInt &n2);
@@ -125,6 +127,10 @@ public:
   inline static int sign_(SIGNED_DOUBLE_CELL_T c);
   inline static int compare_cells(CELL_T c1, CELL_T c2);
   inline static int compare(const BigInt &a, const BigInt &b);
+
+  static BigInt add_pos(const BigInt &a, const BigInt &b);
+  static BigInt sub_pos(const BigInt &a, const BigInt &b);
+  static BigInt absolute(const BigInt &a);
 };
 
 #endif //RSA_BIGINT_H

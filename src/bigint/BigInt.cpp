@@ -15,6 +15,8 @@ BigInt::BigInt(const CELLS_CONTAINER_T &init, SIGN_T sign)
 
 BigInt::BigInt(const BigInt &n) : BigInt(n.cells, n.sign) {}
 
+BigInt::BigInt(const BigInt &n, SIGN_T sign) : BigInt(n.cells, sign) {}
+
 BigInt::BigInt(int n) : BigInt(to_string(n)) {}
 
 BigInt::BigInt(long long n) : BigInt(to_string(n)) {}
@@ -74,39 +76,51 @@ bool BigInt::isGreaterThan(const BigInt &n1, const BigInt &n2) {
 }
 
 // TODO
-BigInt BigInt::add(const BigInt &n1, const BigInt &n2) {
-  CELLS_CONTAINER_T result_cells;
+BigInt BigInt::add(const BigInt &a, const BigInt &b) {
+  int m = (int) a.cells.size();
+  int n = (int) b.cells.size();
+  int k = max(m, n);
 
-  const CELLS_CONTAINER_T &cells_1 = n1.cells;
-  const CELLS_CONTAINER_T &cells_2 = n2.cells;
+  BigInt result;
+  result.cells.reserve((unsigned long) (k + 1));
+  result.cells.resize((unsigned long) k, 0);
+  result.sign = a.sign;
 
-  CELL_T c1, c2, remainder = 0, ans;
-  int i = 0, j = 0;
-  while (i < cells_1.size() || j < cells_2.size()) {
-    c1 = (CELL_T) (i < cells_1.size() ? cells_1[i++] : n1.sign == POSITIVE ? 0 : ~0);
-    c2 = (CELL_T) (j < cells_2.size() ? cells_2[j++] : n2.sign == POSITIVE ? 0 : ~0);
-
-    DOUBLE_CELL_T sum = (DOUBLE_CELL_T) c1 + c2 + remainder;
-    ans = (CELL_T) sum;
-    remainder = (CELL_T) (sum >> (CELL_BIT_LENGTH));
-    result_cells.push_back(ans);
-  }
-
-  if (n1.sign == n2.sign) {
-    if (n1.sign == POSITIVE) {  // POSITIVE + POSITIVE
-      if (remainder)
-        result_cells.push_back(remainder);
-      while (result_cells.size() > 1 && result_cells.back() == 0) result_cells.pop_back();
-    } else if (n1.sign == NEGATIVE) { // NEGATIVE + NEGATIVE
-      if (!remainder)
-        result_cells.push_back((CELL_T) (-2));
-      while (result_cells.size() > 1 && result_cells.back() == (CELL_T) ~0) result_cells.pop_back();
+  if (a.sign == b.sign) {
+    CELL_T r = 0;
+    for (int i = 0; i < k; ++i) {
+      CELL_T a_i = (CELL_T) (i < m ? a.cells[i] : 0);
+      CELL_T b_i = (CELL_T) (i < n ? b.cells[i] : 0);
+      DOUBLE_CELL_T s = a_i + b_i + r;
+      result.cells[i] = (CELL_T) (s);
+      r = (CELL_T) (s >> CELL_BIT_LENGTH);
     }
-    return BigInt(result_cells, n1.sign);
-  } else { // POSITIVE + NEGATIVE
-    while (result_cells.size() > 1 && result_cells.back() == 0) result_cells.pop_back();
-    return BigInt(result_cells, (SIGN_T) (remainder ? POSITIVE : NEGATIVE));
+    if (r)
+      result.cells.push_back(r);
+  } else {
+    BigInt a_ = absolute(a);
+    BigInt b_ = absolute(b);
+
+    if (a_ == b_)
+      return BigInt::ZERO;
+
+    if (b_ > a_) {
+      result.sign = b.sign;
+      swap(a_, b_);
+      swap(m, n);
+    }
+
+    CELL_T r = 0;
+    for (int i = 0; i < k; ++i) {
+      CELL_T a_i = (CELL_T) (i < m ? a_.cells[i] : 0);
+      CELL_T b_i = (CELL_T) (i < n ? b_.cells[i] : 0);
+
+      SIGNED_DOUBLE_CELL_T s = a_i - b_i - r;
+      result.cells[i] = (CELL_T) (s);
+      r = (CELL_T) (s < 0);
+    }
   }
+  return result;
 }
 
 // TODO
@@ -184,7 +198,6 @@ CELL_T binary_find(const BigInt &x, const BigInt &denominator) {
 }
 
 // TODO not implemented
-// TODO
 BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   lookup.clear();
 
@@ -223,7 +236,6 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
 }
 
 // TODO not implemented
-// TODO
 BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
   if (n1.isZero())
     return BigInt::ZERO;
@@ -233,32 +245,26 @@ BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
   return n1 - (n1 / n2) * n2;
 }
 
-// TODO
 bool BigInt::isZero() const {
   return isZero(*this);
 }
 
-// TODO
 bool BigInt::isPositive() const {
   return isPositive(*this);
 }
 
-// TODO
 bool BigInt::isNegative() const {
   return isNegative(*this);
 }
 
-// TODO
 bool BigInt::equals(const BigInt &n) const {
   return equals(*this, n);
 }
 
-// TODO
 bool BigInt::isLessThan(const BigInt &n) const {
   return isLessThan(*this, n);
 }
 
-// TODO
 bool BigInt::isGreaterThan(const BigInt &n) const {
   return isGreaterThan(*this, n);
 }
@@ -288,7 +294,6 @@ BigInt BigInt::mod(const BigInt &n) const {
   return mod(*this, n);
 }
 
-// TODO
 BigInt BigInt::copy() const {
   return *this;
 }
@@ -298,13 +303,10 @@ BigInt BigInt::invert() const {
   return BigInt(invert_cells(this->cells));
 }
 
-// TODO
 BigInt BigInt::negate() const {
   if (isZero())
     return copy();
-  BigInt ans = BigInt::add(this->invert(), BigInt::ONE);
-  ans.sign = !sign;
-  return ans;
+  return BigInt(cells, !sign);
 }
 
 // TODO
@@ -344,7 +346,8 @@ BigInt BigInt::shiftBits(int n_bits_left) const {
       for (int i = 0; i < new_data.size(); ++i) {
         CELL_T current_cell = new_data[i];
 
-        DOUBLE_CELL_T pr = (DOUBLE_CELL_T) (sign == NEGATIVE && i == new_data.size() - 1 ? (CELL_T) ~0 : 0);
+        DOUBLE_CELL_T
+            pr = (DOUBLE_CELL_T) (sign == NEGATIVE && i == new_data.size() - 1 ? (CELL_T) ~0 : 0);
         DOUBLE_CELL_T tmp = (pr << CELL_BIT_LENGTH | current_cell) << n_bits | old_high_bits;
 
         new_data[i] = (CELL_T) tmp;
@@ -373,7 +376,6 @@ BigInt BigInt::shiftBits(int n_bits_left) const {
   return BigInt(new_data, sign);
 }
 
-// TODO
 string BigInt::toCellsString() const {
   stringstream ss;
   ss << "BigInt(" << ((sign == POSITIVE) ? "+" : "-") << "{";
@@ -383,17 +385,17 @@ string BigInt::toCellsString() const {
   return ss.str();
 }
 
-// TODO
 string BigInt::toBitsString() const {
   auto v = toBitsVector();
 
   stringstream ss;
+  ss << "BigInt(" << ((sign == POSITIVE) ? "+" : "-");
   for (auto it = v.rbegin(); it != v.rend(); ++it)
     ss << (*it);
+  ss << ")";
   return ss.str();
 }
 
-// TODO
 vector<bool> BigInt::toBitsVector() const {
   vector<bool> v;
   v.reserve(cells.size() * CELL_BIT_LENGTH);
@@ -411,7 +413,6 @@ vector<bool> BigInt::toBitsVector() const {
   return v;
 }
 
-// TODO
 string BigInt::toAbsDecimalString() const {
   auto bits = toBitsVector();
 
@@ -427,12 +428,11 @@ string BigInt::toAbsDecimalString() const {
   return decimalVecToDecimalString(digits);
 }
 
-// TODO
 string BigInt::toDecimalString() const {
   if (sign == POSITIVE) {
     return toAbsDecimalString();
   } else {
-    return "-" + negate().toAbsDecimalString();
+    return "-" + toAbsDecimalString();
   }
 }
 
@@ -563,6 +563,55 @@ int BigInt::compare(const BigInt &a, const BigInt &b) {
     }
     return a.sign == POSITIVE ? r : -r;
   }
+}
+
+// TODO
+BigInt BigInt::add_pos(const BigInt &a, const BigInt &b) {
+  int m = (int) a.cells.size();
+  int n = (int) b.cells.size();
+  int k = max(m, n);
+
+  BigInt result;
+  result.cells.reserve((unsigned long) (k + 1));
+  result.cells.resize((unsigned long) k, 0);
+
+  CELL_T r = 0;
+  for (int i = 0; i < k; ++i) {
+    CELL_T a_i = (CELL_T) (i < m ? a.cells[i] : 0);
+    CELL_T b_i = (CELL_T) (i < n ? b.cells[i] : 0);
+    DOUBLE_CELL_T s = a_i + b_i + r;
+    result.cells[i] = (CELL_T) (s);
+    r = (CELL_T) (s >> CELL_BIT_LENGTH);
+  }
+  if (r)
+    result.cells.push_back(r);
+  return result;
+}
+
+// must have a >= b
+BigInt BigInt::sub_pos(const BigInt &a, const BigInt &b) {
+  int m = (int) a.cells.size();
+  int n = (int) b.cells.size();
+  int k = max(m, n);
+
+  BigInt result;
+  result.cells.reserve((unsigned long) (k + 1));
+  result.cells.resize((unsigned long) k, 0);
+
+  CELL_T r = 0;
+  for (int i = 0; i < k; ++i) {
+    CELL_T a_i = (CELL_T) (i < m ? a.cells[i] : 0);
+    CELL_T b_i = (CELL_T) (i < n ? b.cells[i] : 0);
+
+    SIGNED_DOUBLE_CELL_T s = a_i - b_i - r;
+    result.cells[i] = (CELL_T) (s);
+    r = (CELL_T) (s < 0);
+  }
+  return result;
+}
+
+BigInt BigInt::absolute(const BigInt &a) {
+  return BigInt(a.cells, POSITIVE);
 }
 
 // TODO

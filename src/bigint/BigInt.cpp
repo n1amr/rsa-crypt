@@ -411,6 +411,23 @@ BigInt BigInt::shiftBits(int n_bits_left) const {
   return result;
 }
 
+vector<bool> BigInt::toBitsVector() const {
+  vector<bool> v;
+  v.reserve(cells.size() * CELL_BIT_LENGTH);
+
+  for (auto it = cells.begin(); it != cells.end(); ++it) {
+    CELL_T cell = *it;
+    for (int i = 0; i < CELL_BIT_LENGTH; ++i) {
+      v.push_back((bool) (cell % 2));
+      cell /= 2;
+    }
+  }
+
+  while (v.size() > 1 && v.back() == 0)
+    v.pop_back();
+  return v;
+}
+
 string BigInt::toCellsString() const {
   stringstream ss;
   ss << ((sign == POSITIVE) ? "+" : "-") << " [";
@@ -429,23 +446,6 @@ string BigInt::toBinaryString() const {
   for (auto it = v.rbegin(); it != v.rend(); ++it)
     ss << (*it);
   return ss.str();
-}
-
-vector<bool> BigInt::toBitsVector() const {
-  vector<bool> v;
-  v.reserve(cells.size() * CELL_BIT_LENGTH);
-
-  for (auto it = cells.begin(); it != cells.end(); ++it) {
-    CELL_T cell = *it;
-    for (int i = 0; i < CELL_BIT_LENGTH; ++i) {
-      v.push_back((bool) (cell % 2));
-      cell /= 2;
-    }
-  }
-
-  while (v.size() > 1 && v.back() == 0)
-    v.pop_back();
-  return v;
 }
 
 string BigInt::toDecimalString() const {

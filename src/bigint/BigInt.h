@@ -89,9 +89,9 @@ public:
   BigInt shiftBits(int n_bits_left) const;
 
   // String conversions
+  vector<bool> toBitsVector() const;
   string toCellsString() const;
   string toBinaryString() const;
-  vector<bool> toBitsVector() const;
   string toDecimalString() const;
 
   BigInt operator+(const BigInt &n) const;

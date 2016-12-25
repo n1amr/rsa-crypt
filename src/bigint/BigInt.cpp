@@ -76,6 +76,9 @@ bool BigInt::isGreaterThan(const BigInt &n1, const BigInt &n2) {
 }
 
 BigInt BigInt::add(const BigInt &a, const BigInt &b) {
+  assert(a.cells.size() == 1 || a.cells.size() > 1 && a.cells.back() != 0);
+  assert(b.cells.size() == 1 || b.cells.size() > 1 && b.cells.back() != 0);
+
   int m = (int) a.cells.size();
   int n = (int) b.cells.size();
   int k = max(m, n);
@@ -118,11 +121,25 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
       result.cells[i] = (CELL_T) (s);
       r = (CELL_T) (s < 0);
     }
+
+    while (result.cells.size() > 1 && result.cells.back() == 0)
+      result.cells.pop_back();
   }
+  cout << "a = " << a << endl;
+  printVectorReversed(a.cells, "a.cells");
+  cout << "b = " << b << endl;
+  printVectorReversed(b.cells, "b.cells");
+  cout << "result = " << result << endl;
+  printVectorReversed(result.cells, "result.cells");
+  assert(result.cells.size() == 1
+         || result.cells.size() > 1 && result.cells.back() != 0);
   return result;
 }
 
 BigInt BigInt::multiply(const BigInt &a, const BigInt &b) {
+  assert(a.cells.size() == 1 || a.cells.size() > 1 && a.cells.back() != 0);
+  assert(b.cells.size() == 1 || b.cells.size() > 1 && b.cells.back() != 0);
+
   if (a.isZero() || b.isZero())
     return BigInt::ZERO;
 
@@ -148,11 +165,17 @@ BigInt BigInt::multiply(const BigInt &a, const BigInt &b) {
     c.cells.pop_back();
   }
 
+  assert(c.cells.size() == 1 || c.cells.size() > 1 && c.cells.back() != 0);
   return c;
 }
 
-BigInt BigInt::subtract(const BigInt &n1, const BigInt &n2) {
-  return add(n1, n2.negate());
+BigInt BigInt::subtract(const BigInt &a, const BigInt &b) {
+  assert(a.cells.size() == 1 || a.cells.size() > 1 && a.cells.back() != 0);
+  assert(b.cells.size() == 1 || b.cells.size() > 1 && b.cells.back() != 0);
+  BigInt c = add(a, b.negate());
+  assert(c.cells.size() == 1 || c.cells.size() > 1 && c.cells.back() != 0);
+  assert(a == b + c);
+  return c;
 }
 
 // TODO
@@ -181,31 +204,58 @@ CELL_T binary_find(const BigInt &x, const BigInt &denominator) {
 }
 
 CELL_T BigInt::alg(const BigInt &u, const BigInt &v) {
-  int m = (int) u.cells.size();
-  int n = (int) v.cells.size();
+  cout << "CELL_T BigInt::alg(const BigInt &u, const BigInt &v)" << endl;
+  cout << "u = " << u << endl;
+  printVectorReversed(u.cells, "u.cells");
+  cout << "v = " << v << endl;
+  printVectorReversed(v.cells, "v.cells");
+  assert(u.cells.size() == v.cells.size() + 1);
+  assert(v.cells.back() != 0);
+  assert(u > ZERO);
+  assert(v > ZERO);
 
+  int n = (int) v.cells.size();
+  cout << "n = " << n << endl;
   DOUBLE_CELL_T qhat = (DOUBLE_CELL_T) min(
       BASE - 1,
-      ((DOUBLE_CELL_T) u.cells[m - 1] * BASE + u.cells[m - 2]) / v.cells[n - 1]
+      ((DOUBLE_CELL_T) u.cells[n] * BASE + u.cells[n - 1]) / v.cells[n - 1]
   );
+  cout << "qhat = " << ((int) qhat) << endl;
 
   int cnt = 0;
-
-  BigInt Q((int) qhat);
-  BigInt R = u - Q * v;
+  BigInt Q(to_string(qhat));
+  BigInt u_ = u;
+  if (u_.cells.size() > 1 && u_.cells.back() == 0)
+    u_.cells.pop_back();
+  BigInt R = u_ - Q * v;
+  cout << "Q = " << Q << endl;
+  printVectorReversed(Q.cells, "Q.cells");
+  cout << "R = " << R << endl;
+  printVectorReversed(R.cells, "R.cells");
   while (R < 0) {
-    Q = Q - 1;
+    assert(cnt < 3);
+    cout << "R < 0" << endl;
+    cout << "R = " << R << endl;
+    Q = Q - ONE;
     R = R + v;
+    cout << "Q = Q - ONE;\n" << "R = R + v;" << endl;
+    cout << "Q = " << Q << endl;
+    printVectorReversed(Q.cells, "Q.cells");
+    cout << "R = " << R << endl;
+    printVectorReversed(R.cells, "R.cells");
     cnt++;
-    if (cnt > 3) {
-      cout << "cnt= " << cnt << endl;
-      throw 1;
-    }
   }
-  return (CELL_T) Q.cells.back();
+
+  assert(ZERO <= R);
+//  assert(R <= v);
+  assert(v * Q + R == u_);
+  assert(Q.cells.size() == 1);
+  cout << "}\n\n" << endl;
+  return Q.cells[0];
 }
 
 BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
+  cout << "BigInt BigInt::divide(const BigInt &n1, const BigInt &n2)" << endl;
   if (n1 < n2)
     return BigInt::ZERO;
   if (n1 == n2)
@@ -215,18 +265,40 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   if (n2 == BigInt::ZERO)
     return -BigInt::ONE;
 
+  cout << "n1 = " << n1 << endl;
+  printVectorReversed(n1.cells, "n1.cells");
+  cout << "n2 = " << n2 << endl;
+  printVectorReversed(n2.cells, "n2.cells");
+  assert(n1.cells.size() == 1 || n1.cells.size() > 1 && n1.cells.back() != 0);
+  assert(n2.cells.size() == 1 || n2.cells.size() > 1 && n2.cells.back() != 0);
+
   CELL_T d = (CELL_T) (BASE / (1 + n2.cells.back()));
+  cout << "d = " << ((int) d) << endl;
   BigInt D(d);
+  cout << "D = " << D << endl;
+
   BigInt a = n1 * D;
+  cout << "a = " << a << endl;
+  printVectorReversed(a.cells, "a.cells");
+
   BigInt b = n2 * D;
+  cout << "b = " << b << endl;
+  printVectorReversed(b.cells, "b.cells");
+
+  assert(a >= b);
+  assert(b >= ZERO);
 
   int m = (int) a.cells.size();
   int n = (int) b.cells.size();
+  int k = m - n + 1;
+
+  cout << "m = " << m << endl;
+  cout << "n = " << n << endl;
+  cout << "k = " << k << endl;
 
   CELLS_CONTAINER_T a_r_cells = a.cells;
   REVERSE(a_r_cells);
 
-  int k = m - n + 1;
   CELLS_CONTAINER_T q_cells;
 
   CELLS_CONTAINER_T r_cells;
@@ -238,29 +310,55 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   REVERSE(r_cells);
 
   BigInt r(r_cells);
+  cout << "r = " << r << endl;
+  printVectorReversed(r.cells, "r.cells");
+
+  assert(r.cells.back() == 0);
 
   for (int i = 0; i < k; ++i) {
+    cout << "\n\n\ni = " << i << endl;
     CELL_T q_i = alg(r, b);
+    cout << "q[" << i << "] = " << ((int) q_i) << endl;
     q_cells.push_back(q_i);
+    if (r.cells.size() > 1 && r.cells.back() == 0)
+      r.cells.pop_back();
     r = r - BigInt(q_i) * b;
+    cout << "r = r - BigInt(q_i) * b;" << endl;
+    cout << "r = " << r << endl;
+    printVectorReversed(r.cells, "r.cells");
+
     if (i != k - 1) {
       r <<= CELL_BIT_LENGTH;
       r.cells[0] = a_r_cells[m - k + 1 + i];
+      cout << "r.cells[0] = a_r_cells[m - k + 1 + i];" << endl;
+      cout << "r = " << r << endl;
+      printVectorReversed(r.cells, "r.cells");
     }
   }
   REVERSE(q_cells);
   while (q_cells.size() > 1 && q_cells.back() == 0) // TODO
     q_cells.pop_back();
-  return BigInt(q_cells, n1.sign ^ n2.sign);
+
+  BigInt Q(q_cells, n1.sign ^ n2.sign);
+  assert(n2 * Q <= n1);
+  assert(n1 - n2 * Q < absolute(n2));
+  assert(ZERO <= n1 - n2 * Q);
+  assert(Q.cells.size() == 1 || Q.cells.size() > 1 && Q.cells.back() != 0);
+  return Q;
 }
 
 BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
+  assert(n1.cells.size() == 1 || n1.cells.size() > 1 && n1.cells.back() != 0);
+  assert(n2.cells.size() == 1 || n2.cells.size() > 1 && n2.cells.back() != 0);
+
   if (n1.isZero())
     return BigInt::ZERO;
   if (n2.isZero())
     return -1;
 
-  return n1 - (n1 / n2) * n2;
+  BigInt c = n1 - (n1 / n2) * n2;
+  assert(c.cells.size() == 1 || c.cells.size() > 1 && c.cells.back() != 0);
+  return c;
 }
 
 bool BigInt::isZero() const {
@@ -317,9 +415,12 @@ BigInt BigInt::invert() const {
 }
 
 BigInt BigInt::negate() const {
+  assert(cells.size() == 1 || cells.size() > 1 && cells.back() != 0);
   if (isZero())
     return copy();
-  return BigInt(cells, !sign);
+  BigInt c = BigInt(cells, !sign);
+  assert(c.cells.size() == 1 || c.cells.size() > 1 && c.cells.back() != 0);
+  return c;
 }
 
 // TODO
@@ -344,6 +445,8 @@ BigInt BigInt::shiftCells(int n_cells_left) const {
 }
 
 BigInt BigInt::shiftBits(int n_bits_left) const {
+  assert(cells.size() == 1 || cells.size() > 1 && cells.back() != 0);
+
   if (n_bits_left == 0)
     return copy();
 
@@ -382,7 +485,14 @@ BigInt BigInt::shiftBits(int n_bits_left) const {
     if (r)
       c.push_back(r);
   }
-  return BigInt(c, sign);
+  BigInt result = c.size() > 0 ? BigInt(c, sign) : BigInt::ZERO;
+  cout << "n_bits_left = " << n_bits_left << endl;
+  cout << "(*this) = " << (*this) << endl;
+  printVectorReversed((*this).cells, "(*this).cells");
+  cout << "result = " << result << endl;
+  printVectorReversed(result.cells, "result.cells");
+  assert(result.cells.size() == 1 || result.cells.size() > 1 && result.cells.back() != 0);
+  return result;
 }
 
 string BigInt::toCellsString() const {
@@ -550,6 +660,33 @@ int BigInt::compare(const BigInt &a, const BigInt &b) {
 
 BigInt BigInt::absolute(const BigInt &a) {
   return BigInt(a.cells, POSITIVE);
+}
+
+bool BigInt::isOdd(const BigInt &n) {
+  return n.cells.size() > 0 && n.cells[0] % 2 == 1;
+}
+
+bool BigInt::isOdd() const {
+  return BigInt::isOdd(*this);
+}
+
+BigInt BigInt::pow(const BigInt &n, const BigInt &p, const BigInt &m) {
+  BigInt ans = BigInt::ONE;
+  BigInt y = n % m;
+  BigInt p_ = p;
+  while (!p_.isZero()) {
+    if (p_.isOdd()) {
+      ans = (ans * y) % m;
+    }
+    p_ >>= 1;
+    y = (y * y) % m;
+
+  }
+  return ans;
+}
+
+BigInt BigInt::pow(const BigInt &p, const BigInt &m) const {
+  return BigInt::pow(*this, p, m);
 }
 
 // TODO

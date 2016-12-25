@@ -55,7 +55,7 @@ public:
 
   static BigInt add(const BigInt &a, const BigInt &b);
   static BigInt multiply(const BigInt &a, const BigInt &b);
-  static BigInt subtract(const BigInt &n1, const BigInt &n2);
+  static BigInt subtract(const BigInt &a, const BigInt &b);
   static BigInt divide(const BigInt &n1, const BigInt &n2);
   static BigInt mod(const BigInt &n1, const BigInt &n2);
 
@@ -128,8 +128,12 @@ public:
   inline static int compare_cells(CELL_T c1, CELL_T c2);
   inline static int compare(const BigInt &a, const BigInt &b);
 
-  static BigInt absolute(const BigInt &a);
-  static CELL_T alg(const BigInt &u, const BigInt &v);
+  static BigInt absolute(const BigInt &a) ;
+  static CELL_T alg(const BigInt &u, const BigInt &v) ;
+  static bool isOdd(const BigInt &n) ;
+  bool isOdd() const;
+  static BigInt pow(const BigInt &n, const BigInt &p, const BigInt &m) ;
+  BigInt pow(const BigInt &p, const BigInt &m) const;
 };
 
 #endif //RSA_BIGINT_H

@@ -576,28 +576,3 @@ CELL_T BigInt::alg(const BigInt &u, const BigInt &v) {
   assert(Q.cells.size() == 1);
   return Q.cells[0];
 }
-
-// TODO
-void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
-  if (!from.empty()) {
-    REVERSE(to);
-    to.push_back(from.back());
-    REVERSE(to);
-    from.pop_back();
-  }
-}
-
-map<CELL_T, BigInt> lookup;
-
-// TODO
-CELL_T binary_find(const BigInt &x, const BigInt &denominator) {
-  CELL_T l = 0, r = MAX_CELL_VALUE, m;
-  while (l + 1 < r) {
-    m = (CELL_T) ((l + r) / 2);
-    if (x >= (lookup[m] = lookup.count(m) > 0 ? lookup[m] : denominator * BigInt(m)))
-      l = m;
-    else
-      r = m;
-  }
-  return l;
-}

@@ -11,6 +11,12 @@ using namespace std;
 
 class App {
 private:
+  BigInt random(BigInt from, BigInt to) {
+    return from +
+           (to - from) * BigInt((long long) rand())
+           / BigInt((long long) 1 << 31);
+  }
+
   bool MRTEST(BigInt n) {
     if (!n.isOdd())
       return COMPOSITE;
@@ -35,12 +41,6 @@ private:
     }
 
     return COMPOSITE;
-  }
-
-  BigInt random(BigInt from, BigInt to) {
-    return from +
-           (to - from) * BigInt((long long) rand())
-           / BigInt((long long) 1 << 31);
   }
 
   bool isPrime(BigInt n) {

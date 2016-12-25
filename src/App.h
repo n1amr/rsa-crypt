@@ -57,9 +57,38 @@ private:
     return BigInt::ZERO;
   }
 
-  BigInt generate(BigInt P, BigInt Q, BigInt E) {
-    // TODO
-    return BigInt::ZERO;
+  BigInt generate(BigInt p, BigInt q, BigInt e) {
+    BigInt n = p * q;
+    BigInt phi = (p - 1) * (q - 1);
+    BigInt d = inverse(e, phi);
+    if (d.isZero())
+      throw "Cannot find inverse (gcd != 1)";
+
+    return d;
+  }
+
+  BigInt inverse(BigInt b, BigInt m) {
+    BigInt right_old = m;
+    BigInt right = b;
+    BigInt left_old = BigInt::ZERO;
+    BigInt left = BigInt::ONE;
+    BigInt tmp, Q;
+    while (1) {
+      if (right.isZero())
+        return BigInt::ZERO;// no inverse
+      if (right == BigInt::ONE)
+        return left > 0 ? left : m + left;
+
+      Q = right_old / right;
+
+      tmp = left_old - Q * left;
+      left_old = left;
+      left = tmp;
+
+      tmp = right_old - Q * right;
+      right_old = right;
+      right = tmp;
+    }
   }
 
 public:
@@ -72,25 +101,32 @@ public:
 
     string line;
     while (getline(cin, line)) {
-      if (line.length() > 2 && line.substr(0, 2) == "P=")
+      if (line.length() > 2 && line.substr(0, 2) == "P=") {
         P = BigInt(line.substr(2));
-      else if (line.length() > 2 && line.substr(0, 2) == "Q=")
+        generated = false;
+      } else if (line.length() > 2 && line.substr(0, 2) == "Q=") {
         Q = BigInt(line.substr(2));
-      else if (line.length() > 2 && line.substr(0, 2) == "E=")
+        generated = false;
+      } else if (line.length() > 2 && line.substr(0, 2) == "E=") {
         E = BigInt(line.substr(2));
-      else if (line == "PrintP")
+        generated = false;
+      } else if (line == "PrintP") {
         cout << P << endl;
-      else if (line == "PrintQ")
+      } else if (line == "PrintQ") {
         cout << Q << endl;
-      else if (line == "PrintE")
+      } else if (line == "PrintE") {
         cout << E << endl;
-      else if (line == "PrintD")
+      } else if (line == "PrintD") {
+        if (!generated) {
+          D = generate(P, Q, E);
+          generated = true;
+        }
         cout << D << endl;
-      else if (line == "PrintN")
+      } else if (line == "PrintN") {
         cout << (N = P * Q) << endl;
-      else if (line == "PrintPhi")
+      } else if (line == "PrintPhi") {
         cout << (Phi = (P - 1) * (Q - 1)) << endl;
-      else if (line == "IsPPrime") {
+      } else if (line == "IsPPrime") {
         cout << (isPrime(P) ? "Yes" : "No") << endl;
       } else if (line == "IsQPrime") {
         cout << (isPrime(Q) ? "Yes" : "No") << endl;

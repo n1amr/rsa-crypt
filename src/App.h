@@ -52,11 +52,6 @@ private:
     return true;
   }
 
-  BigInt encrypt(BigInt message, BigInt e_or_d, BigInt n) {
-    // TODO
-    return BigInt::ZERO;
-  }
-
   BigInt generate(BigInt p, BigInt q, BigInt e) {
     BigInt n = p * q;
     BigInt phi = (p - 1) * (q - 1);
@@ -132,16 +127,14 @@ public:
         cout << (isPrime(q) ? "Yes" : "No") << endl;
       } else if (line.substr(0, 14) == "EncryptPublic=") {
         BigInt message(line.substr(14));
-        BigInt cipher = encrypt(message, e, n);
-        cout << cipher << endl;
+        cout << message.pow(e, n) << endl;
       } else if (line.substr(0, 15) == "EncryptPrivate=") {
         if (!generated) {
           d = generate(p, q, e);
           generated = true;
         }
         BigInt message(line.substr(15));
-        BigInt cipher = encrypt(message, d, n);
-        cout << cipher << endl;
+        cout << message.pow(d, n) << endl;
       } else if (line == "Quit")
         return;
     }

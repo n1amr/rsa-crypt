@@ -1,6 +1,7 @@
 #ifndef RSA_APP_H
 #define RSA_APP_H
 
+#include <iostream>
 #include "bigint/BigInt.h"
 #include "bits/stdc++.h"
 using namespace std;
@@ -23,12 +24,12 @@ private:
 
     BigInt a = random(2, n);
 
-    if(a.pow(q, n) == BigInt::ONE)
+    if (a.pow(q, n) == BigInt::ONE)
       return INCLUSIVE;
 
     BigInt n_1 = n - 1;
     for (int j = 0; j < k; ++j) {
-      if(a.pow(q, n) == n_1)
+      if (a.pow(q, n) == n_1)
         return INCLUSIVE;
       q <<= 1;
     }
@@ -37,8 +38,9 @@ private:
   }
 
   BigInt random(BigInt from, BigInt to) {
-    // TODO
-    return (from + to) / 2;
+    return from +
+           (to - from) * BigInt((long long) rand())
+           / BigInt((long long) 1 << 31);
   }
 
   bool isPrime(BigInt n) {

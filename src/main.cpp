@@ -7,7 +7,7 @@ using namespace std;
 #define Int BigInt
 
 int main() {
+//  srand(time(NULL));
   App app;
   app.appLoop();
-  return 0;
 }

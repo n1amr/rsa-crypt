@@ -29,7 +29,7 @@ bool testRepresentationOfANumber(string s) {
     cout << x.toDecimalString() << endl;
     cout << x << endl;
     cout << x.toCellsString() << endl;
-    cout << x.toBitsString() << endl;
+    cout << x.toBinaryString() << endl;
     cout << x.toDecimalString() << endl;
     cout << (correct ? "True" : "False") << endl;
     cout << "Elapsed time = " << elapsed_time << endl;
@@ -479,32 +479,6 @@ bool testFactorial(long long n, string expected) {
   return !correct;
 }
 
-bool testShiftCells(string n, int n_cells_left, string expected) {
-  string output = BigInt(n).shiftCells(n_cells_left).toDecimalString();
-  bool correct = expected == output;
-  if (!correct)
-    if (n_cells_left >= 0)
-      cout << n << " << " << n_cells_left * CELL_BIT_LENGTH << " => " << expected << " != " << output << endl;
-    else
-      cout << n << " >> " << -n_cells_left * CELL_BIT_LENGTH << " => " << expected << " != " << output << endl;
-  return !correct;
-}
-
-bool testShiftCellsSmallNumbers(long long start, int shifts, long long steps) {
-  for (long long i = start - steps; i <= start + steps; ++i) {
-    for (int j = 0; j <= shifts; ++j) {
-      long long expected = (i) << (j * CELL_BIT_LENGTH);
-      bool bad = testShiftCells(to_string(i), j, to_string(expected));
-      expected = ((i) >> (j * CELL_BIT_LENGTH));
-      bad |= testShiftCells(to_string(i), -j, to_string(expected));
-      if (bad)
-        return bad;
-    }
-  }
-
-  return 0;
-}
-
 bool testShiftBits(string n, int n_bits_left, string expected) {
   string output = BigInt(n).shiftBits(n_bits_left).toDecimalString();
   bool correct = expected == output;
@@ -519,11 +493,12 @@ bool testShiftBits(string n, int n_bits_left, string expected) {
 bool testShiftBitsSmallNumbers(long long start, int shifts, long long steps) {
   for (long long i = start - steps; i <= start + steps; ++i) {
     for (int j = 0; j <= shifts; ++j) {
-      long long expected = i << j;
+      bool negative = i < 0;
+      long long expected = ((abs(i)) << j) * (negative ? -1 : 1);
 //      bool bad = 0;//TODO testShiftBits(to_string(i), j, to_string(expected));
       bool bad = testShiftBits(to_string(i), j, to_string(expected));
-      expected = i >> j;
-      bad |= testShiftBits(to_string(i), -j, to_string(expected));
+//      expected = ((abs(i)) >> j) * (negative ? -1 : 1);
+//      bad |= testShiftBits(to_string(i), -j, to_string(expected));
       if (bad)
         return bad;
     }
@@ -686,15 +661,6 @@ void runBigIntTests() {
     elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
     end_time = clock();
     cout << (tmp ? "Error" : "OK   ") << " | testFactorial time = " << elapsed_time << endl;
-  }
-
-  {
-    tmp = testShiftCellsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256) ||
-          testShiftCellsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
-
-    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-    end_time = clock();
-    cout << (tmp ? "Error" : "OK   ") << " | testShiftCells time = " << elapsed_time << endl;
   }
 
   {

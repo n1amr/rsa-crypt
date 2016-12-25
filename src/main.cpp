@@ -6,7 +6,6 @@ using namespace std;
 #define Int BigInt
 
 int main() {
-//  cout << BigInt(7).pow(BigInt(5), BigInt("1000")) << endl;
-  cout << BigInt::pow(BigInt(7), BigInt(5), BigInt("1000")) << endl;
+  cout << BigInt(7).pow(BigInt(5), BigInt("1000")) << endl;
   return 0;
 }

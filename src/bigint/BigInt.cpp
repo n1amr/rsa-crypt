@@ -199,35 +199,37 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   int n = (int) b.cells.size();
   int k = m - n + 1;
 
-  CELLS_CONTAINER_T a_r_cells = a.cells;
-  REVERSE(a_r_cells);
-
   CELLS_CONTAINER_T q_cells;
+  q_cells.resize((unsigned long) (k), 0);
 
-  CELLS_CONTAINER_T r_cells;
-  r_cells.reserve((unsigned long) (n + 1));
-  r_cells.push_back(0);
-  for (int i = 0; i < n; ++i)
-    r_cells.push_back(a_r_cells[i]);
-  REVERSE(r_cells);
+  BigInt r = a.shiftBits((int) -(CELL_BIT_LENGTH * (m - n)));
 
-  BigInt r(r_cells);
-
-  assert(r.cells.back() == 0);
+  assert(r.cells.back() != 0);
+  assert(r.cells.size() == n);
 
   for (int i = 0; i < k; ++i) {
-    CELL_T q_i = div_next_quotient(r, b);
-    q_cells.push_back(q_i);
-    if (r.cells.size() > 1 && r.cells.back() == 0)
-      r.cells.pop_back();
-    r = r - BigInt(q_i) * b;
+    assert(r.cells.back() != 0);
+    assert(r.cells.size() <= n + 1);
 
-    if (i != k - 1) {
+    CELL_T q_0;
+    if (r.cells.size() > b.cells.size()) {
+      q_0 = div_next_quotient(r, b);
+    } else if (r.cells.size() == b.cells.size()) {
+      r.cells.push_back(0);
+      q_0 = div_next_quotient(r, b);
+      if (r.cells.size() > 1 && r.cells.back() == 0)
+        r.cells.pop_back();
+    } else {
+      q_0 = 0;
+    }
+    q_cells[k - 1 - i] = q_0;
+    r = r - BigInt(q_0) * b;
+
+    if (i < k - 1) {
       r <<= CELL_BIT_LENGTH;
-      r.cells[0] = a_r_cells[m - k + 1 + i];
+      r.cells[0] = a.cells[k - 2 - i];
     }
   }
-  REVERSE(q_cells);
   while (q_cells.size() > 1 && q_cells.back() == 0) // TODO
     q_cells.pop_back();
 

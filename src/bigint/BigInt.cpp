@@ -253,17 +253,15 @@ BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
   return c;
 }
 
-BigInt BigInt::pow(const BigInt &n, const BigInt &p, const BigInt &m) {
+BigInt BigInt::pow(const BigInt &n, const BigInt &power, const BigInt &m) {
   BigInt ans = BigInt::ONE;
-  BigInt y = n % m;
-  BigInt p_ = p;
-  while (!p_.isZero()) {
-    if (p_.isOdd()) {
-      ans = (ans * y) % m;
-    }
-    p_ >>= 1;
-    y = (y * y) % m;
-
+  BigInt p = power;
+  BigInt tmp = n % m;
+  while (!p.isZero()) {
+    if (p.isOdd())
+      ans = (ans * tmp) % m;
+    p >>= 1;
+    tmp = (tmp * tmp) % m;
   }
   return ans;
 }
@@ -341,8 +339,8 @@ BigInt BigInt::mod(const BigInt &n) const {
   return mod(*this, n);
 }
 
-BigInt BigInt::pow(const BigInt &p, const BigInt &m) const {
-  return BigInt::pow(*this, p, m);
+BigInt BigInt::pow(const BigInt &power, const BigInt &m) const {
+  return BigInt::pow(*this, power, m);
 }
 
 BigInt BigInt::absolute() const {

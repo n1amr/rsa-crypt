@@ -60,7 +60,7 @@ public:
   static BigInt subtract(const BigInt &a, const BigInt &b);
   static BigInt divide(const BigInt &n1, const BigInt &n2);
   static BigInt mod(const BigInt &n1, const BigInt &n2);
-  static BigInt pow(const BigInt &n, const BigInt &p, const BigInt &m);
+  static BigInt pow(const BigInt &n, const BigInt &power, const BigInt &m);
   static BigInt absolute(const BigInt &a);
   static int compare(const BigInt &a, const BigInt &b);
 
@@ -79,7 +79,7 @@ public:
   inline BigInt subtract(const BigInt &n) const;
   inline BigInt divide(const BigInt &n) const;
   inline BigInt mod(const BigInt &n) const;
-  inline BigInt pow(const BigInt &p, const BigInt &m) const;
+  inline BigInt pow(const BigInt &power, const BigInt &m) const;
   inline BigInt absolute() const;
   inline int compare(const BigInt &n) const;
 

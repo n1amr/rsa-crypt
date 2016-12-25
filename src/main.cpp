@@ -6,16 +6,7 @@ using namespace std;
 #define Int BigInt
 
 int main() {
-  Int x = 1;
-  cout << x.compare_cells(200, 1) << endl;
-  for (CELL_T i = 0; i < MAX_CELL_VALUE; ++i) {
-    for (CELL_T j = 0; j < MAX_CELL_VALUE; ++j) {
-      cout << ((int) i) << " - " << ((int) j) << " = " << ((int) (i - j)) << " " << x.compare_cells(i, j) << endl;
-    }
-  }
-//  for (int i = 1; i < 10; ++i) {
-//    x *= Int(i);
-//  }
-//  cout << x << endl;
+//  cout << BigInt(7).pow(BigInt(5), BigInt("1000")) << endl;
+  cout << BigInt::pow(BigInt(7), BigInt(5), BigInt("1000")) << endl;
   return 0;
 }

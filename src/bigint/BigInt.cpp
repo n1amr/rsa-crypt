@@ -71,6 +71,10 @@ bool BigInt::isGreaterThan(const BigInt &n1, const BigInt &n2) {
   return compare(n1, n2) > 0;
 }
 
+bool BigInt::isOdd(const BigInt &n) {
+  return n.cells.size() > 0 && n.cells[0] % 2 == 1;
+}
+
 BigInt BigInt::add(const BigInt &a, const BigInt &b) {
   assert(a.cells.size() == 1 || a.cells.size() > 1 && a.cells.back() != 0);
   assert(b.cells.size() == 1 || b.cells.size() > 1 && b.cells.back() != 0);
@@ -167,63 +171,6 @@ BigInt BigInt::subtract(const BigInt &a, const BigInt &b) {
   return c;
 }
 
-// TODO
-void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
-  if (!from.empty()) {
-    REVERSE(to);
-    to.push_back(from.back());
-    REVERSE(to);
-    from.pop_back();
-  }
-}
-
-map<CELL_T, BigInt> lookup;
-
-// TODO
-CELL_T binary_find(const BigInt &x, const BigInt &denominator) {
-  CELL_T l = 0, r = MAX_CELL_VALUE, m;
-  while (l + 1 < r) {
-    m = (CELL_T) ((l + r) / 2);
-    if (x >= (lookup[m] = lookup.count(m) > 0 ? lookup[m] : denominator * BigInt(m)))
-      l = m;
-    else
-      r = m;
-  }
-  return l;
-}
-
-CELL_T BigInt::alg(const BigInt &u, const BigInt &v) {
-  assert(u.cells.size() == v.cells.size() + 1);
-  assert(v.cells.back() != 0);
-  assert(u > ZERO);
-  assert(v > ZERO);
-
-  int n = (int) v.cells.size();
-  DOUBLE_CELL_T qhat = (DOUBLE_CELL_T) min(
-      BASE - 1,
-      ((DOUBLE_CELL_T) u.cells[n] * BASE + u.cells[n - 1]) / v.cells[n - 1]
-  );
-
-  int cnt = 0;
-  BigInt Q(to_string(qhat));
-  BigInt u_ = u;
-  if (u_.cells.size() > 1 && u_.cells.back() == 0)
-    u_.cells.pop_back();
-  BigInt R = u_ - Q * v;
-  while (R < 0) {
-    assert(cnt < 3);
-    Q = Q - ONE;
-    R = R + v;
-    cnt++;
-  }
-
-  assert(ZERO <= R);
-//  assert(R <= v);
-  assert(v * Q + R == u_);
-  assert(Q.cells.size() == 1);
-  return Q.cells[0];
-}
-
 BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   assert(n1.cells.size() == 1 || n1.cells.size() > 1 && n1.cells.back() != 0);
   assert(n2.cells.size() == 1 || n2.cells.size() > 1 && n2.cells.back() != 0);
@@ -305,6 +252,25 @@ BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
   return c;
 }
 
+BigInt BigInt::pow(const BigInt &n, const BigInt &p, const BigInt &m) {
+  BigInt ans = BigInt::ONE;
+  BigInt y = n % m;
+  BigInt p_ = p;
+  while (!p_.isZero()) {
+    if (p_.isOdd()) {
+      ans = (ans * y) % m;
+    }
+    p_ >>= 1;
+    y = (y * y) % m;
+
+  }
+  return ans;
+}
+
+BigInt BigInt::absolute(const BigInt &a) {
+  return BigInt(a.cells, POSITIVE);
+}
+
 bool BigInt::isZero() const {
   return isZero(*this);
 }
@@ -329,6 +295,10 @@ bool BigInt::isGreaterThan(const BigInt &n) const {
   return isGreaterThan(*this, n);
 }
 
+bool BigInt::isOdd() const {
+  return BigInt::isOdd(*this);
+}
+
 BigInt BigInt::add(const BigInt &n) const {
   return add(*this, n);
 }
@@ -347,6 +317,14 @@ BigInt BigInt::divide(const BigInt &n) const {
 
 BigInt BigInt::mod(const BigInt &n) const {
   return mod(*this, n);
+}
+
+BigInt BigInt::pow(const BigInt &p, const BigInt &m) const {
+  return BigInt::pow(*this, p, m);
+}
+
+BigInt BigInt::absolute() const {
+  return BigInt::absolute(*this);
 }
 
 BigInt BigInt::copy() const {
@@ -567,37 +545,59 @@ int BigInt::compare(const BigInt &a, const BigInt &b) {
   }
 }
 
-BigInt BigInt::absolute(const BigInt &a) {
-  return BigInt(a.cells, POSITIVE);
-}
+CELL_T BigInt::alg(const BigInt &u, const BigInt &v) {
+  assert(u.cells.size() == v.cells.size() + 1);
+  assert(v.cells.back() != 0);
+  assert(u > ZERO);
+  assert(v > ZERO);
 
-bool BigInt::isOdd(const BigInt &n) {
-  return n.cells.size() > 0 && n.cells[0] % 2 == 1;
-}
+  int n = (int) v.cells.size();
+  DOUBLE_CELL_T qhat = (DOUBLE_CELL_T) min(
+      BASE - 1,
+      ((DOUBLE_CELL_T) u.cells[n] * BASE + u.cells[n - 1]) / v.cells[n - 1]
+  );
 
-bool BigInt::isOdd() const {
-  return BigInt::isOdd(*this);
-}
-
-BigInt BigInt::pow(const BigInt &n, const BigInt &p, const BigInt &m) {
-  BigInt ans = BigInt::ONE;
-  BigInt y = n % m;
-  BigInt p_ = p;
-  while (!p_.isZero()) {
-    if (p_.isOdd()) {
-      ans = (ans * y) % m;
-    }
-    p_ >>= 1;
-    y = (y * y) % m;
-
+  int cnt = 0;
+  BigInt Q(to_string(qhat));
+  BigInt u_ = u;
+  if (u_.cells.size() > 1 && u_.cells.back() == 0)
+    u_.cells.pop_back();
+  BigInt R = u_ - Q * v;
+  while (R < 0) {
+    assert(cnt < 3);
+    Q = Q - ONE;
+    R = R + v;
+    cnt++;
   }
-  return ans;
+
+  assert(ZERO <= R);
+//  assert(R <= v);
+  assert(v * Q + R == u_);
+  assert(Q.cells.size() == 1);
+  return Q.cells[0];
 }
 
-BigInt BigInt::pow(const BigInt &p, const BigInt &m) const {
-  return BigInt::pow(*this, p, m);
+// TODO
+void divisionMoveCell(CELLS_CONTAINER_T &from, CELLS_CONTAINER_T &to) {
+  if (!from.empty()) {
+    REVERSE(to);
+    to.push_back(from.back());
+    REVERSE(to);
+    from.pop_back();
+  }
 }
 
-BigInt BigInt::absolute() const {
-  return BigInt::absolute(*this);
+map<CELL_T, BigInt> lookup;
+
+// TODO
+CELL_T binary_find(const BigInt &x, const BigInt &denominator) {
+  CELL_T l = 0, r = MAX_CELL_VALUE, m;
+  while (l + 1 < r) {
+    m = (CELL_T) ((l + r) / 2);
+    if (x >= (lookup[m] = lookup.count(m) > 0 ? lookup[m] : denominator * BigInt(m)))
+      l = m;
+    else
+      r = m;
+  }
+  return l;
 }

@@ -175,16 +175,18 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   assert(n1.cells.size() == 1 || n1.cells.size() > 1 && n1.cells.back() != 0);
   assert(n2.cells.size() == 1 || n2.cells.size() > 1 && n2.cells.back() != 0);
 
-  if (n1 < n2)
-    return BigInt::ZERO;
-  if (n1 == n2)
-    return BigInt::ONE;
+  if (n2 == BigInt::ZERO)
+    throw "Zero division exception";
   if (n1 == BigInt::ZERO)
     return BigInt::ZERO;
-  if (n2 == BigInt::ZERO)
-    return -BigInt::ONE;
 
-  CELL_T d = (CELL_T) (BASE / (1 + n2.cells.back()));
+  int n1_to_n2 = compare(n1, n2);
+  if (n1_to_n2 < 0) // n1 < n2
+    return BigInt::ZERO;
+  else if (n1_to_n2 == 0) // n1 == n2
+    return BigInt::ONE;
+
+  CELL_T d = (CELL_T) (BASE / (1 + n2.cells.back())); // Normalization factor
   BigInt D(d);
 
   BigInt a = n1 * D;
@@ -205,9 +207,8 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   CELLS_CONTAINER_T r_cells;
   r_cells.reserve((unsigned long) (n + 1));
   r_cells.push_back(0);
-  for (int i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i)
     r_cells.push_back(a_r_cells[i]);
-  }
   REVERSE(r_cells);
 
   BigInt r(r_cells);
@@ -245,7 +246,7 @@ BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
   if (n1.isZero())
     return BigInt::ZERO;
   if (n2.isZero())
-    return -1;
+    throw "Zero division exception";
 
   BigInt c = n1 - (n1 / n2) * n2;
   assert(c.cells.size() == 1 || c.cells.size() > 1 && c.cells.back() != 0);
@@ -329,7 +330,7 @@ BigInt BigInt::multiply(const BigInt &n) const {
 }
 
 BigInt BigInt::subtract(const BigInt &n) const {
-  return subtract(*this, n);
+  return add(*this, n.negate());
 }
 
 BigInt BigInt::divide(const BigInt &n) const {
@@ -464,39 +465,39 @@ string BigInt::toDecimalString() const {
   return sign == POSITIVE ? d_str : "-" + d_str;
 }
 
-BigInt BigInt::operator+(const BigInt &n) const { return this->add(n); }
+BigInt BigInt::operator+(const BigInt &n) const { return add(*this, n); }
 
-BigInt BigInt::operator-(const BigInt &n) const { return this->subtract(n); }
+BigInt BigInt::operator-(const BigInt &n) const { return subtract(*this, n); }
 
-BigInt BigInt::operator*(const BigInt &n) const { return this->multiply(n); }
+BigInt BigInt::operator*(const BigInt &n) const { return multiply(*this, n); }
 
-BigInt BigInt::operator/(const BigInt &n) const { return this->divide(n); }
+BigInt BigInt::operator/(const BigInt &n) const { return divide(*this, n); }
 
-BigInt BigInt::operator%(const BigInt &n) const { return this->mod(n); }
+BigInt BigInt::operator%(const BigInt &n) const { return mod(*this, n); }
 
 BigInt BigInt::operator-() const { return this->negate(); }
 
-BigInt &BigInt::operator+=(const BigInt &n) { return *this = *this + n; }
+BigInt &BigInt::operator+=(const BigInt &n) { return *this = add(*this, n); }
 
-BigInt &BigInt::operator-=(const BigInt &n) { return *this = *this - n; }
+BigInt &BigInt::operator-=(const BigInt &n) { return *this = subtract(*this, n); }
 
-BigInt &BigInt::operator*=(const BigInt &n) { return *this = *this * n; }
+BigInt &BigInt::operator*=(const BigInt &n) { return *this = multiply(*this, n); }
 
-BigInt &BigInt::operator/=(const BigInt &n) { return *this = *this / n; }
+BigInt &BigInt::operator/=(const BigInt &n) { return *this = divide(*this, n); }
 
-BigInt &BigInt::operator%=(const BigInt &n) { return *this = *this % n; }
+BigInt &BigInt::operator%=(const BigInt &n) { return *this = mod(*this, n); }
 
-bool BigInt::operator==(const BigInt &n) const { return this->equals(n); }
+bool BigInt::operator==(const BigInt &n) const { return equals(*this, n); }
 
-bool BigInt::operator!=(const BigInt &n) const { return !(*this == n); }
+bool BigInt::operator!=(const BigInt &n) const { return !equals(*this, n); }
 
-bool BigInt::operator<(const BigInt &n) const { return this->isLessThan(n); }
+bool BigInt::operator<(const BigInt &n) const { return isLessThan(*this, n); }
 
-bool BigInt::operator>(const BigInt &n) const { return this->isGreaterThan(n); }
+bool BigInt::operator>(const BigInt &n) const { return isGreaterThan(*this, n); }
 
-bool BigInt::operator<=(const BigInt &n) const { return !((*this) > n); }
+bool BigInt::operator<=(const BigInt &n) const { return !isGreaterThan(*this, n); }
 
-bool BigInt::operator>=(const BigInt &n) const { return !((*this) < n); }
+bool BigInt::operator>=(const BigInt &n) const { return !isLessThan(*this, n); }
 
 BigInt BigInt::operator<<(int n) const {
   return shiftBits(n);
@@ -507,30 +508,30 @@ BigInt BigInt::operator>>(int n) const {
 }
 
 BigInt &BigInt::operator<<=(int n) {
-  return *this = *this << n;
+  return *this = this->shiftBits(n);
 }
 
 BigInt &BigInt::operator>>=(int n) {
-  return *this = *this >> n;
+  return *this = this->shiftBits(-n);
 }
 
 BigInt BigInt::operator++() {
-  return *this = *this + BigInt::ONE;
+  return *this = add(*this, ONE);
 }
 
 BigInt BigInt::operator++(int) {
   BigInt tmp = *this;
-  operator++();
+  *this = add(*this, ONE);
   return tmp;
 }
 
 BigInt BigInt::operator--() {
-  return *this = *this - BigInt::ONE;
+  return *this = add(*this, ONE.negate());
 }
 
 BigInt BigInt::operator--(int) {
   BigInt tmp = *this;
-  operator--();
+  *this = add(*this, ONE.negate());
   return tmp;
 }
 

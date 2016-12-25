@@ -62,6 +62,7 @@ public:
   static BigInt mod(const BigInt &n1, const BigInt &n2);
   static BigInt pow(const BigInt &n, const BigInt &p, const BigInt &m);
   static BigInt absolute(const BigInt &a);
+  static int compare(const BigInt &a, const BigInt &b);
 
   bool isZero() const;
   bool isPositive() const;
@@ -80,6 +81,7 @@ public:
   inline BigInt mod(const BigInt &n) const;
   inline BigInt pow(const BigInt &p, const BigInt &m) const;
   inline BigInt absolute() const;
+  inline int compare(const BigInt &n) const;
 
   inline BigInt copy() const;
   inline BigInt negate() const;
@@ -88,9 +90,8 @@ public:
 
   // String conversions
   string toCellsString() const;
-  string toBitsString() const;
+  string toBinaryString() const;
   vector<bool> toBitsVector() const;
-  string toAbsDecimalString() const;
   string toDecimalString() const;
 
   BigInt operator+(const BigInt &n) const;
@@ -132,8 +133,6 @@ public:
 private:
   inline static int sign_(SIGNED_DOUBLE_CELL_T c);
   inline static int compare_cells(CELL_T c1, CELL_T c2);
-  inline static int compare(const BigInt &a, const BigInt &b);
-
   static CELL_T div_next_quotient(const BigInt &u, const BigInt &v);
 };
 

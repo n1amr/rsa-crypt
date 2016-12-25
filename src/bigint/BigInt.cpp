@@ -271,6 +271,27 @@ BigInt BigInt::absolute(const BigInt &a) {
   return BigInt(a.cells, POSITIVE);
 }
 
+int BigInt::compare(const BigInt &a, const BigInt &b) {
+  if (a.sign != b.sign)
+    return a.sign == POSITIVE ? 1 : -1;
+
+  int m = (int) a.cells.size() - 1;
+  int n = (int) b.cells.size() - 1;
+
+  if (m != n) {
+    return m > n ? 1 : m < n ? -1 : 0;
+  } else {
+    int r = 0;
+    for (int i = m; i >= 0; --i) {
+      if (a.cells[i] != b.cells[i]) {
+        r = compare_cells(a.cells[i], b.cells[i]);
+        break;
+      }
+    }
+    return a.sign == POSITIVE ? r : -r;
+  }
+}
+
 bool BigInt::isZero() const {
   return isZero(*this);
 }
@@ -325,6 +346,10 @@ BigInt BigInt::pow(const BigInt &p, const BigInt &m) const {
 
 BigInt BigInt::absolute() const {
   return BigInt::absolute(*this);
+}
+
+int BigInt::compare(const BigInt &n) const {
+  return compare(*this, n);
 }
 
 BigInt BigInt::copy() const {
@@ -395,14 +420,14 @@ string BigInt::toCellsString() const {
   return ss.str();
 }
 
-string BigInt::toBitsString() const {
+string BigInt::toBinaryString() const {
   auto v = toBitsVector();
 
   stringstream ss;
-  ss << "BigInt(" << ((sign == POSITIVE) ? "+" : "-");
+  if(sign == NEGATIVE)
+    ss << "-";
   for (auto it = v.rbegin(); it != v.rend(); ++it)
     ss << (*it);
-  ss << ")";
   return ss.str();
 }
 
@@ -423,8 +448,8 @@ vector<bool> BigInt::toBitsVector() const {
   return v;
 }
 
-string BigInt::toAbsDecimalString() const {
-  auto bits = toBitsVector();
+string BigInt::toDecimalString() const {
+  vector<bool> bits = toBitsVector();
 
   vector<short> digits;
   digits.reserve(bits.size() / 3);
@@ -435,15 +460,8 @@ string BigInt::toAbsDecimalString() const {
     digits = addToDecimalVec(digits, *it);
   }
 
-  return decimalVecToDecimalString(digits);
-}
-
-string BigInt::toDecimalString() const {
-  if (sign == POSITIVE) {
-    return toAbsDecimalString();
-  } else {
-    return "-" + toAbsDecimalString();
-  }
+  string d_str = decimalVecToDecimalString(digits);
+  return sign == POSITIVE ? d_str : "-" + d_str;
 }
 
 BigInt BigInt::operator+(const BigInt &n) const { return this->add(n); }
@@ -524,27 +542,6 @@ int BigInt::compare_cells(CELL_T c1, CELL_T c2) {
   return sign_((SIGNED_DOUBLE_CELL_T) (DOUBLE_CELL_T) c1 - (SIGNED_DOUBLE_CELL_T) (DOUBLE_CELL_T) c2);
 }
 
-int BigInt::compare(const BigInt &a, const BigInt &b) {
-  if (a.sign != b.sign)
-    return a.sign == POSITIVE ? 1 : -1;
-
-  int m = (int) a.cells.size() - 1;
-  int n = (int) b.cells.size() - 1;
-
-  if (m != n) {
-    return m > n ? 1 : m < n ? -1 : 0;
-  } else {
-    int r = 0;
-    for (int i = m; i >= 0; --i) {
-      if (a.cells[i] != b.cells[i]) {
-        r = compare_cells(a.cells[i], b.cells[i]);
-        break;
-      }
-    }
-    return a.sign == POSITIVE ? r : -r;
-  }
-}
-
 CELL_T BigInt::div_next_quotient(const BigInt &u, const BigInt &v) {
   assert(u.cells.size() == v.cells.size() + 1);
   assert(v.cells.back() != 0);
@@ -576,3 +573,4 @@ CELL_T BigInt::div_next_quotient(const BigInt &u, const BigInt &v) {
   assert(Q.cells.size() == 1);
   return Q.cells[0];
 }
+

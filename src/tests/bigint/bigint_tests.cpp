@@ -29,7 +29,7 @@ bool testRepresentationOfANumber(string s) {
     cout << x.toDecimalString() << endl;
     cout << x << endl;
     cout << x.toCellsString() << endl;
-    cout << x.toBitsString() << endl;
+    cout << x.toBinaryString() << endl;
     cout << x.toDecimalString() << endl;
     cout << (correct ? "True" : "False") << endl;
     cout << "Elapsed time = " << elapsed_time << endl;

@@ -86,6 +86,7 @@ public:
 
   BigInt shiftBits(int n_bits_left) const;
 
+  // String conversions
   string toCellsString() const;
   string toBitsString() const;
   vector<bool> toBitsVector() const;
@@ -129,7 +130,6 @@ public:
   }
 
 private:
-  inline static int sign_l(long long c);
   inline static int sign_(SIGNED_DOUBLE_CELL_T c);
   inline static int compare_cells(CELL_T c1, CELL_T c2);
   inline static int compare(const BigInt &a, const BigInt &b);

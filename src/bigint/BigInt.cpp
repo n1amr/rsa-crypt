@@ -236,7 +236,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
     return BigInt::ZERO;
   if (n2 == BigInt::ZERO)
     return -BigInt::ONE;
-  
+
   CELL_T d = (CELL_T) (BASE / (1 + n2.cells.back()));
   BigInt D(d);
 
@@ -249,7 +249,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   int m = (int) a.cells.size();
   int n = (int) b.cells.size();
   int k = m - n + 1;
-  
+
   CELLS_CONTAINER_T a_r_cells = a.cells;
   REVERSE(a_r_cells);
 
@@ -538,10 +538,6 @@ BigInt BigInt::operator--(int) {
   return tmp;
 }
 
-int BigInt::sign_l(long long c) {
-  return c > 0 ? 1 : c < 0 ? -1 : 0;
-}
-
 int BigInt::sign_(SIGNED_DOUBLE_CELL_T c) {
   return c > 0 ? 1 : c < 0 ? -1 : 0;
 }
@@ -557,9 +553,9 @@ int BigInt::compare(const BigInt &a, const BigInt &b) {
   int m = (int) a.cells.size() - 1;
   int n = (int) b.cells.size() - 1;
 
-  if (m != n)
-    return sign_l(m - n);
-  else {
+  if (m != n) {
+    return m > n ? 1 : m < n ? -1 : 0;
+  } else {
     int r = 0;
     for (int i = m; i >= 0; --i) {
       if (a.cells[i] != b.cells[i]) {

@@ -82,10 +82,8 @@ public:
   inline BigInt absolute() const;
 
   inline BigInt copy() const;
-  inline BigInt invert() const;
   inline BigInt negate() const;
 
-  BigInt shiftCells(int n_cells_left) const;
   BigInt shiftBits(int n_bits_left) const;
 
   string toCellsString() const;

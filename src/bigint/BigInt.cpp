@@ -3,10 +3,6 @@
 #include "DecimalHelpers.h"
 using namespace std;
 
-CELLS_CONTAINER_T invert_cells(const CELLS_CONTAINER_T &cells);
-void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out);
-void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_out);
-
 BigInt::BigInt()
     : cells(CELLS_CONTAINER_T {0}) {}
 
@@ -357,11 +353,6 @@ BigInt BigInt::copy() const {
   return *this;
 }
 
-// TODO
-BigInt BigInt::invert() const {
-  return BigInt(invert_cells(this->cells));
-}
-
 BigInt BigInt::negate() const {
   assert(cells.size() == 1 || cells.size() > 1 && cells.back() != 0);
   if (isZero())
@@ -369,27 +360,6 @@ BigInt BigInt::negate() const {
   BigInt c = BigInt(cells, !sign);
   assert(c.cells.size() == 1 || c.cells.size() > 1 && c.cells.back() != 0);
   return c;
-}
-
-// TODO
-BigInt BigInt::shiftCells(int n_cells_left) const {
-  CELLS_CONTAINER_T new_data = cells;
-
-  REVERSE(new_data);
-  if (n_cells_left > 0) {
-    for (int i = 0; i < n_cells_left; ++i)
-      new_data.push_back(0);
-  } else {
-    n_cells_left = -n_cells_left;
-    for (int i = 0; !new_data.empty() && i < n_cells_left; ++i)
-      new_data.pop_back();
-  }
-  REVERSE(new_data);
-
-  if (new_data.size() == 0)
-    return BigInt::ZERO;
-
-  return BigInt(new_data, sign);
 }
 
 BigInt BigInt::shiftBits(int n_bits_left) const {
@@ -634,29 +604,4 @@ BigInt BigInt::pow(const BigInt &p, const BigInt &m) const {
 
 BigInt BigInt::absolute() const {
   return BigInt::absolute(*this);
-}
-
-// TODO
-void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out) {
-  DOUBLE_CELL_T sum = ((DOUBLE_CELL_T) cell1) + cell2 + remainder;
-  ans = (CELL_T) sum;
-  remainder_out = (CELL_T) (sum >> (CELL_BIT_LENGTH));
-}
-
-// TODO
-void multiplyCells(CELL_T cell1, CELL_T cell2, CELL_T &ans, CELL_T &remainder_out) {
-  DOUBLE_CELL_T product = ((DOUBLE_CELL_T) cell1) * cell2;
-  ans = (CELL_T) product;
-  remainder_out = (CELL_T) (product >> (CELL_BIT_LENGTH));
-}
-
-// TODO
-CELLS_CONTAINER_T invert_cells(const CELLS_CONTAINER_T &cells) {
-  CELLS_CONTAINER_T result;
-  result.reserve(cells.size());
-
-  for (auto it = cells.begin(); it != cells.end(); ++it)
-    result.push_back(~((CELL_T) (*it)));
-
-  return result;
 }

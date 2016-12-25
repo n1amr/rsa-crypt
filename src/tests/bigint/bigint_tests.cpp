@@ -479,33 +479,6 @@ bool testFactorial(long long n, string expected) {
   return !correct;
 }
 
-bool testShiftCells(string n, int n_cells_left, string expected) {
-  string output = BigInt(n).shiftCells(n_cells_left).toDecimalString();
-  bool correct = expected == output;
-  if (!correct)
-    if (n_cells_left >= 0)
-      cout << n << " << " << n_cells_left * CELL_BIT_LENGTH << " => " << expected << " != " << output << endl;
-    else
-      cout << n << " >> " << -n_cells_left * CELL_BIT_LENGTH << " => " << expected << " != " << output << endl;
-  return !correct;
-}
-
-bool testShiftCellsSmallNumbers(long long start, int shifts, long long steps) {
-  for (long long i = start - steps; i <= start + steps; ++i) {
-    for (int j = 0; j <= shifts; ++j) {
-      bool negative = i < 0;
-      long long expected = (negative ? -1 : 1) * ((negative ? -i : i) << (j * CELL_BIT_LENGTH));
-      bool bad = testShiftCells(to_string(i), j, to_string(expected));
-      expected = (negative ? -1 : 1) * ((negative ? -i : i) >> (j * CELL_BIT_LENGTH));
-      bad |= testShiftCells(to_string(i), -j, to_string(expected));
-      if (bad)
-        return bad;
-    }
-  }
-
-  return 0;
-}
-
 bool testShiftBits(string n, int n_bits_left, string expected) {
   string output = BigInt(n).shiftBits(n_bits_left).toDecimalString();
   bool correct = expected == output;
@@ -688,15 +661,6 @@ void runBigIntTests() {
     elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
     end_time = clock();
     cout << (tmp ? "Error" : "OK   ") << " | testFactorial time = " << elapsed_time << endl;
-  }
-
-  {
-    tmp = testShiftCellsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256) ||
-          testShiftCellsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
-
-    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
-    end_time = clock();
-    cout << (tmp ? "Error" : "OK   ") << " | testShiftCells time = " << elapsed_time << endl;
   }
 
   {

@@ -256,12 +256,22 @@ BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
 BigInt BigInt::pow(const BigInt &n, const BigInt &power, const BigInt &m) {
   BigInt ans = BigInt::ONE;
   BigInt p = power;
-  BigInt tmp = n % m;
-  while (!p.isZero()) {
-    if (p.isOdd())
-      ans = (ans * tmp) % m;
-    p >>= 1;
-    tmp = (tmp * tmp) % m;
+  if (m != ZERO) {
+    BigInt tmp = n % m;
+    while (!p.isZero()) {
+      if (p.isOdd())
+        ans = (ans * tmp) % m;
+      p >>= 1;
+      tmp = (tmp * tmp) % m;
+    }
+  } else {
+    BigInt tmp = n;
+    while (!p.isZero()) {
+      if (p.isOdd())
+        ans = (ans * tmp);
+      p >>= 1;
+      tmp = (tmp * tmp);
+    }
   }
   return ans;
 }

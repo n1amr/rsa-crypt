@@ -79,7 +79,7 @@ public:
   inline BigInt subtract(const BigInt &n) const;
   inline BigInt divide(const BigInt &n) const;
   inline BigInt mod(const BigInt &n) const;
-  inline BigInt pow(const BigInt &power, const BigInt &m) const;
+  BigInt pow(const BigInt &power, const BigInt &m = ZERO) const;
   inline BigInt absolute() const;
   inline int compare(const BigInt &n) const;
 

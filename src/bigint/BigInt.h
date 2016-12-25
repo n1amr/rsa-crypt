@@ -134,7 +134,7 @@ private:
   inline static int compare_cells(CELL_T c1, CELL_T c2);
   inline static int compare(const BigInt &a, const BigInt &b);
 
-  static CELL_T alg(const BigInt &u, const BigInt &v);
+  static CELL_T div_next_quotient(const BigInt &u, const BigInt &v);
 };
 
 #endif //RSA_BIGINT_H

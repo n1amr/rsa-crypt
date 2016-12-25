@@ -215,7 +215,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   assert(r.cells.back() == 0);
 
   for (int i = 0; i < k; ++i) {
-    CELL_T q_i = alg(r, b);
+    CELL_T q_i = div_next_quotient(r, b);
     q_cells.push_back(q_i);
     if (r.cells.size() > 1 && r.cells.back() == 0)
       r.cells.pop_back();
@@ -545,7 +545,7 @@ int BigInt::compare(const BigInt &a, const BigInt &b) {
   }
 }
 
-CELL_T BigInt::alg(const BigInt &u, const BigInt &v) {
+CELL_T BigInt::div_next_quotient(const BigInt &u, const BigInt &v) {
   assert(u.cells.size() == v.cells.size() + 1);
   assert(v.cells.back() != 0);
   assert(u > ZERO);

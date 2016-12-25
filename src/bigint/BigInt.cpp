@@ -413,10 +413,10 @@ BigInt BigInt::shiftBits(int n_bits_left) const {
 
 string BigInt::toCellsString() const {
   stringstream ss;
-  ss << "BigInt(" << ((sign == POSITIVE) ? "+" : "-") << "{";
+  ss << ((sign == POSITIVE) ? "+" : "-") << " [";
   for (auto it = cells.rbegin(); it != cells.rend(); ++it)
     ss << ((unsigned long long int) *it) << ", ";
-  ss << "})";
+  ss << "]";
   return ss.str();
 }
 
@@ -424,7 +424,7 @@ string BigInt::toBinaryString() const {
   auto v = toBitsVector();
 
   stringstream ss;
-  if(sign == NEGATIVE)
+  if (sign == NEGATIVE)
     ss << "-";
   for (auto it = v.rbegin(); it != v.rend(); ++it)
     ss << (*it);

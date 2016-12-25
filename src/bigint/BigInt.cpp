@@ -632,6 +632,10 @@ BigInt BigInt::pow(const BigInt &p, const BigInt &m) const {
   return BigInt::pow(*this, p, m);
 }
 
+BigInt BigInt::absolute() const {
+  return BigInt::absolute(*this);
+}
+
 // TODO
 void addCells(CELL_T cell1, CELL_T cell2, CELL_T remainder, CELL_T &ans, CELL_T &remainder_out) {
   DOUBLE_CELL_T sum = ((DOUBLE_CELL_T) cell1) + cell2 + remainder;

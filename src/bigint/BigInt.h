@@ -53,11 +53,15 @@ public:
   inline static bool isLessThan(const BigInt &n1, const BigInt &n2);
   inline static bool isGreaterThan(const BigInt &n1, const BigInt &n2);
 
+  inline static bool isOdd(const BigInt &n);
+
   static BigInt add(const BigInt &a, const BigInt &b);
   static BigInt multiply(const BigInt &a, const BigInt &b);
   static BigInt subtract(const BigInt &a, const BigInt &b);
   static BigInt divide(const BigInt &n1, const BigInt &n2);
   static BigInt mod(const BigInt &n1, const BigInt &n2);
+  static BigInt pow(const BigInt &n, const BigInt &p, const BigInt &m);
+  static BigInt absolute(const BigInt &a);
 
   bool isZero() const;
   bool isPositive() const;
@@ -67,11 +71,15 @@ public:
   bool isLessThan(const BigInt &n) const;
   bool isGreaterThan(const BigInt &n) const;
 
+  bool isOdd() const;
+
   inline BigInt add(const BigInt &n) const;
   inline BigInt multiply(const BigInt &n) const;
   inline BigInt subtract(const BigInt &n) const;
   inline BigInt divide(const BigInt &n) const;
   inline BigInt mod(const BigInt &n) const;
+  inline BigInt pow(const BigInt &p, const BigInt &m) const;
+  inline BigInt absolute() const;
 
   inline BigInt copy() const;
   inline BigInt invert() const;
@@ -122,18 +130,13 @@ public:
     return os << x.toDecimalString();
   }
 
-//private:
+private:
   inline static int sign_l(long long c);
   inline static int sign_(SIGNED_DOUBLE_CELL_T c);
   inline static int compare_cells(CELL_T c1, CELL_T c2);
   inline static int compare(const BigInt &a, const BigInt &b);
 
-  static BigInt absolute(const BigInt &a) ;
-  static CELL_T alg(const BigInt &u, const BigInt &v) ;
-  static bool isOdd(const BigInt &n) ;
-  bool isOdd() const;
-  static BigInt pow(const BigInt &n, const BigInt &p, const BigInt &m) ;
-  BigInt pow(const BigInt &p, const BigInt &m) const;
+  static CELL_T alg(const BigInt &u, const BigInt &v);
 };
 
 #endif //RSA_BIGINT_H

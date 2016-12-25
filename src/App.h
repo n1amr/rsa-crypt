@@ -52,7 +52,7 @@ private:
     return true;
   }
 
-  BigInt encrypt(BigInt message, BigInt e_or_d, BigInt N) {
+  BigInt encrypt(BigInt message, BigInt e_or_d, BigInt n) {
     // TODO
     return BigInt::ZERO;
   }
@@ -67,17 +67,17 @@ private:
     return d;
   }
 
-  BigInt inverse(BigInt b, BigInt m) {
-    BigInt right_old = m;
-    BigInt right = b;
+  BigInt inverse(BigInt a, BigInt mod) {
+    BigInt right_old = mod;
+    BigInt right = a;
     BigInt left_old = BigInt::ZERO;
     BigInt left = BigInt::ONE;
     BigInt tmp, Q;
     while (1) {
       if (right.isZero())
         return BigInt::ZERO;// no inverse
-      if (right == BigInt::ONE)
-        return left > 0 ? left : m + left;
+      else if (right == BigInt::ONE)
+        return left > 0 ? left : mod + left;
 
       Q = right_old / right;
 
@@ -96,51 +96,51 @@ public:
 #ifdef N1AMR_f220929df
     freopen("input", "r", stdin);
 #endif
-    BigInt P, Q, N, Phi, E, D;
+    BigInt p, q, n, phi, e, d;
     bool generated = false;
 
     string line;
     while (getline(cin, line)) {
       if (line.length() > 2 && line.substr(0, 2) == "P=") {
-        P = BigInt(line.substr(2));
+        p = BigInt(line.substr(2));
         generated = false;
       } else if (line.length() > 2 && line.substr(0, 2) == "Q=") {
-        Q = BigInt(line.substr(2));
+        q = BigInt(line.substr(2));
         generated = false;
       } else if (line.length() > 2 && line.substr(0, 2) == "E=") {
-        E = BigInt(line.substr(2));
+        e = BigInt(line.substr(2));
         generated = false;
       } else if (line == "PrintP") {
-        cout << P << endl;
+        cout << p << endl;
       } else if (line == "PrintQ") {
-        cout << Q << endl;
+        cout << q << endl;
       } else if (line == "PrintE") {
-        cout << E << endl;
+        cout << e << endl;
       } else if (line == "PrintD") {
         if (!generated) {
-          D = generate(P, Q, E);
+          d = generate(p, q, e);
           generated = true;
         }
-        cout << D << endl;
+        cout << d << endl;
       } else if (line == "PrintN") {
-        cout << (N = P * Q) << endl;
+        cout << (n = p * q) << endl;
       } else if (line == "PrintPhi") {
-        cout << (Phi = (P - 1) * (Q - 1)) << endl;
+        cout << (phi = (p - 1) * (q - 1)) << endl;
       } else if (line == "IsPPrime") {
-        cout << (isPrime(P) ? "Yes" : "No") << endl;
+        cout << (isPrime(p) ? "Yes" : "No") << endl;
       } else if (line == "IsQPrime") {
-        cout << (isPrime(Q) ? "Yes" : "No") << endl;
+        cout << (isPrime(q) ? "Yes" : "No") << endl;
       } else if (line.substr(0, 14) == "EncryptPublic=") {
         BigInt message(line.substr(14));
-        BigInt cipher = encrypt(message, E, N);
+        BigInt cipher = encrypt(message, e, n);
         cout << cipher << endl;
       } else if (line.substr(0, 15) == "EncryptPrivate=") {
         if (!generated) {
-          D = generate(P, Q, E);
+          d = generate(p, q, e);
           generated = true;
         }
         BigInt message(line.substr(15));
-        BigInt cipher = encrypt(message, D, N);
+        BigInt cipher = encrypt(message, d, n);
         cout << cipher << endl;
       } else if (line == "Quit")
         return;

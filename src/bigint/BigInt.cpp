@@ -79,6 +79,11 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
   assert(a.cells.size() == 1 || a.cells.size() > 1 && a.cells.back() != 0);
   assert(b.cells.size() == 1 || b.cells.size() > 1 && b.cells.back() != 0);
 
+  if (a.isZero())
+    return b;
+  if (b.isZero())
+    return a;
+
   int m = (int) a.cells.size();
   int n = (int) b.cells.size();
   int k = max(m, n);
@@ -244,11 +249,6 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
 BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
   assert(n1.cells.size() == 1 || n1.cells.size() > 1 && n1.cells.back() != 0);
   assert(n2.cells.size() == 1 || n2.cells.size() > 1 && n2.cells.back() != 0);
-
-  if (n1.isZero())
-    return BigInt::ZERO;
-  if (n2.isZero())
-    throw "Zero division exception";
 
   BigInt c = n1 - (n1 / n2) * n2;
   assert(c.cells.size() == 1 || c.cells.size() > 1 && c.cells.back() != 0);

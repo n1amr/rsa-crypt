@@ -1,6 +1,6 @@
 #include <iostream>
 #include <bits/stdc++.h>
-#include "DecimalStringHelpers.h"
+#include "DecimalHelpers.h"
 using namespace std;
 
 string decimalVecToDecimalString(const vector<short> &v) {
@@ -84,3 +84,15 @@ vector<bool> decimalVecToBitsVec(const vector<short> &v) {
   return ans;
 }
 
+void printVectorReversed(CELLS_CONTAINER_T v, string name) {
+  cout << name << " = ";
+  for (auto it = v.rbegin(); it != v.rend(); ++it)
+    cout << ((long long) *it) << " ";
+  cout << endl;
+}
+
+void printVector(CELLS_CONTAINER_T v, string name) {
+  REVERSE(v);
+  printVectorReversed(v, name);
+  REVERSE(v);
+}

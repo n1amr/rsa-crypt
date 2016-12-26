@@ -560,26 +560,25 @@ CELL_T BigInt::div_next_quotient(const BigInt &u, const BigInt &v) {
   assert(v > ZERO);
 
   int n = (int) v.cells.size();
-  DOUBLE_CELL_T qhat = (DOUBLE_CELL_T) min(
+  DOUBLE_CELL_T estimate = (DOUBLE_CELL_T) min(
       BASE - 1,
       ((DOUBLE_CELL_T) u.cells[n] * BASE + u.cells[n - 1]) / v.cells[n - 1]
   );
 
-  int cnt = 0;
-  BigInt Q(to_string(qhat));
   BigInt u_ = u;
   if (u_.cells.size() > 1 && u_.cells.back() == 0)
     u_.cells.pop_back();
+  BigInt Q((int) estimate);
   BigInt R = u_ - Q * v;
+  int error = 0;
   while (R < 0) {
-    assert(cnt < 3);
-    Q = Q - ONE;
+    assert(error < 3);
     R = R + v;
-    cnt++;
+    error++;
   }
+  Q = Q - BigInt(error);
 
   assert(ZERO <= R);
-//  assert(R <= v);
   assert(v * Q + R == u_);
   assert(Q.cells.size() == 1);
   return Q.cells[0];

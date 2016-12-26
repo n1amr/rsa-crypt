@@ -42,16 +42,6 @@ bool isPrime(BigInt n) {
   return true;
 }
 
-BigInt generate(BigInt p, BigInt q, BigInt e) {
-  BigInt n = p * q;
-  BigInt phi = (p - 1) * (q - 1);
-  BigInt d = inverse(e, phi);
-  if (d.isZero())
-    throw "Cannot find inverse (gcd != 1)";
-
-  return d;
-}
-
 BigInt inverse(BigInt a, BigInt mod) {
   BigInt right_old = mod;
   BigInt right = a;
@@ -80,50 +70,62 @@ void appLoop() {
 #ifdef N1AMR_FILE_INPUT
   freopen("input", "r", stdin);
 #endif
-  BigInt p, q, n, phi, e, d;
-  bool generated = false;
+  map<char, BigInt> cache;
+  map<char, bool> boolCache;
 
   string line;
   while (getline(cin, line)) {
     if (line.length() > 2 && line.substr(0, 2) == "P=") {
-      p = BigInt(line.substr(2));
-      generated = false;
+      cache['p'] = BigInt(line.substr(2));
+      cache.erase('n');
+      cache.erase('h');
+      cache.erase('d');
+      boolCache.erase('p');
     } else if (line.length() > 2 && line.substr(0, 2) == "Q=") {
-      q = BigInt(line.substr(2));
-      generated = false;
+      cache['q'] = BigInt(line.substr(2));
+      cache.erase('n');
+      cache.erase('h');
+      cache.erase('d');
+      boolCache.erase('q');
     } else if (line.length() > 2 && line.substr(0, 2) == "E=") {
-      e = BigInt(line.substr(2));
-      generated = false;
+      cache['e'] = BigInt(line.substr(2));
+      cache.erase('n');
+      cache.erase('h');
+      cache.erase('d');
     } else if (line == "PrintP") {
-      cout << p << endl;
+      cout << cache['p'] << endl;
     } else if (line == "PrintQ") {
-      cout << q << endl;
+      cout << cache['q'] << endl;
     } else if (line == "PrintE") {
-      cout << e << endl;
+      cout << cache['e'] << endl;
     } else if (line == "PrintD") {
-      if (!generated) {
-        d = generate(p, q, e);
-        generated = true;
-      }
-      cout << d << endl;
+      if (cache.count('d') == 0)
+        cache['d'] = inverse(cache['e'], cache['h']);
+      cout << cache['d'] << endl;
     } else if (line == "PrintN") {
-      cout << (n = p * q) << endl;
+      if (cache.count('n') == 0)
+        cache['n'] = cache['p'] * cache['q'];
+      cout << cache['n'] << endl;
     } else if (line == "PrintPhi") {
-      cout << (phi = (p - 1) * (q - 1)) << endl;
+      if (cache.count('h') == 0)
+        cache['h'] = (cache['p'] - 1) * (cache['q'] - 1);
+      cout << cache['h'] << endl;
     } else if (line == "IsPPrime") {
-      cout << (isPrime(p) ? "Yes" : "No") << endl;
+      if (boolCache.count('p') == 0)
+        boolCache['p'] = isPrime(cache['p']);
+      cout << (boolCache['p'] ? "Yes" : "No") << endl;
     } else if (line == "IsQPrime") {
-      cout << (isPrime(q) ? "Yes" : "No") << endl;
+      if (boolCache.count('q') == 0)
+        boolCache['q'] = isPrime(cache['q']);
+      cout << (boolCache['q'] ? "Yes" : "No") << endl;
     } else if (line.substr(0, 14) == "EncryptPublic=") {
       BigInt message(line.substr(14));
-      cout << message.pow(e, n) << endl;
+      cout << message.pow(cache['e'], cache['n']) << endl;
     } else if (line.substr(0, 15) == "EncryptPrivate=") {
-      if (!generated) {
-        d = generate(p, q, e);
-        generated = true;
-      }
+      if (cache.count('d') == 0)
+        cache['d'] = inverse(cache['e'], cache['h']);
       BigInt message(line.substr(15));
-      cout << message.pow(d, n) << endl;
+      cout << message.pow(cache['d'], cache['n']) << endl;
     } else if (line == "Quit")
       return;
   }

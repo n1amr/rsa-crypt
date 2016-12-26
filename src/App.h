@@ -16,7 +16,6 @@ using namespace std;
 BigInt random(BigInt from, BigInt to);
 bool millerRabinTest(BigInt n);
 bool isPrime(BigInt n);
-BigInt generate(BigInt p, BigInt q, BigInt e);
 BigInt inverse(BigInt a, BigInt mod);
 void appLoop();
 

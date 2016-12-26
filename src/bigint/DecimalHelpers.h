@@ -2,8 +2,11 @@
 #define RSA_DECIMAL_HELPERS_H
 
 #include <bits/stdc++.h>
-#include "BigInt.h"
 using namespace std;
+
+#ifdef N1AMR_MULTIPLE_FILES
+#include "BigInt.h"
+#endif
 
 #define REVERSE(s) reverse((s).begin(), (s).end())
 

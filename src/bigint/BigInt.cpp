@@ -1,7 +1,10 @@
 #include <bits/stdc++.h>
+using namespace std;
+
+#ifdef N1AMR_MULTIPLE_FILES
 #include "BigInt.h"
 #include "DecimalHelpers.h"
-using namespace std;
+#endif
 
 BigInt::BigInt()
     : cells(CELLS_CONTAINER_T {0}) {}

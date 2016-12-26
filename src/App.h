@@ -2,9 +2,12 @@
 #define RSA_APP_H
 
 #include <iostream>
-#include "bigint/BigInt.h"
 #include "bits/stdc++.h"
 using namespace std;
+
+#ifdef N1AMR_MULTIPLE_FILES
+#include "bigint/BigInt.h"
+#endif
 
 #define COMPOSITE 0
 #define INCLUSIVE 1
@@ -88,7 +91,7 @@ private:
 
 public:
   void appLoop() {
-#ifdef N1AMR
+#ifdef N1AMR_FILE_INPUT
     freopen("input", "r", stdin);
 #endif
     BigInt p, q, n, phi, e, d;

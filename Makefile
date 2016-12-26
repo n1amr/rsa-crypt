@@ -1,7 +1,7 @@
 DEBUG = true
 CXX = g++
 LINKER = $(CXX)
-CXXFLAGS = --std=c++11 -Wall -Wextra -pedantic -D N1AMR_FILE_INPUT -O0
+CXXFLAGS = --std=c++11 -Wall -Wextra -pedantic -D N1AMR_FILE_INPUT
 ifdef DEBUG
 	CXXFLAGS := $(CXXFLAGS) -g
 endif

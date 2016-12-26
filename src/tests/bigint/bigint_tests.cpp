@@ -188,7 +188,7 @@ bool testMultiplication(string n1, string n2, string expected) {
 bool testMultiplicationSmallNumbers(long long n1_start, long long n2_start, long long steps) {
   for (long long i = n1_start - steps; i < n1_start + steps; ++i) {
     for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
-      bool bad = testMultiplication(to_string(i), to_string(j), to_string(i * j));
+      bool bad = testMultiplication(to_string(i), to_string(j), to_string((long long) i * j));
       if (bad)
         return bad;
     }
@@ -623,7 +623,7 @@ void runBigIntTests() {
 
   {
     tmp = testMultiplicationSmallNumbers(0, 0, 50) ||
-          testMultiplicationSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10) ||
+          testMultiplicationSmallNumbers(MAX_CELL_VALUE / 2 - 5, MAX_CELL_VALUE / 2 - 5, 10) ||
           testMultiplicationSmallNumbers(523432261, 467115341, 50) ||
           testMultiplicationLongNumbers();
 

@@ -79,6 +79,11 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
   assert(a.cells.size() == 1 || a.cells.size() > 1 && a.cells.back() != 0);
   assert(b.cells.size() == 1 || b.cells.size() > 1 && b.cells.back() != 0);
 
+  if (a.isZero())
+    return b;
+  if (b.isZero())
+    return a;
+
   int m = (int) a.cells.size();
   int n = (int) b.cells.size();
   int k = max(m, n);
@@ -93,7 +98,7 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
     for (int i = 0; i < k; ++i) {
       CELL_T a_i = (CELL_T) (i < m ? a.cells[i] : 0);
       CELL_T b_i = (CELL_T) (i < n ? b.cells[i] : 0);
-      DOUBLE_CELL_T s = a_i + b_i + r;
+      DOUBLE_CELL_T s = (DOUBLE_CELL_T) a_i + b_i + r;
       result.cells[i] = (CELL_T) (s);
       r = (CELL_T) (s >> CELL_BIT_LENGTH);
     }
@@ -117,7 +122,7 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
       CELL_T a_i = (CELL_T) (i < m ? a_.cells[i] : 0);
       CELL_T b_i = (CELL_T) (i < n ? b_.cells[i] : 0);
 
-      SIGNED_DOUBLE_CELL_T s = a_i - b_i - r;
+      SIGNED_DOUBLE_CELL_T s = (DOUBLE_CELL_T) a_i - b_i - r;
       result.cells[i] = (CELL_T) (s);
       r = (CELL_T) (s < 0);
     }
@@ -186,8 +191,8 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   else if (n1_to_n2 == 0) // n1 == n2
     return BigInt::ONE;
 
-  CELL_T d = (CELL_T) (BASE / (1 + n2.cells.back())); // Normalization factor
-  BigInt D(d);
+  CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + n2.cells.back())); // Normalization factor
+  BigInt D((long long) d);
 
   BigInt a = n1 * D;
   BigInt b = n2 * D;
@@ -199,35 +204,37 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   int n = (int) b.cells.size();
   int k = m - n + 1;
 
-  CELLS_CONTAINER_T a_r_cells = a.cells;
-  REVERSE(a_r_cells);
-
   CELLS_CONTAINER_T q_cells;
+  q_cells.resize((unsigned long) (k), 0);
 
-  CELLS_CONTAINER_T r_cells;
-  r_cells.reserve((unsigned long) (n + 1));
-  r_cells.push_back(0);
-  for (int i = 0; i < n; ++i)
-    r_cells.push_back(a_r_cells[i]);
-  REVERSE(r_cells);
+  BigInt r = a.shiftBits((int) -(CELL_BIT_LENGTH * (m - n)));
 
-  BigInt r(r_cells);
-
-  assert(r.cells.back() == 0);
+  assert(r.cells.back() != 0);
+  assert(r.cells.size() == n);
 
   for (int i = 0; i < k; ++i) {
-    CELL_T q_i = div_next_quotient(r, b);
-    q_cells.push_back(q_i);
-    if (r.cells.size() > 1 && r.cells.back() == 0)
-      r.cells.pop_back();
-    r = r - BigInt(q_i) * b;
+    assert(r.cells.back() != 0);
+    assert(r.cells.size() <= n + 1);
 
-    if (i != k - 1) {
+    CELL_T q_0;
+    if (r.cells.size() > b.cells.size()) {
+      q_0 = div_next_quotient(r, b);
+    } else if (r.cells.size() == b.cells.size()) {
+      r.cells.push_back(0);
+      q_0 = div_next_quotient(r, b);
+      if (r.cells.size() > 1 && r.cells.back() == 0)
+        r.cells.pop_back();
+    } else {
+      q_0 = 0;
+    }
+    q_cells[k - 1 - i] = q_0;
+    r = r - BigInt((long long) q_0) * b;
+
+    if (i < k - 1) {
       r <<= CELL_BIT_LENGTH;
-      r.cells[0] = a_r_cells[m - k + 1 + i];
+      r.cells[0] = a.cells[k - 2 - i];
     }
   }
-  REVERSE(q_cells);
   while (q_cells.size() > 1 && q_cells.back() == 0) // TODO
     q_cells.pop_back();
 
@@ -242,11 +249,6 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
 BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
   assert(n1.cells.size() == 1 || n1.cells.size() > 1 && n1.cells.back() != 0);
   assert(n2.cells.size() == 1 || n2.cells.size() > 1 && n2.cells.back() != 0);
-
-  if (n1.isZero())
-    return BigInt::ZERO;
-  if (n2.isZero())
-    throw "Zero division exception";
 
   BigInt c = n1 - (n1 / n2) * n2;
   assert(c.cells.size() == 1 || c.cells.size() > 1 && c.cells.back() != 0);
@@ -558,26 +560,25 @@ CELL_T BigInt::div_next_quotient(const BigInt &u, const BigInt &v) {
   assert(v > ZERO);
 
   int n = (int) v.cells.size();
-  DOUBLE_CELL_T qhat = (DOUBLE_CELL_T) min(
-      BASE - 1,
+  DOUBLE_CELL_T estimate = (DOUBLE_CELL_T) min(
+      (DOUBLE_CELL_T) BASE - 1,
       ((DOUBLE_CELL_T) u.cells[n] * BASE + u.cells[n - 1]) / v.cells[n - 1]
   );
 
-  int cnt = 0;
-  BigInt Q(to_string(qhat));
   BigInt u_ = u;
   if (u_.cells.size() > 1 && u_.cells.back() == 0)
     u_.cells.pop_back();
+  BigInt Q((long long) estimate);
   BigInt R = u_ - Q * v;
+  int error = 0;
   while (R < 0) {
-    assert(cnt < 3);
-    Q = Q - ONE;
+    assert(error < 3);
     R = R + v;
-    cnt++;
+    error++;
   }
+  Q = Q - BigInt(error);
 
   assert(ZERO <= R);
-//  assert(R <= v);
   assert(v * Q + R == u_);
   assert(Q.cells.size() == 1);
   return Q.cells[0];

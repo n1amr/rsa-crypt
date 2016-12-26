@@ -4,11 +4,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define SMALL_CELL 1
-#if SMALL_CELL
+#define CELL_SIZE 0
+#if CELL_SIZE == 0
 #define SIGNED_CELL_T char
 #define SIGNED_DOUBLE_CELL_T short int
-#else
+#elif CELL_SIZE == 1
+#define SIGNED_CELL_T short int
+#define SIGNED_DOUBLE_CELL_T int
+#elif CELL_SIZE == 2
 #define SIGNED_CELL_T int
 #define SIGNED_DOUBLE_CELL_T long long int
 #endif
@@ -17,7 +20,7 @@ using namespace std;
 #define DOUBLE_CELL_T unsigned SIGNED_DOUBLE_CELL_T
 
 #define CELL_BIT_LENGTH (sizeof(CELL_T) * 8)
-#define BASE ((1 << CELL_BIT_LENGTH))
+#define BASE (((DOUBLE_CELL_T) 1 << CELL_BIT_LENGTH))
 #define MAX_CELL_VALUE (BASE - 1)
 
 #define CONTAINER_T vector

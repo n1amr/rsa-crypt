@@ -4,6 +4,8 @@
 #include "../../bigint/DecimalHelpers.h"
 using namespace std;
 
+int mod_ops = 0;
+int div_ops = 0;
 int mul_ops = 0;
 int add_ops = 0;
 
@@ -18,7 +20,7 @@ bool testRepresentationOfANumber(string s) {
   correct = s == x.toDecimalString();
   clock_t end_time = clock();
   float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
-  reasonable_time = elapsed_time < 0.07;
+  reasonable_time = elapsed_time < 0.2;
 
   if (!correct || !reasonable_time) {
     cout << endl << "=========================" << endl;
@@ -27,7 +29,7 @@ bool testRepresentationOfANumber(string s) {
     cout << x.toDecimalString() << endl;
     cout << x << endl;
     cout << x.toCellsString() << endl;
-    cout << x.toBitsString() << endl;
+    cout << x.toBinaryString() << endl;
     cout << x.toDecimalString() << endl;
     cout << (correct ? "True" : "False") << endl;
     cout << "Elapsed time = " << elapsed_time << endl;
@@ -184,9 +186,9 @@ bool testMultiplication(string n1, string n2, string expected) {
 }
 
 bool testMultiplicationSmallNumbers(long long n1_start, long long n2_start, long long steps) {
-  for (long long i = n1_start; i < n1_start + steps; ++i) {
-    for (long long j = n2_start; j < n2_start + steps; ++j) {
-      bool bad = testMultiplication(to_string(i), to_string(j), to_string(i * j));
+  for (long long i = n1_start - steps; i < n1_start + steps; ++i) {
+    for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
+      bool bad = testMultiplication(to_string(i), to_string(j), to_string((long long) i * j));
       if (bad)
         return bad;
     }
@@ -202,7 +204,7 @@ bool testMultiplicationLongNumbers() {
 }
 
 bool testDivision(string n1, string n2, string expected) {
-  mul_ops++;
+  div_ops++;
   string output = (BigInt(n1) / BigInt(n2)).toDecimalString();
   bool correct = expected == output;
   if (!correct)
@@ -228,6 +230,35 @@ bool testDivisionLongNumbers() {
       "459325128745903883767300625269279534276046606148495054199206467103809034406958699371287010653270759160021297780128903612252577219519201561344684136341944397169610529274780014757567591812378011896124002086919274828189284812917250",
       "183529727911255996546025267298062893180584732768594808556172129888366764671594897227380689575625975679060681738746876517816691262185901673484853754837036072432016261181254688593818931958565527120391349679067506151112118522044401",
       "2");
+}
+
+bool testMod(string n1, string n2, string expected) {
+  mod_ops++;
+  string output = (BigInt(n1) % BigInt(n2)).toDecimalString();
+  bool correct = expected == output;
+  if (!correct)
+    cout << n1 << " % " << n2 << " = " << expected << " != " << output << endl;
+  return !correct;
+}
+
+bool testModSmallNumbers(long long n1_start, long long n2_start, long long steps) {
+  for (long long i = n1_start; i < n1_start + steps; ++i) {
+    for (long long j = n2_start; j < n2_start + steps; ++j) {
+      if (j == 0)
+        continue;
+      bool bad = testMod(to_string(i), to_string(j), to_string(i % j));
+      if (bad)
+        return bad;
+    }
+  }
+  return 0;
+}
+
+bool testModLongNumbers() {
+  return testMod(
+      "459325128745903883767300625269279534276046606148495054199206467103809034406958699371287010653270759160021297780128903612252577219519201561344684136341944397169610529274780014757567591812378011896124002086919274828189284812917250",
+      "183529727911255996546025267298062893180584732768594808556172129888366764671594897227380689575625975679060681738746876517816691262185901673484853754837036072432016261181254688593818931958565527120391349679067506151112118522044401",
+      "92265672923391890675250090673153747914877140611305437086862207327075505063768904916525631502018807801899934302635150576619194695147398214374976626667872252305578006912270637569929727895246957655341302728784262525965047768828448");
 }
 
 bool testNegation(string input, string expected) {
@@ -415,12 +446,10 @@ bool testPreDecrement(long long n1) {
 }
 
 bool testIncrements(long long n1) {
-  bool correct =
-      testPostIncrement(n1)
-      || testPreIncrement(n1)
-      || testPostDecrement(n1)
-      || testPreDecrement(n1);
-  return !correct;
+  return testPostIncrement(n1) ||
+         testPreIncrement(n1) ||
+         testPostDecrement(n1) ||
+         testPreDecrement(n1);
 }
 
 bool testIncrementsSmallNumbers(long long start, long long steps) {
@@ -450,32 +479,6 @@ bool testFactorial(long long n, string expected) {
   return !correct;
 }
 
-bool testShiftCells(string n, int n_cells_left, string expected) {
-  string output = BigInt(n).shiftCells(n_cells_left).toDecimalString();
-  bool correct = expected == output;
-  if (!correct)
-    if (n_cells_left >= 0)
-      cout << n << " << " << n_cells_left * CELL_BIT_LENGTH << " => " << expected << " != " << output << endl;
-    else
-      cout << n << " >> " << -n_cells_left * CELL_BIT_LENGTH << " => " << expected << " != " << output << endl;
-  return !correct;
-}
-
-bool testShiftCellsSmallNumbers(long long start, int shifts, long long steps) {
-  for (long long i = start - steps; i <= start + steps; ++i) {
-    for (int j = 0; j <= shifts; ++j) {
-      long long expected = (i) << (j * CELL_BIT_LENGTH);
-      bool bad = testShiftCells(to_string(i), j, to_string(expected));
-      expected = ((i) >> (j * CELL_BIT_LENGTH));
-      bad |= testShiftCells(to_string(i), -j, to_string(expected));
-      if (bad)
-        return bad;
-    }
-  }
-
-  return 0;
-}
-
 bool testShiftBits(string n, int n_bits_left, string expected) {
   string output = BigInt(n).shiftBits(n_bits_left).toDecimalString();
   bool correct = expected == output;
@@ -490,11 +493,12 @@ bool testShiftBits(string n, int n_bits_left, string expected) {
 bool testShiftBitsSmallNumbers(long long start, int shifts, long long steps) {
   for (long long i = start - steps; i <= start + steps; ++i) {
     for (int j = 0; j <= shifts; ++j) {
-      long long expected = i << j;
+      bool negative = i < 0;
+      long long expected = ((abs(i)) << j) * (negative ? -1 : 1);
 //      bool bad = 0;//TODO testShiftBits(to_string(i), j, to_string(expected));
       bool bad = testShiftBits(to_string(i), j, to_string(expected));
-      expected = i >> j;
-      bad |= testShiftBits(to_string(i), -j, to_string(expected));
+//      expected = ((abs(i)) >> j) * (negative ? -1 : 1);
+//      bad |= testShiftBits(to_string(i), -j, to_string(expected));
       if (bad)
         return bad;
     }
@@ -526,63 +530,154 @@ bool testShiftBitsLarge() {
 
 void runBigIntTests() {
   clock_t begin_time, end_time;
-  begin_time = clock();
+  float elapsed_time;
+  bool tmp;
 
-  testRepresentationOfSmallNumbers();
-  testRepresentationOfLongNumbers();
-  testRepresentationOf1024BitNumber();
+  begin_time = end_time = clock();
 
-  testConversionBetweenStringAndIntVectorShort();
-  testConversionBetweenStringAndIntVectorLong();
+  {
+    tmp = testRepresentationOfSmallNumbers() ||
+          testRepresentationOfLongNumbers() ||
+          testRepresentationOf1024BitNumber();
 
-  testIsZeroSmallNumbers(0, 1000);
-  testIsPositiveSmallNumbers(0, 1000);
-  testIsNegativeSmallNumbers(0, 1000);
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testRepresentation time = " << elapsed_time << endl;
+  }
 
-  testEqualsSmallNumbers(0, 50);
-  testEqualsSmallNumbers(MAX_CELL_VALUE, 50);
+  {
+    tmp = testConversionBetweenStringAndIntVectorShort() ||
+          testConversionBetweenStringAndIntVectorLong();
 
-  testIsLessThanSmallNumbers(0, 50);
-  testIsLessThanSmallNumbers(MAX_CELL_VALUE, 50);
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testConversionBetweenStringAndIntVector time = " << elapsed_time << endl;
+  }
 
-  testIsGreaterThanSmallNumbers(0, 50);
-  testIsGreaterThanSmallNumbers(MAX_CELL_VALUE, 50);
+  {
+    tmp = testIsZeroSmallNumbers(0, 1000) ||
+          testIsPositiveSmallNumbers(0, 1000) ||
+          testIsNegativeSmallNumbers(0, 1000);
 
-  testIncrementsSmallNumbers(0, 50);
-  testIncrementsSmallNumbers(MAX_CELL_VALUE, 50);
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testIsZero time = " << elapsed_time << endl;
+  }
 
-  testNegationSmallNumbers(0, 500);
-  testNegationSmallNumbers(MAX_CELL_VALUE, 500);
+  {
+    tmp = testEqualsSmallNumbers(0, 50) ||
+          testEqualsSmallNumbers(MAX_CELL_VALUE, 50) ||
+          testEquals("-1", "255", "0");
 
-  testAdditionSubtractionSmallNumbers(0, 0, 50);
-  testAdditionSubtractionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
-  testAdditionSubtractionSmallNumbers(4654321, 46512, 50);
-  testAdditionLongNumbers();
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testEquals time = " << elapsed_time << endl;
+  }
 
-  testMultiplicationSmallNumbers(0, 0, 50);
-  testMultiplicationSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
-  testMultiplicationSmallNumbers(523432261, 467115341, 50);
-  testMultiplicationLongNumbers();
+  {
+    tmp = testIsLessThanSmallNumbers(0, 50) ||
+          testIsLessThanSmallNumbers(MAX_CELL_VALUE, 50);
 
-  testDivisionSmallNumbers(0, 0, 50);
-  testDivisionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10);
-  testDivisionSmallNumbers(523432261, 467115341, 50);
-  testDivisionLongNumbers();
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testIsLessThan time = " << elapsed_time << endl;
+  }
 
-  testFactorial(171,
-                "1241018070217667823424840524103103992616605577501693185388951803611996075221691752992751978120487585576464959501670387052809889858690710767331242032218484364310473577889968548278290754541561964852153468318044293239598173696899657235903947616152278558180061176365108428800000000000000000000000000000000000000000");
+  {
+    tmp = testIsGreaterThanSmallNumbers(0, 50) ||
+          testIsGreaterThanSmallNumbers(MAX_CELL_VALUE, 50);
 
-  testShiftCellsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
-  testShiftCellsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testIsGreater time = " << elapsed_time << endl;
+  }
 
-  testShiftBitsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
-  testShiftBitsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256);
+  {
+    tmp = testIncrementsSmallNumbers(0, 50) ||
+          testIncrementsSmallNumbers(MAX_CELL_VALUE, 50);
 
-  testShiftBitsLarge();
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testIncrements time = " << elapsed_time << endl;
+  }
 
+  {
+    tmp = testNegationSmallNumbers(0, 500) ||
+          testNegationSmallNumbers(MAX_CELL_VALUE, 500);
+
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testNegation time = " << elapsed_time << endl;
+  }
+
+  {
+    tmp = testAdditionSubtractionSmallNumbers(0, 0, 50) ||
+          testAdditionSubtractionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10) ||
+          testAdditionSubtractionSmallNumbers(4654321, 46512, 50) ||
+          testAdditionLongNumbers();
+
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testAdditionSubtraction time = " << elapsed_time << endl;
+  }
+
+  {
+    tmp = testMultiplicationSmallNumbers(0, 0, 50) ||
+          testMultiplicationSmallNumbers(MAX_CELL_VALUE / 2 - 5, MAX_CELL_VALUE / 2 - 5, 10) ||
+          testMultiplicationSmallNumbers(523432261, 467115341, 50) ||
+          testMultiplicationLongNumbers();
+
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testMultiplication time = " << elapsed_time << endl;
+  }
+
+  {
+    tmp = testDivisionSmallNumbers(0, 0, 50) ||
+          testDivisionSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10) ||
+          testDivisionSmallNumbers(523432261, 467115341, 50) ||
+          testDivisionLongNumbers();
+
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testDivision time = " << elapsed_time << endl;
+  }
+
+  {
+    tmp = testModSmallNumbers(0, 0, 50) ||
+          testModSmallNumbers(MAX_CELL_VALUE - 5, MAX_CELL_VALUE - 5, 10) ||
+          testModSmallNumbers(523432261, 467115341, 50) ||
+          testModLongNumbers();
+
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testMod time = " << elapsed_time << endl;
+  }
+
+  {
+    tmp = testFactorial(171,
+                        "1241018070217667823424840524103103992616605577501693185388951803611996075221691752992751978120487585576464959501670387052809889858690710767331242032218484364310473577889968548278290754541561964852153468318044293239598173696899657235903947616152278558180061176365108428800000000000000000000000000000000000000000");
+
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testFactorial time = " << elapsed_time << endl;
+  }
+
+  {
+    tmp = testShiftBitsSmallNumbers(0, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256) ||
+          testShiftBitsSmallNumbers(MAX_CELL_VALUE, sizeof(unsigned long long) / CELL_BIT_LENGTH, 256) ||
+          testShiftBitsLarge();
+
+    elapsed_time = float(clock() - end_time) / CLOCKS_PER_SEC;
+    end_time = clock();
+    cout << (tmp ? "Error" : "OK   ") << " | testShiftBits time = " << elapsed_time << endl;
+  }
   end_time = clock();
-  float elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
+  elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
+
   cout << "Total BigInt tests time = " << elapsed_time
        << "(" << add_ops << " addition operations"
-       << ", " << mul_ops << " multiplication operations" << ")" << endl;
+       << ", " << mul_ops << " multiplication operations"
+       << ", " << div_ops << " division operations"
+       << ", " << mod_ops << " mod operations" << ")" << endl;
 }

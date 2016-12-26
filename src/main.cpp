@@ -2,10 +2,12 @@
 #include <bits/stdc++.h>
 #include "bigint/BigInt.h"
 #include "bigint/DecimalHelpers.h"
-#include "tests/tests.h"
+#include "App.h"
 using namespace std;
+#define Int BigInt
 
 int main() {
-  runTests();
-  return 0;
+//  srand(time(NULL));
+  App app;
+  app.appLoop();
 }

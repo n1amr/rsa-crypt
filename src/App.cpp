@@ -75,58 +75,69 @@ void appLoop() {
 
   string line;
   while (getline(cin, line)) {
-    if (line.length() > 2 && line.substr(0, 2) == "P=") {
+    transform(line.begin(), line.end(), line.begin(), ::tolower);
+    if (line.length() > 2 && line.substr(0, 2) == "p=") {
       cache['p'] = BigInt(line.substr(2));
       cache.erase('n');
       cache.erase('h');
       cache.erase('d');
       boolCache.erase('p');
-    } else if (line.length() > 2 && line.substr(0, 2) == "Q=") {
+    } else if (line.length() > 2 && line.substr(0, 2) == "q=") {
       cache['q'] = BigInt(line.substr(2));
       cache.erase('n');
       cache.erase('h');
       cache.erase('d');
       boolCache.erase('q');
-    } else if (line.length() > 2 && line.substr(0, 2) == "E=") {
+    } else if (line.length() > 2 && line.substr(0, 2) == "e=") {
       cache['e'] = BigInt(line.substr(2));
       cache.erase('n');
       cache.erase('h');
       cache.erase('d');
-    } else if (line == "PrintP") {
+    } else if (line == "printp") {
       cout << cache['p'] << endl;
-    } else if (line == "PrintQ") {
+    } else if (line == "printq") {
       cout << cache['q'] << endl;
-    } else if (line == "PrintE") {
+    } else if (line == "printe") {
       cout << cache['e'] << endl;
-    } else if (line == "PrintD") {
-      if (cache.count('d') == 0)
+    } else if (line == "printd") {
+      if (cache.count('d') == 0) {
+        if (cache.count('h') == 0)
+          cache['h'] = (cache['p'] - 1) * (cache['q'] - 1);
         cache['d'] = inverse(cache['e'], cache['h']);
+      }
       cout << cache['d'] << endl;
-    } else if (line == "PrintN") {
+    } else if (line == "printn") {
       if (cache.count('n') == 0)
         cache['n'] = cache['p'] * cache['q'];
       cout << cache['n'] << endl;
-    } else if (line == "PrintPhi") {
+    } else if (line == "printphi") {
       if (cache.count('h') == 0)
         cache['h'] = (cache['p'] - 1) * (cache['q'] - 1);
       cout << cache['h'] << endl;
-    } else if (line == "IsPPrime") {
+    } else if (line == "ispprime") {
       if (boolCache.count('p') == 0)
         boolCache['p'] = isPrime(cache['p']);
       cout << (boolCache['p'] ? "Yes" : "No") << endl;
-    } else if (line == "IsQPrime") {
+    } else if (line == "isqprime") {
       if (boolCache.count('q') == 0)
         boolCache['q'] = isPrime(cache['q']);
       cout << (boolCache['q'] ? "Yes" : "No") << endl;
-    } else if (line.substr(0, 14) == "EncryptPublic=") {
+    } else if (line.substr(0, 14) == "encryptpublic=") {
+      if (cache.count('n') == 0)
+        cache['n'] = cache['p'] * cache['q'];
       BigInt message(line.substr(14));
       cout << message.pow(cache['e'], cache['n']) << endl;
-    } else if (line.substr(0, 15) == "EncryptPrivate=") {
-      if (cache.count('d') == 0)
+    } else if (line.substr(0, 15) == "encryptprivate=") {
+      if (cache.count('d') == 0) {
+        if (cache.count('h') == 0)
+          cache['h'] = (cache['p'] - 1) * (cache['q'] - 1);
         cache['d'] = inverse(cache['e'], cache['h']);
+      }
+      if (cache.count('n') == 0)
+        cache['n'] = cache['p'] * cache['q'];
       BigInt message(line.substr(15));
       cout << message.pow(cache['d'], cache['n']) << endl;
-    } else if (line == "Quit")
+    } else if (line == "quit")
       return;
   }
 }

@@ -2,6 +2,7 @@
 using namespace std;
 
 #ifdef N1AMR_MULTIPLE_FILES
+
 #include "BigInt.h"
 #include "DecimalHelpers.h"
 #endif
@@ -219,19 +220,39 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
     assert(r.cells.back() != 0);
     assert(r.cells.size() <= n + 1);
 
-    CELL_T q_0;
-    if (r.cells.size() > b.cells.size()) {
-      q_0 = div_next_quotient(r, b);
-    } else if (r.cells.size() == b.cells.size()) {
-      r.cells.push_back(0);
-      q_0 = div_next_quotient(r, b);
-      if (r.cells.size() > 1 && r.cells.back() == 0)
-        r.cells.pop_back();
-    } else {
-      q_0 = 0;
+    CELL_T q_0 = 0;
+    BigInt Q((long long) q_0);
+    if (r.cells.size() >= b.cells.size()) {
+      bool concat_zero = r.cells.size() == b.cells.size();
+
+      assert((concat_zero && r.cells.size() == b.cells.size()) ||
+             (!concat_zero && r.cells.size() == b.cells.size() + 1));
+      assert(b.cells.back() != 0);
+      assert(r > ZERO);
+      assert(b > ZERO);
+
+      DOUBLE_CELL_T estimate = (DOUBLE_CELL_T) min(
+          (DOUBLE_CELL_T) BASE - 1,
+          (DOUBLE_CELL_T) ((DOUBLE_CELL_T) (concat_zero ? 0 : r.cells[n] * BASE) + r.cells[n - 1]) / b.cells[n - 1]
+      );
+
+      Q.cells[0] = (CELL_T) estimate;
+      BigInt R = r - Q * b;
+      int error = 0;
+      while (R < 0) {
+        assert(error < 3);
+        R = R + b;
+        error++;
+      }
+      Q.cells[0] -= error;
+
+      assert(ZERO <= R);
+      assert(b * Q + R == r);
+      assert(Q.cells.size() == 1);
+      q_0 = Q.cells[0];
     }
     q_cells[k - 1 - i] = q_0;
-    r = r - BigInt((long long) q_0) * b;
+    r = r - Q * b;
 
     if (i < k - 1) {
       r <<= CELL_BIT_LENGTH;

@@ -9,7 +9,7 @@ BigInt random(BigInt from, BigInt to) {
          / BigInt((long long) 1 << 31);
 }
 
-bool MRTEST(BigInt n) {
+bool millerRabinTest(BigInt n) {
   if (!n.isOdd())
     return COMPOSITE;
 
@@ -36,10 +36,8 @@ bool MRTEST(BigInt n) {
 }
 
 bool isPrime(BigInt n) {
-  bool ans = 0;
-  const int TRIALS = 5;
-  for (int i = 0; i < TRIALS; ++i)
-    if (MRTEST(n) == COMPOSITE)
+  for (int i = 0; i < MAX_MILLER_RABIN_TRIALS_COUNT; ++i)
+    if (millerRabinTest(n) == COMPOSITE)
       return false;
   return true;
 }
@@ -130,5 +128,3 @@ void appLoop() {
       return;
   }
 }
-
-

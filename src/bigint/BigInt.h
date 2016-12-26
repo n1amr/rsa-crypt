@@ -1,5 +1,5 @@
-#ifndef RSA_BIGINT_H
-#define RSA_BIGINT_H
+#ifndef BIG_INT_H
+#define BIG_INT_H
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -142,7 +142,6 @@ public:
 private:
   inline static int sign_(SIGNED_DOUBLE_CELL_T n);
   inline static int compare_cells(CELL_T a, CELL_T b);
-  static CELL_T div_next_quotient(const BigInt &u, const BigInt &v);
 };
 
-#endif //RSA_BIGINT_H
+#endif //BIG_INT_H

@@ -9,10 +9,10 @@ echo >> "$TARGET"
 
 files=(
     "bigint/BigInt.h"
-    "bigint/DecimalHelpers.h"
+    "bigint/BigIntHelpers.h"
     "App.h"
     "bigint/BigInt.cpp"
-    "bigint/DecimalHelpers.cpp"
+    "bigint/BigIntHelpers.cpp"
     "App.cpp"
     "main.cpp"
 )

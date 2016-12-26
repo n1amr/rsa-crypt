@@ -1,7 +1,7 @@
 #include "bigint_tests.h"
 #include "bits/stdc++.h"
 #include "../../bigint/BigInt.h"
-#include "../../bigint/DecimalHelpers.h"
+#include "../../bigint/BigIntHelpers.h"
 using namespace std;
 
 int mod_ops = 0;

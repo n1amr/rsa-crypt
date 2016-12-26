@@ -1,5 +1,5 @@
-#ifndef RSA_DECIMAL_HELPERS_H
-#define RSA_DECIMAL_HELPERS_H
+#ifndef BIG_INT_HELPERS_H
+#define BIG_INT_HELPERS_H
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -22,4 +22,4 @@ vector<bool> decimalVecToBitsVec(const vector<short> &s);
 void printVectorReversed(CELLS_CONTAINER_T v, string name = "");
 void printVector(CELLS_CONTAINER_T v, string name = "");
 
-#endif //RSA_DECIMALSTRINGHELPERS_H
+#endif //BIG_INT_HELPERS_H

@@ -5,7 +5,7 @@ using namespace std;
 #ifdef N1AMR_MULTIPLE_FILES
 
 #include "bigint/BigInt.h"
-#include "bigint/DecimalHelpers.h"
+#include "bigint/BigIntHelpers.h"
 #include "App.h"
 #endif
 

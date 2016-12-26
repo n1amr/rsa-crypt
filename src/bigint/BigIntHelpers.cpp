@@ -3,7 +3,7 @@
 using namespace std;
 
 #ifdef N1AMR_MULTIPLE_FILES
-#include "DecimalHelpers.h"
+#include "BigIntHelpers.h"
 #endif
 
 string decimalVecToDecimalString(const vector<short> &v) {

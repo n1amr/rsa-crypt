@@ -58,17 +58,17 @@ public:
   inline static bool isPositive(const BigInt &n);
   inline static bool isNegative(const BigInt &n);
 
-  inline static bool equals(const BigInt &n1, const BigInt &n2);
-  inline static bool isLessThan(const BigInt &n1, const BigInt &n2);
-  inline static bool isGreaterThan(const BigInt &n1, const BigInt &n2);
+  inline static bool equals(const BigInt &a, const BigInt &b);
+  inline static bool isLessThan(const BigInt &a, const BigInt &b);
+  inline static bool isGreaterThan(const BigInt &a, const BigInt &b);
 
   inline static bool isOdd(const BigInt &n);
 
   static BigInt add(const BigInt &a, const BigInt &b);
   static BigInt multiply(const BigInt &a, const BigInt &b);
   static BigInt subtract(const BigInt &a, const BigInt &b);
-  static BigInt divide(const BigInt &n1, const BigInt &n2);
-  static BigInt mod(const BigInt &n1, const BigInt &n2);
+  static BigInt divide(const BigInt &a, const BigInt &b);
+  static BigInt mod(const BigInt &n, const BigInt &m);
   static BigInt pow(const BigInt &n, const BigInt &power, const BigInt &m);
   static BigInt absolute(const BigInt &a);
   static int compare(const BigInt &a, const BigInt &b);
@@ -140,8 +140,8 @@ public:
   }
 
 private:
-  inline static int sign_(SIGNED_DOUBLE_CELL_T c);
-  inline static int compare_cells(CELL_T c1, CELL_T c2);
+  inline static int sign_(SIGNED_DOUBLE_CELL_T n);
+  inline static int compare_cells(CELL_T a, CELL_T b);
   static CELL_T div_next_quotient(const BigInt &u, const BigInt &v);
 };
 

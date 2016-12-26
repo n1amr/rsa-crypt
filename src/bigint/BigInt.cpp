@@ -63,16 +63,16 @@ bool BigInt::isNegative(const BigInt &n) {
   return compare(n, BigInt::ZERO) < 0;
 }
 
-bool BigInt::equals(const BigInt &n1, const BigInt &n2) {
-  return compare(n1, n2) == 0;
+bool BigInt::equals(const BigInt &a, const BigInt &b) {
+  return compare(a, b) == 0;
 }
 
-bool BigInt::isLessThan(const BigInt &n1, const BigInt &n2) {
-  return compare(n1, n2) < 0;
+bool BigInt::isLessThan(const BigInt &a, const BigInt &b) {
+  return compare(a, b) < 0;
 }
 
-bool BigInt::isGreaterThan(const BigInt &n1, const BigInt &n2) {
-  return compare(n1, n2) > 0;
+bool BigInt::isGreaterThan(const BigInt &a, const BigInt &b) {
+  return compare(a, b) > 0;
 }
 
 bool BigInt::isOdd(const BigInt &n) {
@@ -92,10 +92,10 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
   int n = (int) b.cells.size();
   int k = max(m, n);
 
-  BigInt result;
-  result.cells.reserve((unsigned long) (k + 1));
-  result.cells.resize((unsigned long) k, 0);
-  result.sign = a.sign;
+  BigInt ans;
+  ans.cells.reserve((unsigned long) (k + 1));
+  ans.cells.resize((unsigned long) k, 0);
+  ans.sign = a.sign;
 
   if (a.sign == b.sign) {
     CELL_T r = 0;
@@ -103,11 +103,11 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
       CELL_T a_i = (CELL_T) (i < m ? a.cells[i] : 0);
       CELL_T b_i = (CELL_T) (i < n ? b.cells[i] : 0);
       DOUBLE_CELL_T s = (DOUBLE_CELL_T) a_i + b_i + r;
-      result.cells[i] = (CELL_T) (s);
+      ans.cells[i] = (CELL_T) (s);
       r = (CELL_T) (s >> CELL_BIT_LENGTH);
     }
     if (r)
-      result.cells.push_back(r);
+      ans.cells.push_back(r);
   } else {
     BigInt a_ = absolute(a);
     BigInt b_ = absolute(b);
@@ -116,7 +116,7 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
       return BigInt::ZERO;
 
     if (b_ > a_) {
-      result.sign = b.sign;
+      ans.sign = b.sign;
       swap(a_, b_);
       swap(m, n);
     }
@@ -127,15 +127,15 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
       CELL_T b_i = (CELL_T) (i < n ? b_.cells[i] : 0);
 
       SIGNED_DOUBLE_CELL_T s = (DOUBLE_CELL_T) a_i - b_i - r;
-      result.cells[i] = (CELL_T) (s);
+      ans.cells[i] = (CELL_T) (s);
       r = (CELL_T) (s < 0);
     }
 
-    while (result.cells.size() > 1 && result.cells.back() == 0)
-      result.cells.pop_back();
+    while (ans.cells.size() > 1 && ans.cells.back() == 0)
+      ans.cells.pop_back();
   }
-  assert(result.cells.size() == 1 || result.cells.size() > 1 && result.cells.back() != 0);
-  return result;
+  assert(ans.cells.size() == 1 || ans.cells.size() > 1 && ans.cells.back() != 0);
+  return ans;
 }
 
 BigInt BigInt::multiply(const BigInt &a, const BigInt &b) {
@@ -180,38 +180,38 @@ BigInt BigInt::subtract(const BigInt &a, const BigInt &b) {
   return c;
 }
 
-BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
-  assert(n1.cells.size() == 1 || n1.cells.size() > 1 && n1.cells.back() != 0);
-  assert(n2.cells.size() == 1 || n2.cells.size() > 1 && n2.cells.back() != 0);
+BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
+  assert(a.cells.size() == 1 || a.cells.size() > 1 && a.cells.back() != 0);
+  assert(b.cells.size() == 1 || b.cells.size() > 1 && b.cells.back() != 0);
 
-  if (n2 == BigInt::ZERO)
+  if (b == BigInt::ZERO)
     throw "Zero division exception";
-  if (n1 == BigInt::ZERO)
+  if (a == BigInt::ZERO)
     return BigInt::ZERO;
 
-  int n1_to_n2 = compare(n1, n2);
-  if (n1_to_n2 < 0) // n1 < n2
+  int a_to_b = compare(a, b);
+  if (a_to_b < 0) // a < b
     return BigInt::ZERO;
-  else if (n1_to_n2 == 0) // n1 == n2
+  else if (a_to_b == 0) // a == b
     return BigInt::ONE;
 
-  CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + n2.cells.back())); // Normalization factor
+  CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + b.cells.back())); // Normalization factor
   BigInt D((long long) d);
 
-  BigInt a = n1 * D;
-  BigInt b = n2 * D;
+  BigInt a_ = a * D;
+  BigInt b_ = b * D;
 
-  assert(a >= b);
-  assert(b >= ZERO);
+  assert(a_ >= b_);
+  assert(b_ >= ZERO);
 
-  int m = (int) a.cells.size();
-  int n = (int) b.cells.size();
+  int m = (int) a_.cells.size();
+  int n = (int) b_.cells.size();
   int k = m - n + 1;
 
   CELLS_CONTAINER_T q_cells;
   q_cells.resize((unsigned long) (k), 0);
 
-  BigInt r = a.shiftBits((int) -(CELL_BIT_LENGTH * (m - n)));
+  BigInt r = a_.shiftBits((int) -(CELL_BIT_LENGTH * (m - n)));
 
   assert(r.cells.back() != 0);
   assert(r.cells.size() == n);
@@ -222,61 +222,61 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
 
     CELL_T q_0 = 0;
     BigInt Q((long long) q_0);
-    if (r.cells.size() >= b.cells.size()) {
-      bool concat_zero = r.cells.size() == b.cells.size();
+    if (r.cells.size() >= b_.cells.size()) {
+      bool concat_zero = r.cells.size() == b_.cells.size();
 
-      assert((concat_zero && r.cells.size() == b.cells.size()) ||
-             (!concat_zero && r.cells.size() == b.cells.size() + 1));
-      assert(b.cells.back() != 0);
+      assert((concat_zero && r.cells.size() == b_.cells.size()) ||
+             (!concat_zero && r.cells.size() == b_.cells.size() + 1));
+      assert(b_.cells.back() != 0);
       assert(r > ZERO);
-      assert(b > ZERO);
+      assert(b_ > ZERO);
 
       DOUBLE_CELL_T estimate = (DOUBLE_CELL_T) min(
           (DOUBLE_CELL_T) BASE - 1,
-          (DOUBLE_CELL_T) ((DOUBLE_CELL_T) (concat_zero ? 0 : r.cells[n] * BASE) + r.cells[n - 1]) / b.cells[n - 1]
+          (DOUBLE_CELL_T) ((DOUBLE_CELL_T) (concat_zero ? 0 : r.cells[n] * BASE) + r.cells[n - 1]) / b_.cells[n - 1]
       );
 
       Q.cells[0] = (CELL_T) estimate;
-      BigInt R = r - Q * b;
+      BigInt R = r - Q * b_;
       int error = 0;
       while (R < 0) {
         assert(error < 3);
-        R = R + b;
+        R = R + b_;
         error++;
       }
       Q.cells[0] -= error;
 
       assert(ZERO <= R);
-      assert(b * Q + R == r);
+      assert(b_ * Q + R == r);
       assert(Q.cells.size() == 1);
       q_0 = Q.cells[0];
     }
     q_cells[k - 1 - i] = q_0;
-    r = r - Q * b;
+    r = r - Q * b_;
 
     if (i < k - 1) {
       r <<= CELL_BIT_LENGTH;
-      r.cells[0] = a.cells[k - 2 - i];
+      r.cells[0] = a_.cells[k - 2 - i];
     }
   }
   while (q_cells.size() > 1 && q_cells.back() == 0) // TODO
     q_cells.pop_back();
 
-  BigInt Q(q_cells, n1.sign ^ n2.sign);
-  assert(n2 * Q <= n1);
-  assert(n1 - n2 * Q < absolute(n2));
-  assert(ZERO <= n1 - n2 * Q);
+  BigInt Q(q_cells, a.sign ^ b.sign);
+  assert(b * Q <= a);
+  assert(a - b * Q < absolute(b));
+  assert(ZERO <= a - b * Q);
   assert(Q.cells.size() == 1 || Q.cells.size() > 1 && Q.cells.back() != 0);
   return Q;
 }
 
-BigInt BigInt::mod(const BigInt &n1, const BigInt &n2) {
-  assert(n1.cells.size() == 1 || n1.cells.size() > 1 && n1.cells.back() != 0);
-  assert(n2.cells.size() == 1 || n2.cells.size() > 1 && n2.cells.back() != 0);
+BigInt BigInt::mod(const BigInt &n, const BigInt &m) {
+  assert(n.cells.size() == 1 || n.cells.size() > 1 && n.cells.back() != 0);
+  assert(m.cells.size() == 1 || m.cells.size() > 1 && m.cells.back() != 0);
 
-  BigInt c = n1 - (n1 / n2) * n2;
-  assert(c.cells.size() == 1 || c.cells.size() > 1 && c.cells.back() != 0);
-  return c;
+  BigInt a = n - (n / m) * m;
+  assert(a.cells.size() == 1 || a.cells.size() > 1 && a.cells.back() != 0);
+  return a;
 }
 
 BigInt BigInt::pow(const BigInt &n, const BigInt &power, const BigInt &m) {
@@ -441,9 +441,9 @@ BigInt BigInt::shiftBits(int n_bits_left) const {
     if (r)
       c.push_back(r);
   }
-  BigInt result = c.size() > 0 ? BigInt(c, sign) : BigInt::ZERO;
-  assert(result.cells.size() == 1 || result.cells.size() > 1 && result.cells.back() != 0);
-  return result;
+  BigInt ans = c.size() > 0 ? BigInt(c, sign) : BigInt::ZERO;
+  assert(ans.cells.size() == 1 || ans.cells.size() > 1 && ans.cells.back() != 0);
+  return ans;
 }
 
 vector<bool> BigInt::toBitsVector() const {
@@ -569,12 +569,12 @@ BigInt BigInt::operator--(int) {
   return tmp;
 }
 
-int BigInt::sign_(SIGNED_DOUBLE_CELL_T c) {
-  return c > 0 ? 1 : c < 0 ? -1 : 0;
+int BigInt::sign_(SIGNED_DOUBLE_CELL_T n) {
+  return n > 0 ? 1 : n < 0 ? -1 : 0;
 }
 
-int BigInt::compare_cells(CELL_T c1, CELL_T c2) {
-  return sign_((SIGNED_DOUBLE_CELL_T) (DOUBLE_CELL_T) c1 - (SIGNED_DOUBLE_CELL_T) (DOUBLE_CELL_T) c2);
+int BigInt::compare_cells(CELL_T a, CELL_T b) {
+  return sign_((SIGNED_DOUBLE_CELL_T) (DOUBLE_CELL_T) a - (SIGNED_DOUBLE_CELL_T) (DOUBLE_CELL_T) b);
 }
 
 CELL_T BigInt::div_next_quotient(const BigInt &u, const BigInt &v) {
@@ -607,4 +607,3 @@ CELL_T BigInt::div_next_quotient(const BigInt &u, const BigInt &v) {
   assert(Q.cells.size() == 1);
   return Q.cells[0];
 }
-

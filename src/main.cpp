@@ -1,15 +1,17 @@
 #include <iostream>
 #include <bits/stdc++.h>
+using namespace std;
+
+#ifdef N1AMR_MULTIPLE_FILES
+
 #include "bigint/BigInt.h"
 #include "bigint/DecimalHelpers.h"
 #include "App.h"
-using namespace std;
-#define Int BigInt
+#endif
 
 int main() {
 #ifdef N1AMR_LOCAL_PC
   srand(time(NULL));
 #endif
-  App app;
-  app.appLoop();
+  appLoop();
 }

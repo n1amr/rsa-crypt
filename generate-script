@@ -1,0 +1,17 @@
+#!/bin/bash
+
+TARGET="./rsa-crypt.cpp"
+
+echo "//" > "$TARGET"
+echo "// NOTE: AUTO GENERATED FILES DO NOT EDIT" >> "$TARGET"
+echo "//" >> "$TARGET"
+echo >> "$TARGET"
+cat "./src/bigint/BigInt.h" >> "$TARGET"
+cat "./src/bigint/DecimalHelpers.h" >> "$TARGET"
+cat "./src/App.h" >> "$TARGET"
+
+cat "./src/bigint/BigInt.cpp" >> "$TARGET"
+cat "./src/bigint/DecimalHelpers.cpp" >> "$TARGET"
+cat "./src/App.cpp" >> "$TARGET"
+
+cat "./src/main.cpp" >> "$TARGET"

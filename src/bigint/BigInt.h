@@ -4,7 +4,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#ifdef N1AMR_MULTIPLE_FILES
 #define CELL_SIZE 8
+#else
+#define NDEBUG
+#define CELL_SIZE 32
+#endif
+
 #if CELL_SIZE == 8
 #define SIGNED_CELL_T char
 #define SIGNED_DOUBLE_CELL_T short int

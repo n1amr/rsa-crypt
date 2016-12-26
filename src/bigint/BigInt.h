@@ -4,23 +4,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define CELL_SIZE 32
+#define CELL_SIZE 8
 #if CELL_SIZE == 8
-#define CELL_T u_int8_t
-#define DOUBLE_CELL_T u_int16_t
-#define SIGNED_CELL_T int8_t
-#define SIGNED_DOUBLE_CELL_T int16_t
+#define SIGNED_CELL_T char
+#define SIGNED_DOUBLE_CELL_T short int
 #elif CELL_SIZE == 16
-#define CELL_T u_int16_t
-#define DOUBLE_CELL_T u_int32_t
-#define SIGNED_CELL_T int16_t
-#define SIGNED_DOUBLE_CELL_T int32_t
+#define SIGNED_CELL_T short int
+#define SIGNED_DOUBLE_CELL_T int
 #elif CELL_SIZE == 32
-#define CELL_T u_int32_t
-#define DOUBLE_CELL_T u_int64_t
-#define SIGNED_CELL_T int32_t
-#define SIGNED_DOUBLE_CELL_T int64_t
+#define SIGNED_CELL_T int
+#define SIGNED_DOUBLE_CELL_T long long int
 #endif
+
+#define CELL_T unsigned SIGNED_CELL_T
+#define DOUBLE_CELL_T unsigned SIGNED_DOUBLE_CELL_T
 
 #define CELL_BIT_LENGTH (sizeof(CELL_T) << 3)
 #define BASE (((DOUBLE_CELL_T) 1 << CELL_BIT_LENGTH))

@@ -88,7 +88,7 @@ private:
 
 public:
   void appLoop() {
-#ifdef N1AMR_f220929df
+#ifdef N1AMR
     freopen("input", "r", stdin);
 #endif
     BigInt p, q, n, phi, e, d;

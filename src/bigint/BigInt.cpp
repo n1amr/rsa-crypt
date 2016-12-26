@@ -98,7 +98,7 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
     for (int i = 0; i < k; ++i) {
       CELL_T a_i = (CELL_T) (i < m ? a.cells[i] : 0);
       CELL_T b_i = (CELL_T) (i < n ? b.cells[i] : 0);
-      DOUBLE_CELL_T s = a_i + b_i + r;
+      DOUBLE_CELL_T s = (DOUBLE_CELL_T) a_i + b_i + r;
       result.cells[i] = (CELL_T) (s);
       r = (CELL_T) (s >> CELL_BIT_LENGTH);
     }
@@ -122,7 +122,7 @@ BigInt BigInt::add(const BigInt &a, const BigInt &b) {
       CELL_T a_i = (CELL_T) (i < m ? a_.cells[i] : 0);
       CELL_T b_i = (CELL_T) (i < n ? b_.cells[i] : 0);
 
-      SIGNED_DOUBLE_CELL_T s = a_i - b_i - r;
+      SIGNED_DOUBLE_CELL_T s = (DOUBLE_CELL_T) a_i - b_i - r;
       result.cells[i] = (CELL_T) (s);
       r = (CELL_T) (s < 0);
     }
@@ -191,8 +191,8 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
   else if (n1_to_n2 == 0) // n1 == n2
     return BigInt::ONE;
 
-  CELL_T d = (CELL_T) (BASE / (1 + n2.cells.back())); // Normalization factor
-  BigInt D(d);
+  CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + n2.cells.back())); // Normalization factor
+  BigInt D((long long) d);
 
   BigInt a = n1 * D;
   BigInt b = n2 * D;
@@ -228,7 +228,7 @@ BigInt BigInt::divide(const BigInt &n1, const BigInt &n2) {
       q_0 = 0;
     }
     q_cells[k - 1 - i] = q_0;
-    r = r - BigInt(q_0) * b;
+    r = r - BigInt((long long) q_0) * b;
 
     if (i < k - 1) {
       r <<= CELL_BIT_LENGTH;
@@ -561,14 +561,14 @@ CELL_T BigInt::div_next_quotient(const BigInt &u, const BigInt &v) {
 
   int n = (int) v.cells.size();
   DOUBLE_CELL_T estimate = (DOUBLE_CELL_T) min(
-      BASE - 1,
+      (DOUBLE_CELL_T) BASE - 1,
       ((DOUBLE_CELL_T) u.cells[n] * BASE + u.cells[n - 1]) / v.cells[n - 1]
   );
 
   BigInt u_ = u;
   if (u_.cells.size() > 1 && u_.cells.back() == 0)
     u_.cells.pop_back();
-  BigInt Q((int) estimate);
+  BigInt Q((long long) estimate);
   BigInt R = u_ - Q * v;
   int error = 0;
   while (R < 0) {

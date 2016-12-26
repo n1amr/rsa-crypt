@@ -6,12 +6,25 @@ echo "//" > "$TARGET"
 echo "// NOTE: AUTO GENERATED FILES DO NOT EDIT" >> "$TARGET"
 echo "//" >> "$TARGET"
 echo >> "$TARGET"
-cat "./src/bigint/BigInt.h" >> "$TARGET"
-cat "./src/bigint/DecimalHelpers.h" >> "$TARGET"
-cat "./src/App.h" >> "$TARGET"
 
-cat "./src/bigint/BigInt.cpp" >> "$TARGET"
-cat "./src/bigint/DecimalHelpers.cpp" >> "$TARGET"
-cat "./src/App.cpp" >> "$TARGET"
+files=(
+    "bigint/BigInt.h"
+    "bigint/DecimalHelpers.h"
+    "App.h"
+    "bigint/BigInt.cpp"
+    "bigint/DecimalHelpers.cpp"
+    "App.cpp"
+    "main.cpp"
+)
 
-cat "./src/main.cpp" >> "$TARGET"
+for f in "${files[@]}"; do
+    echo >> "$TARGET"
+    echo "//" >> "$TARGET"
+    echo "// #BEGING_FILE {{{ $f" >> "$TARGET"
+    echo "//" >> "$TARGET"
+    cat "./src/$f" >> "$TARGET"
+    echo >> "$TARGET"
+    echo "//" >> "$TARGET"
+    echo "// #END_FILE $f }}}" >> "$TARGET"
+    echo "//" >> "$TARGET"
+done

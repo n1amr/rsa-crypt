@@ -22,22 +22,22 @@ private:
       return COMPOSITE;
 
     int k = 0;
-    BigInt q = n - 1;
+    BigInt n_1 = n - 1;
+    BigInt q = n_1;
     while (!q.isOdd()) {
       k++;
       q >>= 1;
     }
 
     BigInt a = random(2, n);
-
-    if (a.pow(q, n) == BigInt::ONE)
+    BigInt last_pow = a.pow(q, n);
+    if (last_pow == BigInt::ONE)
       return INCLUSIVE;
 
-    BigInt n_1 = n - 1;
     for (int j = 0; j < k; ++j) {
-      if (a.pow(q, n) == n_1)
+      if (last_pow == n_1)
         return INCLUSIVE;
-      q <<= 1;
+      last_pow = (last_pow * last_pow) % n;
     }
 
     return COMPOSITE;

@@ -227,8 +227,7 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
     if (r.cells.size() >= b_.cells.size()) {
       bool concat_zero = r.cells.size() == b_.cells.size();
 
-      assert((concat_zero && r.cells.size() == b_.cells.size()) ||
-             (!concat_zero && r.cells.size() == b_.cells.size() + 1));
+      assert(r.cells.size() + concat_zero == b_.cells.size() + 1);
       assert(b_.cells.back() != 0);
       assert(r > ZERO);
       assert(b_ > ZERO);

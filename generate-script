@@ -43,3 +43,6 @@ for f in "${files[@]}"; do
     echo "// #END_FILE $f }}}" >> "$TARGET"
     echo "//" >> "$TARGET"
 done
+
+cat "$TARGET" | grep -Pv '\s*assert\(' > "${TARGET}.tmp"
+mv -f "${TARGET}.tmp" "${TARGET}"

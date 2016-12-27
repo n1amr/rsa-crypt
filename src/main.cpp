@@ -10,7 +10,7 @@ using namespace std;
 #endif
 
 int main() {
-#ifdef N1AMR_LOCAL_PC
+#ifndef N1AMR_LOCAL_PC
   srand(time(NULL));
 #endif
   appLoop();

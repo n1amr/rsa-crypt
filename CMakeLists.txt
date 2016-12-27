@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 project(rsa)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DN1AMR -DN1AMR_LOCAL_PC -DN1AMR_MULTIPLE_FILES -DN1AMR_FILE_INPUT")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DN1AMR -DN1AMR_LOCAL_PC -DN1AMR_MULTIPLE_FILES -DN1AMR_FILE_INPUT -O1 -Wall -Wextra -pedantic")
 
 set(SOURCE_FILES
         src/main.cpp

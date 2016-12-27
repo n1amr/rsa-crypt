@@ -68,7 +68,9 @@ BigInt inverse(BigInt a, BigInt mod) {
 
 void appLoop() {
 #ifdef N1AMR_FILE_INPUT
-  freopen("input", "r", stdin);
+  FILE *file = freopen("input", "r", stdin);
+  if (file == NULL)
+    exit(1);
 #endif
   map<char, BigInt> cache;
   map<char, bool> boolCache;

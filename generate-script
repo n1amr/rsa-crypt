@@ -20,7 +20,7 @@ files=(
 for f in "${files[@]}"; do
     echo >> "$TARGET"
     echo "//" >> "$TARGET"
-    echo "// #BEGING_FILE {{{ $f" >> "$TARGET"
+    echo "// #BEGIN_FILE {{{ $f" >> "$TARGET"
     echo "//" >> "$TARGET"
     cat "./src/$f" >> "$TARGET"
     echo >> "$TARGET"

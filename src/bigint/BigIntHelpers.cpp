@@ -1,8 +1,10 @@
 #include <iostream>
+
+#ifdef N1AMR_MULTIPLE_FILES
+
 #include <bits/stdc++.h>
 using namespace std;
 
-#ifdef N1AMR_MULTIPLE_FILES
 #include "BigIntHelpers.h"
 #endif
 

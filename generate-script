@@ -2,11 +2,6 @@
 
 TARGET="./rsa-crypt.cpp"
 
-echo "//" > "$TARGET"
-echo "// NOTE: AUTO GENERATED FILES DO NOT EDIT" >> "$TARGET"
-echo "//" >> "$TARGET"
-echo >> "$TARGET"
-
 files=(
     "bigint/BigInt.h"
     "bigint/BigIntHelpers.h"
@@ -16,6 +11,26 @@ files=(
     "App.cpp"
     "main.cpp"
 )
+
+includes=(
+    iostream
+    string
+    sstream
+    fstream
+    vector
+    map
+    algorithm
+    cassert
+)
+
+echo "//" > "$TARGET"
+echo "// NOTE: AUTO GENERATED FILES DO NOT EDIT" >> "$TARGET"
+echo "//" >> "$TARGET"
+echo >> "$TARGET"
+for i in "${includes[@]}"; do
+    echo "#include<$i>" >> "$TARGET"
+done
+echo "using namespace std;" >> "$TARGET"
 
 for f in "${files[@]}"; do
     echo >> "$TARGET"

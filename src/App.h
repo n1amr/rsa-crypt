@@ -2,10 +2,12 @@
 #define RSA_APP_H
 
 #include <iostream>
+
+#ifdef N1AMR_MULTIPLE_FILES
+
 #include "bits/stdc++.h"
 using namespace std;
 
-#ifdef N1AMR_MULTIPLE_FILES
 #include "bigint/BigInt.h"
 #endif
 

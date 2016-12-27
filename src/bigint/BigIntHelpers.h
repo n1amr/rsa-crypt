@@ -1,10 +1,11 @@
 #ifndef BIG_INT_HELPERS_H
 #define BIG_INT_HELPERS_H
 
+#ifdef N1AMR_MULTIPLE_FILES
+
 #include <bits/stdc++.h>
 using namespace std;
 
-#ifdef N1AMR_MULTIPLE_FILES
 #include "BigInt.h"
 #endif
 

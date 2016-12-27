@@ -1,8 +1,11 @@
 #ifndef BIG_INT_H
 #define BIG_INT_H
 
+#ifdef N1AMR_MULTIPLE_FILES
+
 #include <bits/stdc++.h>
 using namespace std;
+#endif
 
 #ifdef N1AMR_MULTIPLE_FILES
 #define CELL_SIZE 8

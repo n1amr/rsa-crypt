@@ -5,7 +5,7 @@ using namespace std;
 
 #include "BigInt.h"
 #include "BigIntHelpers.h"
-#endif
+#endif //N1AMR_MULTIPLE_FILES
 
 #define ZEROS_TRIMMED(n) ((n).cells.size() == 1 || ((n).cells.size() > 1 && (n).cells.back() != 0))
 

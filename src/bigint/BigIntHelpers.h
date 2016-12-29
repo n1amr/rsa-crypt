@@ -7,7 +7,7 @@
 using namespace std;
 
 #include "BigInt.h"
-#endif
+#endif //N1AMR_MULTIPLE_FILES
 
 #define REVERSE(s) reverse((s).begin(), (s).end())
 

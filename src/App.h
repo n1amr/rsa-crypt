@@ -9,7 +9,7 @@
 using namespace std;
 
 #include "bigint/BigInt.h"
-#endif
+#endif //N1AMR_MULTIPLE_FILES
 
 #define MAX_MILLER_RABIN_TRIALS_COUNT 5
 #define COMPOSITE 0

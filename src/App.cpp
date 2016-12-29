@@ -1,7 +1,7 @@
 #ifdef N1AMR_MULTIPLE_FILES
 
 #include "App.h"
-#endif
+#endif //N1AMR_MULTIPLE_FILES
 
 BigInt random(BigInt from, BigInt to) {
   return from +
@@ -71,7 +71,7 @@ void appLoop() {
   FILE *file = freopen("input", "r", stdin);
   if (file == NULL)
     exit(1);
-#endif
+#endif //N1AMR_FILE_INPUT
   map<char, BigInt> cache;
   map<char, bool> boolCache;
 

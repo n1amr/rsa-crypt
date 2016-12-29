@@ -1,17 +1,14 @@
 #ifdef N1AMR_MULTIPLE_FILES
 
 #include <iostream>
-#include <bits/stdc++.h>
 using namespace std;
 
-#include "bigint/BigInt.h"
-#include "bigint/BigIntHelpers.h"
 #include "App.h"
-#endif
+#endif //N1AMR_MULTIPLE_FILES
 
 int main() {
 #ifndef N1AMR_LOCAL_PC
   srand(time(NULL));
-#endif
+#endif //N1AMR_LOCAL_PC
   appLoop();
 }

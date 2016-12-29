@@ -6,7 +6,7 @@
 using namespace std;
 
 #include "BigIntHelpers.h"
-#endif
+#endif //N1AMR_MULTIPLE_FILES
 
 string decimalVecToDecimalString(const vector<short> &v) {
   stringstream ss;

@@ -5,25 +5,29 @@
 
 #include <bits/stdc++.h>
 using namespace std;
-#endif
+#endif //N1AMR_MULTIPLE_FILES
 
 #ifdef N1AMR_MULTIPLE_FILES
 #define CELL_SIZE 8
-#else
+
+#else //N1AMR_MULTIPLE_FILES
 #define NDEBUG
 #define CELL_SIZE 32
-#endif
+#endif //N1AMR_MULTIPLE_FILES
+
 
 #if CELL_SIZE == 8
 #define SIGNED_CELL_T char
 #define SIGNED_DOUBLE_CELL_T short int
+
 #elif CELL_SIZE == 16
 #define SIGNED_CELL_T short int
 #define SIGNED_DOUBLE_CELL_T int
+
 #elif CELL_SIZE == 32
 #define SIGNED_CELL_T int
 #define SIGNED_DOUBLE_CELL_T long long int
-#endif
+#endif //CELL_SIZE
 
 #define CELL_T unsigned SIGNED_CELL_T
 #define DOUBLE_CELL_T unsigned SIGNED_DOUBLE_CELL_T

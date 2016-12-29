@@ -25,24 +25,26 @@ includes=(
 )
 
 echo "//" > "$TARGET"
-echo "// NOTE: AUTO GENERATED FILES DO NOT EDIT" >> "$TARGET"
+echo "// Author: Amr Alaa" >> "$TARGET"
+echo "//" >> "$TARGET"
+echo "// WARNING: Auto generated file. All changes will be lost!" >> "$TARGET"
 echo "//" >> "$TARGET"
 echo >> "$TARGET"
 for i in "${includes[@]}"; do
-    echo "#include<$i>" >> "$TARGET"
+    echo "#include <$i>" >> "$TARGET"
 done
 echo "using namespace std;" >> "$TARGET"
 
 for f in "${files[@]}"; do
     echo >> "$TARGET"
-    echo "//" >> "$TARGET"
-    echo "// #BEGIN_FILE {{{ $f" >> "$TARGET"
+    echo "// ================================================================================" >> "$TARGET"
+    echo "// BEGIN_FILE {{ $f" >> "$TARGET"
     echo "//" >> "$TARGET"
     cat "./src/$f" >> "$TARGET"
     echo >> "$TARGET"
     echo "//" >> "$TARGET"
-    echo "// #END_FILE $f }}}" >> "$TARGET"
-    echo "//" >> "$TARGET"
+    echo "// END_FILE $f }};" >> "$TARGET"
+    echo "// ================================================================================" >> "$TARGET"
 done
 
 cat "$TARGET" | grep -Pv '\s*assert\(' > "${TARGET}.tmp"

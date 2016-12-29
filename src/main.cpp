@@ -1,6 +1,6 @@
 #ifdef N1AMR_MULTIPLE_FILES
 
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 #include "App.h"

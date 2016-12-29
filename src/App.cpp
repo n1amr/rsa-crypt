@@ -72,6 +72,11 @@ void appLoop() {
   if (file == NULL)
     exit(1);
 #endif //N1AMR_FILE_INPUT
+
+#ifndef N1AMR_LOCAL_PC
+  srand(time(NULL));
+#endif //N1AMR_LOCAL_PC
+
   map<char, BigInt> cache;
   map<char, bool> boolCache;
 

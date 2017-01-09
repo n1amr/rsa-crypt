@@ -2,7 +2,6 @@
 #define BIG_INT_H
 
 #ifdef N1AMR_MULTIPLE_FILES
-
 #include <bits/stdc++.h>
 using namespace std;
 #endif //N1AMR_MULTIPLE_FILES

@@ -1,5 +1,4 @@
 #ifdef N1AMR_MULTIPLE_FILES
-
 #include <bits/stdc++.h>
 using namespace std;
 

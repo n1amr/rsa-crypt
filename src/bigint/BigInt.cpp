@@ -416,7 +416,7 @@ BigInt BigInt::shiftBits(int n_bits_left) const {
   CELLS_CONTAINER_T c;
   if (left) {
     c.reserve(m + n_cells + 1);
-    c.resize((unsigned long) n_cells, 0);
+    c.resize(n_cells, 0);
 
     CELL_T r = 0;
     for (size_t i = 0; i < m; i++) {
@@ -452,7 +452,7 @@ vector<bool> BigInt::toBitsVector() const {
 
   for (auto it = cells.begin(); it != cells.end(); it++) {
     CELL_T cell = *it;
-    for (unsigned long i = 0; i < CELL_BIT_LENGTH; i++) {
+    for (size_t i = 0; i < CELL_BIT_LENGTH; i++) {
       v.push_back((bool) (cell % 2));
       cell /= 2;
     }

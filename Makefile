@@ -9,11 +9,15 @@ endif
 generate:
 	@./generate-script
 
-rsa-crypt: generate
-	@test -f rsa-crypt || g++ ./rsa-crypt.cpp -o rsa-crypt ${CXXFLAGS}
+singlefile/rsa-crypt: generate
+	@test -f singlefile/rsa-crypt || g++ ./singlefile/rsa-crypt.cpp -o singlefile/rsa-crypt ${CXXFLAGS}
 
-run: rsa-crypt
-	time ./rsa-crypt
+run: singlefile/rsa-crypt
+	time ./singlefile/rsa-crypt
+
+run-fileinput: singlefile/rsa-crypt singlefile/rsa-crypt.in
+	time ./singlefile/rsa-crypt < singlefile/rsa-crypt.in
 
 clean:
-	rm ./rsa-crypt*
+	rm ./singlefile/rsa-crypt
+	rm ./singlefile/rsa-crypt.cpp

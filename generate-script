@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TARGET="./rsa-crypt.cpp"
+TARGET="./singlefile/rsa-crypt.cpp"
 
 files=(
     "bigint/BigInt.h"

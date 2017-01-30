@@ -18,7 +18,8 @@ set(SOURCE_FILES
 
 set(TESTS_FILES
         src/test/bigint/bigint_tests.cpp
-        src/test/tests.cpp)
+        src/test/tests.cpp
+        src/test/AppTest.cpp)
 
 add_subdirectory(src/test/lib/googletest-master)
 include_directories(src/test/lib/googletest-master/googletest/include)

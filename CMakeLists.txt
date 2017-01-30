@@ -17,8 +17,8 @@ set(SOURCE_FILES
         src/main/App.h)
 
 set(TESTS_FILES
-        src/tests/bigint/bigint_tests.cpp
-        src/tests/tests.cpp)
+        src/test/bigint/bigint_tests.cpp
+        src/test/tests.cpp)
 
 add_executable(main ${SOURCE_FILES} src/main/main.cpp)
-add_executable(tests ${SOURCE_FILES} ${TESTS_FILES} src/tests/main.cpp)
+add_executable(tests ${SOURCE_FILES} ${TESTS_FILES} src/test/main.cpp)

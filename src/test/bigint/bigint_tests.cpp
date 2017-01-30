@@ -675,7 +675,7 @@ void runBigIntTests() {
   end_time = clock();
   elapsed_time = float(end_time - begin_time) / CLOCKS_PER_SEC;
 
-  cout << "Total BigInt tests time = " << elapsed_time
+  cout << "Total BigInt test time = " << elapsed_time
        << "(" << add_ops << " addition operations"
        << ", " << mul_ops << " multiplication operations"
        << ", " << div_ops << " division operations"

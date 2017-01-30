@@ -20,5 +20,10 @@ set(TESTS_FILES
         src/test/bigint/bigint_tests.cpp
         src/test/tests.cpp)
 
+add_subdirectory(src/test/lib/googletest-master)
+include_directories(src/test/lib/googletest-master/googletest/include)
+include_directories(src/test/lib/googletest-master/googlemock/include)
+
 add_executable(main ${SOURCE_FILES} src/main/main.cpp)
 add_executable(tests ${SOURCE_FILES} ${TESTS_FILES} src/test/main.cpp)
+target_link_libraries(tests gtest gtest_main)

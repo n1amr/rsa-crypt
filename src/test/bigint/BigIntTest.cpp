@@ -185,8 +185,7 @@ TEST_F(BigIntTest, testDivisionSmallNumbersNearZero) {
     for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
       if (j == 0)
         continue;
-      // TODO Failed
-      // ASSERT_EQ(to_string(i / j), (BigInt(i) / BigInt(j)).toDecimalString());
+      ASSERT_EQ(to_string(i / j), (BigInt(i) / BigInt(j)).toDecimalString());
     }
   }
 }
@@ -235,8 +234,7 @@ TEST_F(BigIntTest, testModSmallNumbersNearZero) {
     for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
       if (j == 0)
         continue;
-      // TODO Failed
-      // ASSERT_EQ(to_string(i % j), (BigInt(i) % BigInt(j)).toDecimalString());
+      ASSERT_EQ(to_string(i % j), (BigInt(i) % BigInt(j)).toDecimalString());
     }
   }
 }

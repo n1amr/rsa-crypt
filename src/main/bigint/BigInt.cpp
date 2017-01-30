@@ -185,22 +185,25 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   assert(ZEROS_TRIMMED(a));
   assert(ZEROS_TRIMMED(b));
 
-  if (b == BigInt::ZERO)
+  BigInt a_abs = a.absolute();
+  BigInt b_abs = b.absolute();
+
+  if (b_abs == BigInt::ZERO)
     throw "Zero division exception";
-  if (a == BigInt::ZERO)
+  if (a_abs == BigInt::ZERO)
     return BigInt::ZERO;
 
-  int a_to_b = compare(a, b);
-  if (a_to_b < 0) // a < b
+  int a_to_b = compare(a_abs, b_abs);
+  if (a_to_b < 0) // a_abs < b_abs
     return BigInt::ZERO;
-  else if (a_to_b == 0) // a == b
-    return BigInt::ONE;
+  else if (a_to_b == 0) // a_abs == b_abs
+    return BigInt(BigInt::ONE, a.sign ^ b.sign);
 
-  CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + b.cells.back())); // Normalization factor
+  CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + b_abs.cells.back())); // Normalization factor
   BigInt D((long long) d);
 
-  BigInt a_ = a * D;
-  BigInt b_ = b * D;
+  BigInt a_ = a_abs * D;
+  BigInt b_ = b_abs * D;
 
   assert(a_ >= b_);
   assert(b_ >= ZERO);
@@ -259,13 +262,17 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
       r.cells[0] = a_.cells[k - 2 - i];
     }
   }
-  while (q_cells.size() > 1 && q_cells.back() == 0) // TODO
+
+  // Trim zeros
+  while (q_cells.size() > 1 && q_cells.back() == 0)
     q_cells.pop_back();
 
-  BigInt Q(q_cells, a.sign ^ b.sign);
-  assert(b * Q <= a);
-  assert(a - b * Q < absolute(b));
-  assert(ZERO <= a - b * Q);
+  BigInt Q(q_cells, a_abs.sign ^ b_abs.sign);
+  assert(b_abs * Q <= a_abs);
+  assert(a_abs - b_abs * Q < b_abs);
+  assert(ZERO <= a_abs - b_abs * Q);
+
+  Q.sign = a.sign ^ b.sign;
   assert(ZEROS_TRIMMED(Q));
   return Q;
 }

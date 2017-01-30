@@ -9,7 +9,7 @@ class BigIntTest : public ::testing::Test {
 
 };
 
-TEST_F(BigIntTest, testRepresentationOfSmallNumbers) {
+TEST_F(BigIntTest, test_representation_of_small_numbers) {
   stringstream ss;
   string s;
   for (long long i = 0; i < 100; ++i) {
@@ -21,7 +21,7 @@ TEST_F(BigIntTest, testRepresentationOfSmallNumbers) {
   }
 }
 
-TEST_F(BigIntTest, testRepresentationOfLongNumbers) {
+TEST_F(BigIntTest, test_representation_of_long_numbers) {
   stringstream ss;
   string s;
   long long start = (long long int) 1e17;
@@ -34,13 +34,13 @@ TEST_F(BigIntTest, testRepresentationOfLongNumbers) {
   }
 }
 
-TEST_F(BigIntTest, testRepresentationOf1024BitNumber) {
+TEST_F(BigIntTest, test_representation_of1024_bit_number) {
   string s = "179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474124377767893424865485276302219601246094119453082952085005768838150682342462881473913110540827237163350510684586298239947245938479716304835356329624224137216";
   BigInt x(s);
   ASSERT_EQ(s, x.toDecimalString());
 }
 
-TEST_F(BigIntTest, testConversionBetweenStringAndIntVectorShort) {
+TEST_F(BigIntTest, test_conversion_between_string_and_int_vector_short) {
   stringstream ss;
   string s;
   long long start = 0;
@@ -54,7 +54,7 @@ TEST_F(BigIntTest, testConversionBetweenStringAndIntVectorShort) {
   }
 }
 
-TEST_F(BigIntTest, testConversionBetweenStringAndIntVectorLong) {
+TEST_F(BigIntTest, test_conversion_between_string_and_int_vector_long) {
   stringstream ss;
   string s;
   long long start = (long long int) 1e17;
@@ -68,7 +68,7 @@ TEST_F(BigIntTest, testConversionBetweenStringAndIntVectorLong) {
   }
 }
 
-TEST_F(BigIntTest, testAdditionSubtractionSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_addition_subtraction_small_numbers_near_zero) {
   long long n1_start = 0;
   long long n2_start = 0;
   long long steps = 50;
@@ -84,7 +84,7 @@ TEST_F(BigIntTest, testAdditionSubtractionSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testAdditionSubtractionSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_addition_subtraction_small_numbers_near_max_cell_value) {
   long long n1_start = MAX_CELL_VALUE - 5;
   long long n2_start = MAX_CELL_VALUE - 5;
   long long steps = 10;
@@ -100,10 +100,10 @@ TEST_F(BigIntTest, testAdditionSubtractionSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testAdditionSubtractionSmallNumbers) {
+TEST_F(BigIntTest, test_addition_subtraction_small_numbers) {
   long long n1_start = 4654321;
   long long n2_start = 46512;
-  long long steps = 50;
+  long long steps = 10;
   for (long long i = n1_start; i < n1_start + steps; i++) {
     for (long long j = n2_start; j < n2_start + steps; j++) {
       BigInt I(i);
@@ -116,7 +116,7 @@ TEST_F(BigIntTest, testAdditionSubtractionSmallNumbers) {
   }
 }
 
-TEST_F(BigIntTest, testAdditionSubtractionLongNumbers) {
+TEST_F(BigIntTest, test_addition_subtraction_long_numbers) {
   BigInt I(
       "139008452377144732764939786789661303114218850808529137991604824430036072629766435941001769154109609521811665540548899435521");
   BigInt J(
@@ -135,7 +135,7 @@ TEST_F(BigIntTest, testAdditionSubtractionLongNumbers) {
       (-I - J).toDecimalString());
 }
 
-TEST_F(BigIntTest, testMultiplicationSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_multiplication_small_numbers_near_zero) {
   long long n1_start = 0;
   long long n2_start = 0;
   long long steps = 50;
@@ -146,7 +146,7 @@ TEST_F(BigIntTest, testMultiplicationSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testMultiplicationSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_multiplication_small_numbers_near_max_cell_value) {
   long long n1_start = MAX_CELL_VALUE / 2 - 5;
   long long n2_start = MAX_CELL_VALUE / 2 - 5;
   long long steps = 10;
@@ -157,10 +157,10 @@ TEST_F(BigIntTest, testMultiplicationSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testMultiplicationSmallNumbers) {
+TEST_F(BigIntTest, test_multiplication_small_numbers) {
   long long n1_start = 523432261;
   long long n2_start = 467115341;
-  long long steps = 50;
+  long long steps = 10;
   for (long long i = n1_start - steps; i < n1_start + steps; ++i) {
     for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
       ASSERT_EQ(to_string(i * j), (BigInt(i) * BigInt(j)).toDecimalString());
@@ -168,7 +168,7 @@ TEST_F(BigIntTest, testMultiplicationSmallNumbers) {
   }
 }
 
-TEST_F(BigIntTest, testMultiplicationLongNumbers) {
+TEST_F(BigIntTest, test_multiplication_long_numbers) {
   ASSERT_EQ(
       "4390762844544221301382902406733168845063887446673695681038901126589516324486872174593251287459038837673006252692795342760466061484950541992064671038090344069586993712870106532707591600212977801289036122525772195192015613446841363419443971696105292747800147575675918123780118961240020869192748281892848129172578166276883926228710835559697740220966300956149085285653936567962547064962956654474626823571911224071829917735208007842153479478149770430902294049999639836016794866595127246033598119912894381645536479187765278468631159417850565072273061142119867482306721963019196878894342252311339214292400044805671485408566",
       (BigInt(
@@ -177,7 +177,7 @@ TEST_F(BigIntTest, testMultiplicationLongNumbers) {
           "88352972791125599654602526729806289318058473276859480855617212988836676467159489722738068957562597567906068173874687651781669126218590167348485375483703607243201626118125468859381893195856552712039134967906750615111211852204440100709993128784338373228907267352165732599309856535472049222470403388325213434253")).toDecimalString());
 }
 
-TEST_F(BigIntTest, testDivisionSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_division_small_numbers_near_zero) {
   long long n1_start = 0;
   long long n2_start = 0;
   long long steps = 50;
@@ -190,7 +190,7 @@ TEST_F(BigIntTest, testDivisionSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testDivisionSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_division_small_numbers_near_max_cell_value) {
   long long n1_start = MAX_CELL_VALUE - 5;
   long long n2_start = MAX_CELL_VALUE - 5;
   long long steps = 10;
@@ -203,10 +203,10 @@ TEST_F(BigIntTest, testDivisionSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testDivisionSmallNumbers) {
+TEST_F(BigIntTest, test_division_small_numbers) {
   long long n1_start = 523432261;
   long long n2_start = 467115341;
-  long long steps = 50;
+  long long steps = 10;
   for (long long i = n1_start - steps; i < n1_start + steps; ++i) {
     for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
       if (j == 0)
@@ -216,8 +216,7 @@ TEST_F(BigIntTest, testDivisionSmallNumbers) {
   }
 }
 
-
-TEST_F(BigIntTest, testDivisionLongNumbers) {
+TEST_F(BigIntTest, test_division_long_numbers) {
   ASSERT_EQ(
       "2",
       (BigInt(
@@ -226,7 +225,7 @@ TEST_F(BigIntTest, testDivisionLongNumbers) {
           "183529727911255996546025267298062893180584732768594808556172129888366764671594897227380689575625975679060681738746876517816691262185901673484853754837036072432016261181254688593818931958565527120391349679067506151112118522044401")).toDecimalString());
 }
 
-TEST_F(BigIntTest, testModSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_mod_small_numbers_near_zero) {
   long long n1_start = 0;
   long long n2_start = 0;
   long long steps = 50;
@@ -239,7 +238,7 @@ TEST_F(BigIntTest, testModSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testModSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_mod_small_numbers_near_max_cell_value) {
   long long n1_start = MAX_CELL_VALUE - 5;
   long long n2_start = MAX_CELL_VALUE - 5;
   long long steps = 10;
@@ -252,10 +251,10 @@ TEST_F(BigIntTest, testModSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testModSmallNumbers) {
+TEST_F(BigIntTest, test_mod_small_numbers) {
   long long n1_start = 523432261;
   long long n2_start = 467115341;
-  long long steps = 50;
+  long long steps = 10;
   for (long long i = n1_start - steps; i < n1_start + steps; ++i) {
     for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
       if (j == 0)
@@ -265,8 +264,7 @@ TEST_F(BigIntTest, testModSmallNumbers) {
   }
 }
 
-
-TEST_F(BigIntTest, testModLongNumbers) {
+TEST_F(BigIntTest, test_mod_long_numbers) {
   ASSERT_EQ(
       "92265672923391890675250090673153747914877140611305437086862207327075505063768904916525631502018807801899934302635150576619194695147398214374976626667872252305578006912270637569929727895246957655341302728784262525965047768828448",
       (BigInt(
@@ -275,7 +273,7 @@ TEST_F(BigIntTest, testModLongNumbers) {
           "183529727911255996546025267298062893180584732768594808556172129888366764671594897227380689575625975679060681738746876517816691262185901673484853754837036072432016261181254688593818931958565527120391349679067506151112118522044401")).toDecimalString());
 }
 
-TEST_F(BigIntTest, testIsZeroSmallNumbers) {
+TEST_F(BigIntTest, test_is_zero_small_numbers) {
   long long start = 0;
   long long steps = 1000;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -283,7 +281,7 @@ TEST_F(BigIntTest, testIsZeroSmallNumbers) {
   }
 }
 
-TEST_F(BigIntTest, testIsPositiveSmallNumbers) {
+TEST_F(BigIntTest, test_is_positive_small_numbers) {
   long long start = 0;
   long long steps = 1000;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -291,7 +289,7 @@ TEST_F(BigIntTest, testIsPositiveSmallNumbers) {
   }
 }
 
-TEST_F(BigIntTest, testIsNegativeSmallNumbers) {
+TEST_F(BigIntTest, test_is_negative_small_numbers) {
   long long start = 0;
   long long steps = 1000;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -299,7 +297,7 @@ TEST_F(BigIntTest, testIsNegativeSmallNumbers) {
   }
 }
 
-TEST_F(BigIntTest, testEqualsSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_equals_small_numbers_near_zero) {
   long long start = 0;
   long long steps = 50;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -309,7 +307,7 @@ TEST_F(BigIntTest, testEqualsSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testEqualsSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_equals_small_numbers_near_max_cell_value) {
   long long start = MAX_CELL_VALUE;
   long long steps = 50;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -319,11 +317,11 @@ TEST_F(BigIntTest, testEqualsSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testEqualsSmallNumbers1) {
+TEST_F(BigIntTest, test_equals_small_numbers_1) {
   ASSERT_EQ(to_string(-1 == 255), to_string(BigInt(-1) == BigInt(255)));
 }
 
-TEST_F(BigIntTest, testIsLessThanSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_is_less_than_small_numbers_near_zero) {
   long long start = 0;
   long long steps = 50;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -333,7 +331,7 @@ TEST_F(BigIntTest, testIsLessThanSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testIsLessThanSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_is_less_than_small_numbers_near_max_cell_value) {
   long long start = MAX_CELL_VALUE;
   long long steps = 50;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -343,11 +341,11 @@ TEST_F(BigIntTest, testIsLessThanSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testIsLessThanSmallNumbers1) {
+TEST_F(BigIntTest, test_is_less_than_small_numbers_1) {
   ASSERT_EQ(to_string(-1 < 255), to_string(BigInt(-1) < BigInt(255)));
 }
 
-TEST_F(BigIntTest, testIsGreaterThanSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_is_greater_than_small_numbers_near_zero) {
   long long start = 0;
   long long steps = 50;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -357,7 +355,7 @@ TEST_F(BigIntTest, testIsGreaterThanSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testIsGreaterThanSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_is_greater_than_small_numbers_near_max_cell_value) {
   long long start = MAX_CELL_VALUE;
   long long steps = 50;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -367,11 +365,11 @@ TEST_F(BigIntTest, testIsGreaterThanSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testIsGreaterThanSmallNumbers1) {
+TEST_F(BigIntTest, test_is_greater_than_small_numbers1) {
   ASSERT_EQ(to_string(-1 > 255), to_string(BigInt(-1) > BigInt(255)));
 }
 
-TEST_F(BigIntTest, testIncrementsSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_increments_small_numbers_near_zero) {
   long long start = 0;
   long long steps = 50;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -404,7 +402,7 @@ TEST_F(BigIntTest, testIncrementsSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testIncrementsSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_increments_small_numbers_near_max_cell_value) {
   long long start = MAX_CELL_VALUE;
   long long steps = 50;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -437,7 +435,7 @@ TEST_F(BigIntTest, testIncrementsSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testNegationSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_negation_small_numbers_near_zero) {
   long long start = 0;
   long long steps = 500;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -445,7 +443,7 @@ TEST_F(BigIntTest, testNegationSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testNegationSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_negation_small_numbers_near_max_cell_value) {
   long long start = MAX_CELL_VALUE;
   long long steps = 500;
   for (long long i = start - steps; i <= start + steps; ++i) {
@@ -453,7 +451,7 @@ TEST_F(BigIntTest, testNegationSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testFactorial) {
+TEST_F(BigIntTest, test_factorial) {
   string ans = "1241018070217667823424840524103103992616605577501693185388951803611996075221691752992751978120487585576464959501670387052809889858690710767331242032218484364310473577889968548278290754541561964852153468318044293239598173696899657235903947616152278558180061176365108428800000000000000000000000000000000000000000";
 
   BigInt product = BigInt::ONE;
@@ -462,7 +460,7 @@ TEST_F(BigIntTest, testFactorial) {
     product *= i;
 }
 
-TEST_F(BigIntTest, testShiftBitsSmallNumbersNearZero) {
+TEST_F(BigIntTest, test_shift_bits_small_numbers_near_zero) {
   long long start = 0;
   int shifts = sizeof(unsigned long long) / CELL_BIT_LENGTH;
   long long steps = 256;
@@ -476,7 +474,7 @@ TEST_F(BigIntTest, testShiftBitsSmallNumbersNearZero) {
   }
 }
 
-TEST_F(BigIntTest, testShiftBitsSmallNumbersNearMAX_CELL_VALUE) {
+TEST_F(BigIntTest, test_shift_bits_small_numbers_near_max_cell_value) {
   long long start = MAX_CELL_VALUE;
   int shifts = sizeof(unsigned long long) / CELL_BIT_LENGTH;
   long long steps = 256;
@@ -490,7 +488,7 @@ TEST_F(BigIntTest, testShiftBitsSmallNumbersNearMAX_CELL_VALUE) {
   }
 }
 
-TEST_F(BigIntTest, testShiftBitsLargeNumbers) {
+TEST_F(BigIntTest, test_shift_bits_large_numbers) {
   int n = 1565463521;
   BigInt x = n;
   for (int i = 1; i <= 100; ++i) {

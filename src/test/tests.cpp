@@ -1,6 +1,6 @@
 #include "tests.h"
 #include "bits/stdc++.h"
-#include "bigint/bigint_tests.h"
+#include "bigint/old_bigint_tests.h"
 using namespace std;
 
 void runTests() {

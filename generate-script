@@ -3,13 +3,13 @@
 TARGET="./singlefile/rsa-crypt.cpp"
 
 files=(
-    "main/bigint/BigInt.h"
-    "main/bigint/BigIntHelpers.h"
-    "main/App.h"
-    "main/bigint/BigInt.cpp"
-    "main/bigint/BigIntHelpers.cpp"
-    "main/App.cpp"
-    "main/main.cpp"
+    "bigint/BigInt.h"
+    "bigint/BigIntHelpers.h"
+    "App.h"
+    "bigint/BigInt.cpp"
+    "bigint/BigIntHelpers.cpp"
+    "App.cpp"
+    "main.cpp"
 )
 
 includes=(
@@ -40,7 +40,7 @@ for f in "${files[@]}"; do
     echo "// ================================================================================" >> "$TARGET"
     echo "// BEGIN_FILE {{ $f" >> "$TARGET"
     echo "//" >> "$TARGET"
-    cat "./src/$f" >> "$TARGET"
+    cat "./src/main/$f" >> "$TARGET"
     echo >> "$TARGET"
     echo "//" >> "$TARGET"
     echo "// END_FILE $f }};" >> "$TARGET"

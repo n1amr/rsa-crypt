@@ -188,7 +188,7 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   BigInt a_abs = a.absolute();
   BigInt b_abs = b.absolute();
 
-  SIGN_T ans_sign = a.sign ^ b.sign;
+  SIGN_T ans_sign = a.sign ^b.sign;
 
   // Handle special cases
   if (b_abs == BigInt::ZERO)

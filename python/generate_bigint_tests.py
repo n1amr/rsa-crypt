@@ -17,10 +17,10 @@ TEST_F(BigIntGeneratedTest, test_addition_and_subtraction_of_{a_bits}_bit_number
   BigInt sum_2 = x - y;
   BigInt sum_3 = -x + y;
   BigInt sum_4 = -x - y;
-  ASSERT_EQ(expected_sum_1, sum_1.toDecimalString());
-  ASSERT_EQ(expected_sum_2, sum_2.toDecimalString());
-  ASSERT_EQ(expected_sum_3, sum_3.toDecimalString());
-  ASSERT_EQ(expected_sum_4, sum_4.toDecimalString());
+  EXPECT_EQ(expected_sum_1, sum_1.toDecimalString());
+  EXPECT_EQ(expected_sum_2, sum_2.toDecimalString());
+  EXPECT_EQ(expected_sum_3, sum_3.toDecimalString());
+  EXPECT_EQ(expected_sum_4, sum_4.toDecimalString());
 }}'''
 
 
@@ -34,7 +34,7 @@ TEST_F(BigIntGeneratedTest, test_multiplication_of_{a_bits}_bit_number_by_{b_bit
   BigInt y("{y}");
   string expected_prod = "{x * y}";
   BigInt prod = x * y;
-  ASSERT_EQ(expected_prod, prod.toDecimalString());
+  EXPECT_EQ(expected_prod, prod.toDecimalString());
 }}'''
 
 
@@ -51,8 +51,8 @@ TEST_F(BigIntGeneratedTest, test_division_of_{a_bits}_bit_number_over_{b_bits}_b
     string expected_r = "{x % y}";
     BigInt q = x / y;
     BigInt r = x % y;
-    ASSERT_EQ(expected_q, q.toDecimalString());
-    ASSERT_EQ(expected_r, r.toDecimalString());
+    EXPECT_EQ(expected_q, q.toDecimalString());
+    EXPECT_EQ(expected_r, r.toDecimalString());
   }}
   {{
     BigInt x("{x}");
@@ -61,8 +61,8 @@ TEST_F(BigIntGeneratedTest, test_division_of_{a_bits}_bit_number_over_{b_bits}_b
     string expected_r = "{x % -y}";
     BigInt q = x / y;
     BigInt r = x % y;
-    ASSERT_EQ(expected_q, q.toDecimalString());
-    ASSERT_EQ(expected_r, r.toDecimalString());
+    EXPECT_EQ(expected_q, q.toDecimalString());
+    EXPECT_EQ(expected_r, r.toDecimalString());
   }}
   {{
     BigInt x("{-x}");
@@ -71,8 +71,8 @@ TEST_F(BigIntGeneratedTest, test_division_of_{a_bits}_bit_number_over_{b_bits}_b
     string expected_r = "{-x % y}";
     BigInt q = x / y;
     BigInt r = x % y;
-    ASSERT_EQ(expected_q, q.toDecimalString());
-    ASSERT_EQ(expected_r, r.toDecimalString());
+    EXPECT_EQ(expected_q, q.toDecimalString());
+    EXPECT_EQ(expected_r, r.toDecimalString());
   }}
   {{
     BigInt x("{-x}");
@@ -81,8 +81,8 @@ TEST_F(BigIntGeneratedTest, test_division_of_{a_bits}_bit_number_over_{b_bits}_b
     string expected_r = "{-x % -y}";
     BigInt q = x / y;
     BigInt r = x % y;
-    ASSERT_EQ(expected_q, q.toDecimalString());
-    ASSERT_EQ(expected_r, r.toDecimalString());
+    EXPECT_EQ(expected_q, q.toDecimalString());
+    EXPECT_EQ(expected_r, r.toDecimalString());
   }}
   {{
     BigInt x("{y}");
@@ -91,8 +91,8 @@ TEST_F(BigIntGeneratedTest, test_division_of_{a_bits}_bit_number_over_{b_bits}_b
     string expected_r = "{y % x}";
     BigInt q = x / y;
     BigInt r = x % y;
-    ASSERT_EQ(expected_q, q.toDecimalString());
-    ASSERT_EQ(expected_r, r.toDecimalString());
+    EXPECT_EQ(expected_q, q.toDecimalString());
+    EXPECT_EQ(expected_r, r.toDecimalString());
   }}
 }}
 '''

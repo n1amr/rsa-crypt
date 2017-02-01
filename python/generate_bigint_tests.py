@@ -115,8 +115,6 @@ class BigIntGeneratedTest : public ::testing::Test {
 };
 '''
         print(header, file=f)
-        # for a_bits in [2048, 1024, 512, 256, 64, 32, 16, 8]:
-        #     for b_bits in [2048, 1024, 512, 256, 64, 32, 16, 8]:
         for a_bits in [2048, 1024, 32, 16, 8]:
             for b_bits in [2048, 1024, 32, 16, 8]:
                 if a_bits < b_bits:

@@ -188,37 +188,42 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   BigInt a_abs = a.absolute();
   BigInt b_abs = b.absolute();
 
-  SIGN_T sign = a.sign ^ b.sign;
+  SIGN_T ans_sign = a.sign ^ b.sign;
 
+  // Handle special cases
   if (b_abs == BigInt::ZERO)
     throw "Zero division exception";
   if (a_abs == BigInt::ZERO)
     return BigInt::ZERO;
   if (b_abs == BigInt::ONE)
-    return BigInt(a_abs, sign);
+    return BigInt(a_abs, ans_sign);
 
   int a_to_b = compare(a_abs, b_abs);
   if (a_to_b < 0) // a_abs < b_abs
-    return (a.sign == b.sign) ? BigInt::ZERO : BigInt(-1);
+    return (ans_sign ? BigInt(-1) : BigInt::ZERO);
   else if (a_to_b == 0) // a_abs == b_abs
-    return BigInt(BigInt::ONE, sign);
+    return BigInt(BigInt::ONE, ans_sign);
 
+  // Normalization factor
   CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + b_abs.cells.back())); // Normalization factor
   BigInt D((long long) d);
 
+  // Normalize operands
   BigInt a_ = a_abs * D;
   BigInt b_ = b_abs * D;
 
   assert(a_ >= b_);
-  assert(b_ >= ZERO);
+  assert(b_ > ZERO);
 
   size_t m = a_.cells.size();
   size_t n = b_.cells.size();
   size_t k = m - n + 1;
 
-  CELLS_CONTAINER_T q_cells;
-  q_cells.resize(k, 0);
+  BigInt Q = BigInt::ZERO;
+  Q.sign = ans_sign;
+  Q.cells.resize(k, 0);
 
+  // Initialize remainder r by most significant n digits of a
   BigInt r = a_.shiftBits((int) -(CELL_BIT_LENGTH * (m - n)));
 
   assert(r.cells.back() != 0);
@@ -229,7 +234,7 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
     assert(r.cells.size() <= n + 1);
 
     CELL_T q_0 = 0;
-    BigInt Q((long long) q_0);
+    BigInt Q_0((long long) q_0);
     if (r.cells.size() >= b_.cells.size()) {
       bool concat_zero = r.cells.size() == b_.cells.size();
 
@@ -243,24 +248,25 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
           (DOUBLE_CELL_T) ((DOUBLE_CELL_T) (concat_zero ? 0 : r.cells[n] * BASE) + r.cells[n - 1]) / b_.cells[n - 1]
       );
 
-      Q.cells[0] = (CELL_T) estimate;
-      BigInt R = r - Q * b_;
+      Q_0.cells[0] = (CELL_T) estimate;
+      BigInt R = r - Q_0 * b_;
       int error = 0;
       while (R < 0) {
         assert(error < 3);
         R = R + b_;
         error++;
       }
-      Q.cells[0] -= error;
+      Q_0.cells[0] -= error;
 
       assert(ZERO <= R);
-      assert(b_ * Q + R == r);
-      assert(Q.cells.size() == 1);
-      q_0 = Q.cells[0];
+      assert(b_ * Q_0 + R == r);
+      assert(Q_0.cells.size() == 1);
+      q_0 = Q_0.cells[0];
     }
-    q_cells[k - 1 - i] = q_0;
-    r = r - Q * b_;
+    Q.cells[k - 1 - i] = q_0;
+    r = r - Q_0 * b_;
 
+    // Append next digit of a to r
     if (i < k - 1) {
       r <<= CELL_BIT_LENGTH;
       r.cells[0] = a_.cells[k - 2 - i];
@@ -268,18 +274,17 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   }
 
   // Trim zeros
-  while (q_cells.size() > 1 && q_cells.back() == 0)
-    q_cells.pop_back();
+  while (Q.cells.size() > 1 && Q.cells.back() == 0)
+    Q.cells.pop_back();
 
-  BigInt Q(q_cells, a_abs.sign ^ b_abs.sign);
-  assert(b_abs * Q <= a_abs);
-  assert(a_abs - b_abs * Q < b_abs);
-  assert(ZERO <= a_abs - b_abs * Q);
+  assert(b_abs * Q.absolute() <= a_abs);
+  assert(a_abs - b_abs * Q.absolute() < b_abs);
+  assert(ZERO <= a_abs - b_abs * Q.absolute());
 
-  Q.sign = sign;
-  if (Q.sign && !r.isZero()) {
-    Q -= 1;
-  }
+  // Fix for negative numbers
+  if (Q.sign && !r.isZero())
+    Q -= BigInt::ONE;
+
   assert(ZEROS_TRIMMED(Q));
   return Q;
 }

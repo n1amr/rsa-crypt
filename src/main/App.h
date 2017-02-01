@@ -12,10 +12,10 @@ using namespace std;
 #define COMPOSITE 0
 #define INCLUSIVE 1
 
-BigInt random(BigInt from, BigInt to);
-bool millerRabinTest(BigInt n);
-bool isPrime(BigInt n);
-BigInt inverse(BigInt a, BigInt mod);
+BigInt random(const BigInt &from, const BigInt &to);
+bool millerRabinTest(const BigInt &n);
+bool isPrime(const BigInt &n);
+BigInt inverse(const BigInt &a, const BigInt &mod);
 void appLoop();
 
 #endif //RSA_APP_H

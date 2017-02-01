@@ -2,13 +2,15 @@
 #include "App.h"
 #endif //N1AMR_MULTIPLE_FILES
 
-BigInt random(BigInt from, BigInt to) {
+BigInt random(const BigInt &from, const BigInt &to) {
   return from +
          (to - from) * BigInt((long long) rand())
          / BigInt((long long) 1 << 31);
 }
 
-bool millerRabinTest(BigInt n) {
+bool millerRabinTest(const BigInt &n) {
+  assert(n > BigInt(2));
+
   if (!n.isOdd())
     return COMPOSITE;
 
@@ -34,14 +36,20 @@ bool millerRabinTest(BigInt n) {
   return COMPOSITE;
 }
 
-bool isPrime(BigInt n) {
+bool isPrime(const BigInt &n) {
+  BigInt n_abs = BigInt::absolute(n);
+  if (n_abs < BigInt(2))
+    return false;
+  if (n_abs == BigInt(2))
+    return true;
+
   for (int i = 0; i < MAX_MILLER_RABIN_TRIALS_COUNT; ++i)
-    if (millerRabinTest(n) == COMPOSITE)
+    if (millerRabinTest(n_abs) == COMPOSITE)
       return false;
   return true;
 }
 
-BigInt inverse(BigInt a, BigInt mod) {
+BigInt inverse(const BigInt &a, const BigInt &mod) {
   BigInt right_old = mod;
   BigInt right = a;
   BigInt left_old = BigInt::ZERO;

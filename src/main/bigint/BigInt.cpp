@@ -226,11 +226,11 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   // Initialize remainder r by most significant n digits of a
   BigInt r = a_.shiftBits((int) -(CELL_BIT_LENGTH * (m - n)));
 
-  assert(r.cells.back() != 0);
+  assert(ZEROS_TRIMMED(r));
   assert(r.cells.size() == n);
 
   for (size_t i = 0; i < k; i++) {
-    assert(r.cells.back() != 0);
+    assert(ZEROS_TRIMMED(r));
     assert(r.cells.size() <= n + 1);
 
     CELL_T q_0 = 0;

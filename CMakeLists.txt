@@ -18,6 +18,7 @@ set(SOURCE_FILES
 
 set(TESTS_FILES
         src/test/bigint/BigIntTest.cpp
+        src/test/bigint/BigIntGeneratedTest.cpp
         src/test/AppTest.cpp)
 
 add_subdirectory(src/test/lib/googletest-master)

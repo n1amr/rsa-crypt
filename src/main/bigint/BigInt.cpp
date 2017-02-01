@@ -188,16 +188,20 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   BigInt a_abs = a.absolute();
   BigInt b_abs = b.absolute();
 
+  SIGN_T sign = a.sign ^ b.sign;
+
   if (b_abs == BigInt::ZERO)
     throw "Zero division exception";
   if (a_abs == BigInt::ZERO)
     return BigInt::ZERO;
+  if (b_abs == BigInt::ONE)
+    return BigInt(a_abs, sign);
 
   int a_to_b = compare(a_abs, b_abs);
   if (a_to_b < 0) // a_abs < b_abs
-    return BigInt::ZERO;
+    return (a.sign == b.sign) ? BigInt::ZERO : BigInt(-1);
   else if (a_to_b == 0) // a_abs == b_abs
-    return BigInt(BigInt::ONE, a.sign ^ b.sign);
+    return BigInt(BigInt::ONE, sign);
 
   CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + b_abs.cells.back())); // Normalization factor
   BigInt D((long long) d);
@@ -272,7 +276,10 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   assert(a_abs - b_abs * Q < b_abs);
   assert(ZERO <= a_abs - b_abs * Q);
 
-  Q.sign = a.sign ^ b.sign;
+  Q.sign = sign;
+  if (Q.sign && !r.isZero()) {
+    Q -= 1;
+  }
   assert(ZEROS_TRIMMED(Q));
   return Q;
 }

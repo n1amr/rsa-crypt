@@ -24,28 +24,53 @@ includes=(
     ctime
 )
 
+print_title() {
+    LENGTH=78
+    if [ ${#1} -ge $LENGTH ]; then
+        echo "=== ${1} ==="
+    elif [ ${#1} -eq 0 ]; then
+        printf "%*s\n" $LENGTH "=" | tr ' ' '='
+    else
+        printf "%*s%*s\n" $(( (${#1} + 4 + $LENGTH) / 2)) "__${1// /$}__" $(( $LENGTH - (${#1} + 4 + $LENGTH) / 2)) "=" | tr ' _$' '=  '
+    fi
+}
+
+# Header
 echo "//" > "$TARGET"
 echo "// Author: Amr Alaa" >> "$TARGET"
 echo "//" >> "$TARGET"
 echo "// WARNING: Auto generated file. All changes will be lost!" >> "$TARGET"
 echo "//" >> "$TARGET"
 echo >> "$TARGET"
+
+# Includes
+echo "//" >> "$TARGET"
+echo "// $(print_title)" >> "$TARGET"
+echo "// $(print_title "BEGIN Includes")" >> "$TARGET"
+echo >> "$TARGET"
 for i in "${includes[@]}"; do
     echo "#include <$i>" >> "$TARGET"
 done
 echo "using namespace std;" >> "$TARGET"
+echo >> "$TARGET"
+echo "// $(print_title "END Includes")" >> "$TARGET"
+echo "// $(print_title)" >> "$TARGET"
 
+# Source/Header files
 for f in "${files[@]}"; do
-    echo >> "$TARGET"
-    echo "// ================================================================================" >> "$TARGET"
-    echo "// BEGIN_FILE {{ $f" >> "$TARGET"
     echo "//" >> "$TARGET"
+    echo "//" >> "$TARGET"
+    echo "// $(print_title)" >> "$TARGET"
+    echo "// $(print_title "BEGIN FILE $f")" >> "$TARGET"
+    echo "//" >> "$TARGET"
+    echo >> "$TARGET"
     cat "./src/main/$f" >> "$TARGET"
     echo >> "$TARGET"
     echo "//" >> "$TARGET"
-    echo "// END_FILE $f }};" >> "$TARGET"
-    echo "// ================================================================================" >> "$TARGET"
+    echo "// $(print_title "END FILE $f")" >> "$TARGET"
+    echo "// $(print_title)" >> "$TARGET"
 done
 
+# Remove assertions
 cat "$TARGET" | grep -Pv '\s*assert\(' > "${TARGET}.tmp"
 mv -f "${TARGET}.tmp" "${TARGET}"

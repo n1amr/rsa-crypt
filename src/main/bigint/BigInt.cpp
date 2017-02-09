@@ -185,32 +185,30 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   assert(ZEROS_TRIMMED(a));
   assert(ZEROS_TRIMMED(b));
 
-  BigInt a_abs = a.absolute();
-  BigInt b_abs = b.absolute();
+  SIGN_T q_sign = a.sign ^b.sign;
 
-  SIGN_T ans_sign = a.sign ^b.sign;
+  BigInt a_ = a.absolute();
+  BigInt b_ = b.absolute();
 
   // Handle special cases
-  if (b_abs == BigInt::ZERO)
+  if (b_ == BigInt::ZERO)
     throw "Zero division exception";
-  if (a_abs == BigInt::ZERO)
+  if (a_ == BigInt::ZERO)
     return BigInt::ZERO;
-  if (b_abs == BigInt::ONE)
-    return BigInt(a_abs, ans_sign);
+  if (b_ == BigInt::ONE)
+    return BigInt(a_, q_sign);
 
-  int a_to_b = compare(a_abs, b_abs);
-  if (a_to_b < 0) // a_abs < b_abs
-    return (ans_sign ? BigInt(-1) : BigInt::ZERO);
-  else if (a_to_b == 0) // a_abs == b_abs
-    return BigInt(BigInt::ONE, ans_sign);
-
-  // Normalization factor
-  CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + b_abs.cells.back())); // Normalization factor
-  BigInt D((long long) d);
+  int a_to_b = compare(a_, b_);
+  if (a_to_b < 0) // a_ < b_
+    return (q_sign ? BigInt(-1) : BigInt::ZERO);
+  else if (a_to_b == 0) // a_ == b_
+    return BigInt(BigInt::ONE, q_sign);
 
   // Normalize operands
-  BigInt a_ = a_abs * D;
-  BigInt b_ = b_abs * D;
+  CELL_T d = (CELL_T) ((DOUBLE_CELL_T) BASE / ((DOUBLE_CELL_T) 1 + b_.cells.back())); // Normalization factor
+  BigInt D((long long) d);
+  a_ *= D;
+  b_ *= D;
 
   assert(a_ >= b_);
   assert(b_ > ZERO);
@@ -219,9 +217,9 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   size_t n = b_.cells.size();
   size_t k = m - n + 1;
 
-  BigInt Q = BigInt::ZERO;
-  Q.sign = ans_sign;
-  Q.cells.resize(k, 0);
+  BigInt q = BigInt::ZERO;
+  q.sign = q_sign;
+  q.cells.resize(k, 0);
 
   // Initialize remainder r by most significant n digits of a
   BigInt r = a_.shiftBits((int) -(CELL_BIT_LENGTH * (m - n)));
@@ -233,8 +231,8 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
     assert(ZEROS_TRIMMED(r));
     assert(r.cells.size() <= n + 1);
 
-    CELL_T q_0 = 0;
-    BigInt Q_0((long long) q_0);
+    CELL_T q_0_ = 0;
+    BigInt q_0((long long) q_0_);
     if (r.cells.size() >= b_.cells.size()) {
       bool concat_zero = r.cells.size() == b_.cells.size();
 
@@ -248,23 +246,23 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
           (DOUBLE_CELL_T) ((DOUBLE_CELL_T) (concat_zero ? 0 : r.cells[n] * BASE) + r.cells[n - 1]) / b_.cells[n - 1]
       );
 
-      Q_0.cells[0] = (CELL_T) estimate;
-      BigInt R = r - Q_0 * b_;
+      q_0.cells[0] = (CELL_T) estimate;
+      BigInt R = r - q_0 * b_;
       int error = 0;
       while (R < 0) {
         assert(error < 3);
         R = R + b_;
         error++;
       }
-      Q_0.cells[0] -= error;
+      q_0.cells[0] -= error;
 
       assert(ZERO <= R);
-      assert(b_ * Q_0 + R == r);
-      assert(Q_0.cells.size() == 1);
-      q_0 = Q_0.cells[0];
+      assert(b_ * q_0 + R == r);
+      assert(q_0.cells.size() == 1);
+      q_0_ = q_0.cells[0];
     }
-    Q.cells[k - 1 - i] = q_0;
-    r = r - Q_0 * b_;
+    q.cells[k - 1 - i] = q_0_;
+    r = r - q_0 * b_;
 
     // Append next digit of a to r
     if (i < k - 1) {
@@ -274,19 +272,19 @@ BigInt BigInt::divide(const BigInt &a, const BigInt &b) {
   }
 
   // Trim zeros
-  while (Q.cells.size() > 1 && Q.cells.back() == 0)
-    Q.cells.pop_back();
+  while (q.cells.size() > 1 && q.cells.back() == 0)
+    q.cells.pop_back();
 
-  assert(b_abs * Q.absolute() <= a_abs);
-  assert(a_abs - b_abs * Q.absolute() < b_abs);
-  assert(ZERO <= a_abs - b_abs * Q.absolute());
+  assert(b.absolute() * q.absolute() <= a.absolute());
+  assert(a.absolute() - b.absolute() * q.absolute() < b.absolute());
+  assert(ZERO <= a.absolute() - b.absolute() * q.absolute());
 
   // Fix for negative numbers
-  if (Q.sign && !r.isZero())
-    Q -= BigInt::ONE;
+  if (q.sign == NEGATIVE && !r.isZero())
+    q -= BigInt::ONE;
 
-  assert(ZEROS_TRIMMED(Q));
-  return Q;
+  assert(ZEROS_TRIMMED(q));
+  return q;
 }
 
 BigInt BigInt::mod(const BigInt &n, const BigInt &m) {

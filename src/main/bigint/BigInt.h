@@ -6,14 +6,9 @@
 using namespace std;
 #endif //N1AMR_MULTIPLE_FILES
 
-#ifdef N1AMR_MULTIPLE_FILES
-#define CELL_SIZE 8
-
-#else //N1AMR_MULTIPLE_FILES
-#define NDEBUG
+#ifndef CELL_SIZE
 #define CELL_SIZE 32
-#endif //N1AMR_MULTIPLE_FILES
-
+#endif //CELL_SIZE
 
 #if CELL_SIZE == 8
 #define SIGNED_CELL_T char

@@ -18,13 +18,22 @@ set(SOURCE_FILES
 
 set(TESTS_FILES
         src/test/bigint/BigIntTest.cpp
-        src/test/bigint/BigIntGeneratedTest.cpp
         src/test/AppTest.cpp)
+
+set(LONG_TESTS_FILES
+        src/test/bigint/BigIntGeneratedTest.cpp)
 
 add_subdirectory(src/test/lib/googletest-master)
 include_directories(src/test/lib/googletest-master/googletest/include)
 include_directories(src/test/lib/googletest-master/googlemock/include)
 
 add_executable(main ${SOURCE_FILES} src/main/main.cpp)
+target_compile_definitions(main PRIVATE NDEBUG)
+
+add_executable(main_debug ${SOURCE_FILES} src/main/main.cpp)
+
 add_executable(tests ${SOURCE_FILES} ${TESTS_FILES} src/test/main.cpp)
 target_link_libraries(tests gtest gtest_main)
+
+add_executable(tests_long ${SOURCE_FILES} ${TESTS_FILES} ${LONG_TESTS_FILES} src/test/main.cpp)
+target_link_libraries(tests_long gtest gtest_main)

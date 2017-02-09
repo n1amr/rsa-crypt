@@ -43,17 +43,20 @@ echo "// WARNING: Auto generated file. All changes will be lost!" >> "$TARGET"
 echo "//" >> "$TARGET"
 echo >> "$TARGET"
 
-# Includes
+
+# Preprocessor
 echo "//" >> "$TARGET"
 echo "// $(print_title)" >> "$TARGET"
-echo "// $(print_title "BEGIN Includes")" >> "$TARGET"
+echo "// $(print_title "BEGIN Preprocessor")" >> "$TARGET"
+echo >> "$TARGET"
+echo "#define NDEBUG" >> "$TARGET"
 echo >> "$TARGET"
 for i in "${includes[@]}"; do
     echo "#include <$i>" >> "$TARGET"
 done
 echo "using namespace std;" >> "$TARGET"
 echo >> "$TARGET"
-echo "// $(print_title "END Includes")" >> "$TARGET"
+echo "// $(print_title "END Preprocessor")" >> "$TARGET"
 echo "// $(print_title)" >> "$TARGET"
 
 # Source/Header files
@@ -72,5 +75,5 @@ for f in "${files[@]}"; do
 done
 
 # Remove assertions
-cat "$TARGET" | grep -Pv '\s*assert\(' > "${TARGET}.tmp"
-mv -f "${TARGET}.tmp" "${TARGET}"
+# cat "$TARGET" | grep -Pv '\s*assert\(' > "${TARGET}.tmp"
+# mv -f "${TARGET}.tmp" "${TARGET}"

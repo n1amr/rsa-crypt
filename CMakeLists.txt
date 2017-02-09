@@ -31,6 +31,7 @@ add_executable(main ${SOURCE_FILES} src/main/main.cpp)
 target_compile_definitions(main PRIVATE NDEBUG)
 
 add_executable(main_debug ${SOURCE_FILES} src/main/main.cpp)
+target_compile_definitions(main_debug PRIVATE CELL_SIZE=8)
 
 add_executable(tests ${SOURCE_FILES} ${TESTS_FILES} src/test/main.cpp)
 target_link_libraries(tests gtest gtest_main)

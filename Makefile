@@ -9,6 +9,10 @@ endif
 generate:
 	@./generate-script
 
+singlefile/rsa-crypt.in:
+	@echo "# Enter commands here." >> singlefile/rsa-crypt.in
+	@echo "# (i.e. P= Q= E= PrintN PrintPhi PrintP PrintQ PrintE PrintD EncryptPublic= EncrtyptPrivate= Quit)" >> singlefile/rsa-crypt.in
+
 singlefile/rsa-crypt: generate
 	@test -f singlefile/rsa-crypt || g++ ./singlefile/rsa-crypt.cpp -o singlefile/rsa-crypt ${CXXFLAGS}
 

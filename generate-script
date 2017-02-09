@@ -1,6 +1,7 @@
 #!/bin/bash
 
 TARGET="./singlefile/rsa-crypt.cpp"
+[ ! -d "$(dirname $TARGET)" ] && mkdir -pv "$(dirname $TARGET)"
 
 files=(
     "bigint/BigInt.h"

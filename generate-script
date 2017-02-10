@@ -26,29 +26,32 @@ includes=(
 )
 
 print_title() {
-    LENGTH=78
+    LENGTH=77
+    echo -n "// "
     if [ ${#1} -ge $LENGTH ]; then
-        echo "=== ${1} ==="
+        echo -n "=== ${1} ==="
     elif [ ${#1} -eq 0 ]; then
-        printf "%*s\n" $LENGTH "=" | tr ' ' '='
+        printf "%*s" $LENGTH "=" | tr ' ' '='
     else
-        printf "%*s%*s\n" $(( (${#1} + 4 + $LENGTH) / 2)) "__${1// /$}__" $(( $LENGTH - (${#1} + 4 + $LENGTH) / 2)) "=" | tr ' _$' '=  '
+        printf "%*s%*s" $(( (${#1} + 4 + $LENGTH) / 2)) "__${1// /$}__" $(( $LENGTH - (${#1} + 4 + $LENGTH) / 2)) "=" | tr ' _$' '=  '
     fi
+    echo
 }
 
 # Header
-echo "//" > "$TARGET"
-echo "// Author: Amr Alaa" >> "$TARGET"
-echo "//" >> "$TARGET"
-echo "// WARNING: Auto generated file. All changes will be lost!" >> "$TARGET"
-echo "//" >> "$TARGET"
-echo >> "$TARGET"
-
+echo -n """\
+/*
+ * Author: Amr Alaa
+ *
+ * WARNING: Auto generated file. All changes will be lost!
+ *
+ */
+""" > "$TARGET"
 
 # Preprocessor
-echo "//" >> "$TARGET"
-echo "// $(print_title)" >> "$TARGET"
-echo "// $(print_title "BEGIN Preprocessor")" >> "$TARGET"
+echo >> "$TARGET"
+print_title >> "$TARGET"
+print_title "BEGIN Preprocessor" >> "$TARGET"
 echo >> "$TARGET"
 echo "#define NDEBUG" >> "$TARGET"
 echo >> "$TARGET"
@@ -57,22 +60,19 @@ for i in "${includes[@]}"; do
 done
 echo "using namespace std;" >> "$TARGET"
 echo >> "$TARGET"
-echo "// $(print_title "END Preprocessor")" >> "$TARGET"
-echo "// $(print_title)" >> "$TARGET"
+print_title "END Preprocessor" >> "$TARGET"
+print_title >> "$TARGET"
 
 # Source/Header files
 for f in "${files[@]}"; do
-    echo "//" >> "$TARGET"
-    echo "//" >> "$TARGET"
-    echo "// $(print_title)" >> "$TARGET"
-    echo "// $(print_title "BEGIN FILE $f")" >> "$TARGET"
-    echo "//" >> "$TARGET"
+    echo >> "$TARGET"
+    print_title >> "$TARGET"
+    print_title "BEGIN FILE $f" >> "$TARGET"
     echo >> "$TARGET"
     cat "./src/main/$f" >> "$TARGET"
     echo >> "$TARGET"
-    echo "//" >> "$TARGET"
-    echo "// $(print_title "END FILE $f")" >> "$TARGET"
-    echo "// $(print_title)" >> "$TARGET"
+    print_title "END FILE $f" >> "$TARGET"
+    print_title >> "$TARGET"
 done
 
 # Remove assertions

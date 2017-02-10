@@ -14,8 +14,12 @@ string decimalVecToDecimalString(const vector<short> &v) {
 
 vector<short> decimalStringToDecimalVec(const string &s) {
   vector<short> v;
-  for (auto it = s.rbegin(); it != s.rend(); ++it)
-    v.push_back(*it - '0');
+  short d;
+  for (auto it = s.rbegin(); it != s.rend(); ++it) {
+    d = *it - '0';
+    if (d >= 0 && d < 10)
+      v.push_back(d);
+  }
   return v;
 }
 

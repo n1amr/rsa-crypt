@@ -27,7 +27,7 @@ bool millerRabinTest(const BigInt &n) {
   if (last_pow == BigInt::ONE)
     return INCLUSIVE;
 
-  for (int j = 0; j < k; ++j) {
+  for (int j = 0; j < k; j++) {
     if (last_pow == n_1)
       return INCLUSIVE;
     last_pow = (last_pow * last_pow) % n;
@@ -43,7 +43,7 @@ bool isPrime(const BigInt &n) {
   if (n_abs == BigInt(2))
     return true;
 
-  for (int i = 0; i < MAX_MILLER_RABIN_TRIALS_COUNT; ++i)
+  for (int i = 0; i < MAX_MILLER_RABIN_TRIALS_COUNT; i++)
     if (millerRabinTest(n_abs) == COMPOSITE)
       return false;
   return true;

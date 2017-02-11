@@ -7,7 +7,7 @@ using namespace std;
 
 string decimalVecToDecimalString(const vector<short> &v) {
   stringstream ss;
-  for (auto it = v.rbegin(); it != v.rend(); ++it)
+  for (auto it = v.rbegin(); it != v.rend(); it++)
     ss << (*it);
   return ss.str();
 }
@@ -15,7 +15,7 @@ string decimalVecToDecimalString(const vector<short> &v) {
 vector<short> decimalStringToDecimalVec(const string &s) {
   vector<short> v;
   short d;
-  for (auto it = s.rbegin(); it != s.rend(); ++it) {
+  for (auto it = s.rbegin(); it != s.rend(); it++) {
     d = *it - '0';
     if (d >= 0 && d < 10)
       v.push_back(d);
@@ -27,7 +27,7 @@ vector<short> doubleDecimalVec(const vector<short> &v) {
   vector<short> ans;
 
   short d, remainder = 0;
-  for (auto it = v.begin(); it != v.end(); ++it) {
+  for (auto it = v.begin(); it != v.end(); it++) {
     d = (short) (2 * (*it) + remainder);
     ans.push_back((short) (d % 10));
     remainder = (short) (d / 10);
@@ -42,7 +42,7 @@ vector<short> addToDecimalVec(const vector<short> &v, short d) {
   vector<short> ans;
 
   short remainder = d;
-  for (auto it = v.begin(); it != v.end(); ++it) {
+  for (auto it = v.begin(); it != v.end(); it++) {
     int x = (*it) + remainder;
     ans.push_back((short) (x % 10));
     remainder = (short) (x / 10);
@@ -57,7 +57,7 @@ vector<short> halveDecimalVec(const vector<short> &v) {
   vector<short> ans;
 
   short x, remainder = 0;
-  for (auto it = v.rbegin(); it != v.rend(); ++it) {
+  for (auto it = v.rbegin(); it != v.rend(); it++) {
     x = (short) (10 * remainder + (*it));
     remainder = (short) (x % 2);
     ans.push_back((short) (x / 2));
@@ -92,7 +92,7 @@ vector<bool> decimalVecToBitsVec(const vector<short> &v) {
 
 void printVectorReversed(CELLS_CONTAINER_T v, string name) {
   cout << name << " = ";
-  for (auto it = v.rbegin(); it != v.rend(); ++it)
+  for (auto it = v.rbegin(); it != v.rend(); it++)
     cout << ((long long) *it) << " ";
   cout << endl;
 }

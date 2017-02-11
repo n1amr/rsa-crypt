@@ -17,10 +17,10 @@ singlefile/rsa-crypt: generate
 	@test -f singlefile/rsa-crypt || g++ ./singlefile/rsa-crypt.cpp -o singlefile/rsa-crypt ${CXXFLAGS}
 
 run: singlefile/rsa-crypt
-	time ./singlefile/rsa-crypt
+	/usr/bin/time --verbose ./singlefile/rsa-crypt
 
 run-fileinput: singlefile/rsa-crypt singlefile/rsa-crypt.in
-	time ./singlefile/rsa-crypt < singlefile/rsa-crypt.in
+	/usr/bin/time --verbose ./singlefile/rsa-crypt < singlefile/rsa-crypt.in
 
 clean:
 	rm ./singlefile/rsa-crypt

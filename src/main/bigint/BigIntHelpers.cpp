@@ -14,6 +14,8 @@ string decimalVecToDecimalString(const vector<short> &v) {
 
 vector<short> decimalStringToDecimalVec(const string &s) {
   vector<short> v;
+  v.reserve(s.size());
+
   short d;
   for (auto it = s.rbegin(); it != s.rend(); it++) {
     d = *it - '0';
@@ -25,6 +27,7 @@ vector<short> decimalStringToDecimalVec(const string &s) {
 
 vector<short> doubleDecimalVec(const vector<short> &v) {
   vector<short> ans;
+  ans.reserve(v.size() + 1);
 
   short d, remainder = 0;
   for (auto it = v.begin(); it != v.end(); it++) {
@@ -40,6 +43,7 @@ vector<short> doubleDecimalVec(const vector<short> &v) {
 
 vector<short> addToDecimalVec(const vector<short> &v, short d) {
   vector<short> ans;
+  ans.reserve(v.size() + 1);
 
   short remainder = d;
   for (auto it = v.begin(); it != v.end(); it++) {
@@ -55,6 +59,7 @@ vector<short> addToDecimalVec(const vector<short> &v, short d) {
 
 vector<short> halveDecimalVec(const vector<short> &v) {
   vector<short> ans;
+  ans.reserve(v.size());
 
   short x, remainder = 0;
   for (auto it = v.rbegin(); it != v.rend(); it++) {
@@ -76,6 +81,7 @@ bool isDecimalVecOdd(const vector<short> &v) {
 
 vector<bool> decimalVecToBitsVec(const vector<short> &v) {
   vector<bool> ans;
+  ans.reserve(v.size() * 4);
 
   vector<short> tmp = v;
 

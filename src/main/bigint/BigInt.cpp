@@ -503,10 +503,7 @@ string BigInt::toBinaryString() const {
 string BigInt::toDecimalString() const {
   vector<bool> bits = toBitsVector();
 
-  vector<short> digits;
-  digits.reserve(bits.size() / 3);
-  digits.push_back(0);
-
+  vector<short> digits = {0};
   for (auto it = bits.rbegin(); it != bits.rend(); it++) {
     digits = doubleDecimalVec(digits);
     digits = addToDecimalVec(digits, *it);

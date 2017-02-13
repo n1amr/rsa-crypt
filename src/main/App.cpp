@@ -3,9 +3,11 @@
 #endif //N1AMR_MULTIPLE_FILES
 
 BigInt random(const BigInt &from, const BigInt &to) {
-  return from +
-         (to - from) * BigInt((long long) rand())
-         / BigInt((long long) 1 << 31);
+  BigInt ans = from +
+               (to - from) * BigInt((long long) rand())
+               / BigInt((long long) 1 << 31);
+  assert(from <= ans && ans < to);
+  return ans;
 }
 
 bool millerRabinTest(const BigInt &n) {
@@ -50,16 +52,21 @@ bool isPrime(const BigInt &n) {
 }
 
 BigInt inverse(const BigInt &a, const BigInt &mod) {
+  BigInt ans;
+
   BigInt right_old = mod;
   BigInt right = a;
   BigInt left_old = BigInt::ZERO;
   BigInt left = BigInt::ONE;
   BigInt tmp, Q;
   while (1) {
-    if (right.isZero())
-      return BigInt::ZERO;// no inverse
-    else if (right == BigInt::ONE)
-      return left > 0 ? left : mod + left;
+    if (right.isZero()) {
+      ans = BigInt::ZERO;  // no inverse
+      break;
+    } else if (right == BigInt::ONE) {
+      ans = left > 0 ? left : mod + left;
+      break;
+    }
 
     Q = right_old / right;
 
@@ -71,6 +78,8 @@ BigInt inverse(const BigInt &a, const BigInt &mod) {
     right_old = right;
     right = tmp;
   }
+  assert(BigInt::mod(ans * a, mod) == BigInt::ONE || ans == BigInt::ZERO);
+  return ans;
 }
 
 void appLoop() {
@@ -96,23 +105,29 @@ void appLoop() {
       cache.erase('h');
       cache.erase('d');
       boolCache.erase('p');
+
     } else if (line.length() > 2 && line.substr(0, 2) == "q=") {
       cache['q'] = BigInt(line.substr(2));
       cache.erase('n');
       cache.erase('h');
       cache.erase('d');
       boolCache.erase('q');
+
     } else if (line.length() > 2 && line.substr(0, 2) == "e=") {
       cache['e'] = BigInt(line.substr(2));
       cache.erase('n');
       cache.erase('h');
       cache.erase('d');
+
     } else if (line == "printp") {
       cout << cache['p'] << endl;
+
     } else if (line == "printq") {
       cout << cache['q'] << endl;
+
     } else if (line == "printe") {
       cout << cache['e'] << endl;
+
     } else if (line == "printd") {
       if (cache.count('d') == 0) {
         if (cache.count('h') == 0)
@@ -120,27 +135,33 @@ void appLoop() {
         cache['d'] = inverse(cache['e'], cache['h']);
       }
       cout << cache['d'] << endl;
+
     } else if (line == "printn") {
       if (cache.count('n') == 0)
         cache['n'] = cache['p'] * cache['q'];
       cout << cache['n'] << endl;
+
     } else if (line == "printphi") {
       if (cache.count('h') == 0)
         cache['h'] = (cache['p'] - 1) * (cache['q'] - 1);
       cout << cache['h'] << endl;
+
     } else if (line == "ispprime") {
       if (boolCache.count('p') == 0)
         boolCache['p'] = isPrime(cache['p']);
       cout << (boolCache['p'] ? "Yes" : "No") << endl;
+
     } else if (line == "isqprime") {
       if (boolCache.count('q') == 0)
         boolCache['q'] = isPrime(cache['q']);
       cout << (boolCache['q'] ? "Yes" : "No") << endl;
+
     } else if (line.substr(0, 14) == "encryptpublic=") {
       if (cache.count('n') == 0)
         cache['n'] = cache['p'] * cache['q'];
       BigInt message(line.substr(14));
       cout << message.pow(cache['e'], cache['n']) << endl;
+
     } else if (line.substr(0, 15) == "encryptprivate=") {
       if (cache.count('d') == 0) {
         if (cache.count('h') == 0)
@@ -151,6 +172,7 @@ void appLoop() {
         cache['n'] = cache['p'] * cache['q'];
       BigInt message(line.substr(15));
       cout << message.pow(cache['d'], cache['n']) << endl;
+
     } else if (line == "quit")
       return;
   }

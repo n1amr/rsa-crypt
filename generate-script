@@ -6,10 +6,12 @@ TARGET="./singlefile/rsa-crypt.cpp"
 files=(
     "bigint/BigInt.h"
     "bigint/BigIntHelpers.h"
-    "App.h"
+    "RSA.h"
+    "REPL.h"
     "bigint/BigInt.cpp"
     "bigint/BigIntHelpers.cpp"
-    "App.cpp"
+    "RSA.cpp"
+    "REPL.cpp"
     "main.cpp"
 )
 

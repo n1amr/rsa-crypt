@@ -13,12 +13,15 @@ add_definitions(
 set(SOURCE_FILES
         src/main/bigint/BigInt.cpp
         src/main/bigint/BigIntHelpers.cpp
-        src/main/App.cpp
-        src/main/App.h)
+        src/main/REPL.cpp
+        src/main/REPL.h
+        src/main/RSA.cpp
+        src/main/RSA.h)
 
 set(TESTS_FILES
         src/test/bigint/BigIntTest.cpp
-        src/test/AppTest.cpp)
+        src/test/RSA.cpp
+        src/test/REPL.cpp)
 
 set(LONG_TESTS_FILES
         src/test/bigint/BigIntGeneratedTest.cpp)

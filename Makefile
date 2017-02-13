@@ -6,14 +6,14 @@ ifdef DEBUG
 	CXXFLAGS := $(CXXFLAGS) -g
 endif
 
-generate:
+rsa-crypt.cpp:
 	@./generate-script
 
 singlefile/rsa-crypt.in:
 	@echo "# Enter commands here." >> singlefile/rsa-crypt.in
 	@echo "# (i.e. P= Q= E= PrintN PrintPhi PrintP PrintQ PrintE PrintD EncryptPublic= EncrtyptPrivate= Quit)" >> singlefile/rsa-crypt.in
 
-singlefile/rsa-crypt: generate
+singlefile/rsa-crypt: rsa-crypt.cpp
 	@test -f singlefile/rsa-crypt || g++ ./singlefile/rsa-crypt.cpp -o singlefile/rsa-crypt ${CXXFLAGS}
 
 run: singlefile/rsa-crypt
@@ -23,5 +23,7 @@ run-fileinput: singlefile/rsa-crypt singlefile/rsa-crypt.in
 	/usr/bin/time --verbose ./singlefile/rsa-crypt < singlefile/rsa-crypt.in
 
 clean:
-	rm ./singlefile/rsa-crypt
-	rm ./singlefile/rsa-crypt.cpp
+	if [ -f ./singlefile/rsa-crypt ]; then rm ./singlefile/rsa-crypt; fi
+	if [ -f ./singlefile/rsa-crypt.cpp ]; then rm ./singlefile/rsa-crypt.cpp; fi
+
+update: clean singlefile/rsa-crypt

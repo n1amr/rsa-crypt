@@ -347,7 +347,7 @@ int BigInt::compare(const BigInt &a, const BigInt &b) {
   size_t n = b.cells.size();
 
   if (m != n) {
-    return m > n ? 1 : -1;
+    return ((m > n) ^ (a.sign == NEGATIVE)) ? 1 : -1;
   } else {
     int r = 0;
     for (int i = (int) m - 1; i >= 0; i--) {

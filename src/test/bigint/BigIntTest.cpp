@@ -504,3 +504,37 @@ TEST_F(BigIntTest, test_shift_bits_large_numbers) {
   }
   EXPECT_EQ(to_string(n), x.toDecimalString());
 }
+
+TEST_F(BigIntTest, test_compare_same_cell_size_numbers) {
+  BigInt a = (BigInt(1) << (2 * CELL_BIT_LENGTH));
+  BigInt b = (BigInt(2) << (2 * CELL_BIT_LENGTH));
+
+  EXPECT_EQ(-1, BigInt::compare(a, b));
+  EXPECT_EQ(1, BigInt::compare(b, a));
+
+  EXPECT_EQ(-1, BigInt::compare(-a, b));
+  EXPECT_EQ(1, BigInt::compare(b, -a));
+
+  EXPECT_EQ(1, BigInt::compare(a, -b));
+  EXPECT_EQ(-1, BigInt::compare(-b, a));
+
+  EXPECT_EQ(1, BigInt::compare(-a, -b));
+  EXPECT_EQ(-1, BigInt::compare(-b, -a));
+}
+
+TEST_F(BigIntTest, test_compare_different_cell_size_numbers) {
+  BigInt a = (BigInt(1) << (3 * CELL_BIT_LENGTH));
+  BigInt b = (BigInt(2) << (2 * CELL_BIT_LENGTH));
+
+  EXPECT_EQ(1, BigInt::compare(a, b));
+  EXPECT_EQ(-1, BigInt::compare(b, a));
+
+  EXPECT_EQ(-1, BigInt::compare(-a, b));
+  EXPECT_EQ(1, BigInt::compare(b, -a));
+
+  EXPECT_EQ(1, BigInt::compare(a, -b));
+  EXPECT_EQ(-1, BigInt::compare(-b, a));
+
+  EXPECT_EQ(-1, BigInt::compare(-a, -b));
+  EXPECT_EQ(1, BigInt::compare(-b, -a));
+}

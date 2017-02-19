@@ -13,17 +13,17 @@ string eval(string line) {
   } else if (line == "printphi") {
     return get('h').toDecimalString();
 
-  } else if (line.substr(0, 5) == "print") {
+  } else if (line.length() == 6 && line.substr(0, 5) == "print") {
     return get(line[5]).toDecimalString();
 
   } else if (line == "ispprime" || line == "isqprime") {
     return isXPrime(line[2]);
 
-  } else if (line.substr(0, 14) == "encryptpublic=") {
+  } else if (line.length() > 14 && line.substr(0, 14) == "encryptpublic=") {
     BigInt message(line.substr(14));
     return message.pow(get('e'), get('n')).toDecimalString();
 
-  } else if (line.substr(0, 15) == "encryptprivate=") {
+  } else if (line.length() > 15 && line.substr(0, 15) == "encryptprivate=") {
     BigInt message(line.substr(15));
     return message.pow(get('d'), get('n')).toDecimalString();
 

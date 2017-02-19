@@ -10,6 +10,10 @@ using namespace std;
 
 #define REVERSE(s) reverse((s).begin(), (s).end())
 
+#define ZERO_TRIMMED_VECTOR(v) ( \
+  ((v).size() > 1 && (v).back() != 0) || \
+  (v).size() == 1)
+
 string decimalVecToDecimalString(const vector<short> &v);
 vector<short> decimalStringToDecimalVec(const string &s);
 

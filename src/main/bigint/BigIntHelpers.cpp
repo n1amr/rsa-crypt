@@ -69,7 +69,7 @@ vector<short> halveDecimalVec(const vector<short> &v) {
   }
 
   REVERSE(ans);
-  while (ans.size() > 1 && ans.back() == 0)
+  while (!ZERO_TRIMMED_VECTOR(ans))
     ans.pop_back();
 
   return ans;

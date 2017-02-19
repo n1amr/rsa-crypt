@@ -37,6 +37,8 @@ using namespace std;
 #define POSITIVE 0
 #define NEGATIVE 1
 
+#define ZERO_TRIMMED_BIGINT(n) ZERO_TRIMMED_VECTOR((n).cells)
+
 class BigInt {
 private:
   CELLS_CONTAINER_T cells;

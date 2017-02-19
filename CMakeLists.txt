@@ -41,3 +41,11 @@ target_link_libraries(tests gtest gtest_main)
 
 add_executable(tests_long ${SOURCE_FILES} ${TESTS_FILES} ${LONG_TESTS_FILES} src/test/main.cpp)
 target_link_libraries(tests_long gtest gtest_main)
+
+add_executable(tests_8bit ${SOURCE_FILES} ${TESTS_FILES} src/test/main.cpp)
+target_link_libraries(tests_8bit gtest gtest_main)
+target_compile_definitions(tests_8bit PRIVATE CELL_SIZE=8)
+
+add_executable(tests_long_8bit ${SOURCE_FILES} ${TESTS_FILES} ${LONG_TESTS_FILES} src/test/main.cpp)
+target_link_libraries(tests_long_8bit gtest gtest_main)
+target_compile_definitions(tests_long_8bit PRIVATE CELL_SIZE=8)

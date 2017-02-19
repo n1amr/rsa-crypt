@@ -3,6 +3,7 @@
 #endif //N1AMR_MULTIPLE_FILES
 
 BigInt random(const BigInt &from, const BigInt &to) {
+  assert(from < to);
   BigInt ans = from +
                (to - from) * BigInt((long long) rand())
                / BigInt((long long) 1 << 31);
@@ -52,6 +53,7 @@ bool isPrime(const BigInt &n) {
 }
 
 BigInt inverse(const BigInt &a, const BigInt &mod) {
+  assert(mod != BigInt::ZERO);
   BigInt ans;
 
   BigInt right_old = mod;

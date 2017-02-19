@@ -37,3 +37,9 @@ TEST_F(REPLTest, test_inverse) {
     EXPECT_EQ("1", ((i * j) % p).toDecimalString());
   }
 }
+
+TEST_F(REPLTest, test_random_when_from_equals_to_minus_1) {
+  BigInt n = 123;
+  for (int i = 0; i < 10; i++)
+    EXPECT_EQ(n.toDecimalString(), random(n, n + 1).toDecimalString());
+}

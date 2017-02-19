@@ -93,7 +93,7 @@ void startREPL() {
 #endif //N1AMR_FILE_INPUT
 
 #ifndef N1AMR_LOCAL_PC
-  srand(time(NULL));
+  // srand(time(NULL));
 #endif //N1AMR_LOCAL_PC
 
   string line;

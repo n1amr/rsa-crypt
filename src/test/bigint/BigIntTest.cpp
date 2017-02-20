@@ -84,7 +84,8 @@ TEST_F(BigIntTest, test_addition_subtraction_small_numbers_near_zero) {
   }
 }
 
-TEST_F(BigIntTest, test_addition_subtraction_small_numbers_near_max_cell_value) {
+TEST_F(BigIntTest,
+       test_addition_subtraction_small_numbers_near_max_cell_value) {
   long long n1_start = MAX_CELL_VALUE - 5;
   long long n2_start = MAX_CELL_VALUE - 5;
   long long steps = 10;
@@ -186,7 +187,8 @@ TEST_F(BigIntTest, test_division_small_numbers_near_zero) {
       if (j == 0)
         continue;
       int expected_q = (int) round(floor((double) i / j));
-      EXPECT_EQ(to_string(expected_q), (BigInt(i) / BigInt(j)).toDecimalString());
+      EXPECT_EQ(to_string(expected_q),
+                (BigInt(i) / BigInt(j)).toDecimalString());
     }
   }
 }
@@ -200,7 +202,8 @@ TEST_F(BigIntTest, test_division_small_numbers_near_max_cell_value) {
       if (j == 0)
         continue;
       int expected_q = (int) round(floor((double) i / j));
-      EXPECT_EQ(to_string(expected_q), (BigInt(i) / BigInt(j)).toDecimalString());
+      EXPECT_EQ(to_string(expected_q),
+                (BigInt(i) / BigInt(j)).toDecimalString());
     }
   }
 }
@@ -214,7 +217,8 @@ TEST_F(BigIntTest, test_division_small_numbers) {
       if (j == 0)
         continue;
       int expected_q = (int) round(floor((double) i / j));
-      EXPECT_EQ(to_string(expected_q), (BigInt(i) / BigInt(j)).toDecimalString());
+      EXPECT_EQ(to_string(expected_q),
+                (BigInt(i) / BigInt(j)).toDecimalString());
     }
   }
 }
@@ -236,7 +240,8 @@ TEST_F(BigIntTest, test_mod_small_numbers_near_zero) {
     for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
       if (j == 0)
         continue;
-      EXPECT_EQ(to_string(((i % j) + j) % j), (BigInt(i) % BigInt(j)).toDecimalString());
+      EXPECT_EQ(to_string(((i % j) + j) % j),
+                (BigInt(i) % BigInt(j)).toDecimalString());
     }
   }
 }
@@ -249,7 +254,8 @@ TEST_F(BigIntTest, test_mod_small_numbers_near_max_cell_value) {
     for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
       if (j == 0)
         continue;
-      EXPECT_EQ(to_string(((i % j) + j) % j), (BigInt(i) % BigInt(j)).toDecimalString());
+      EXPECT_EQ(to_string(((i % j) + j) % j),
+                (BigInt(i) % BigInt(j)).toDecimalString());
     }
   }
 }
@@ -262,7 +268,8 @@ TEST_F(BigIntTest, test_mod_small_numbers) {
     for (long long j = n2_start - steps; j < n2_start + steps; ++j) {
       if (j == 0)
         continue;
-      EXPECT_EQ(to_string(((i % j) + j) % j), (BigInt(i) % BigInt(j)).toDecimalString());
+      EXPECT_EQ(to_string(((i % j) + j) % j),
+                (BigInt(i) % BigInt(j)).toDecimalString());
     }
   }
 }
@@ -274,6 +281,91 @@ TEST_F(BigIntTest, test_mod_long_numbers) {
           "459325128745903883767300625269279534276046606148495054199206467103809034406958699371287010653270759160021297780128903612252577219519201561344684136341944397169610529274780014757567591812378011896124002086919274828189284812917250")
        % BigInt(
           "183529727911255996546025267298062893180584732768594808556172129888366764671594897227380689575625975679060681738746876517816691262185901673484853754837036072432016261181254688593818931958565527120391349679067506151112118522044401")).toDecimalString());
+}
+
+long long power(long long n, long long p) {
+  if (p == 0)
+    return 1;
+
+  long long ans = 1;
+  long long tmp = n;
+  while (p > 0) {
+    if (p & 1)
+      ans = (ans * tmp);
+    p /= 2;
+    tmp = (tmp * tmp);
+  }
+  return ans;
+}
+
+TEST_F(BigIntTest, test_pow_small_numbers_near_zero) {
+  long long a_start = -5;
+  long long a_end = 10;
+  long long b_start = 0;
+  long long b_end = 5;
+
+    for (long long a = a_start; a < a_end; a++) {
+      BigInt A((long long) a);
+      for (long long b = b_start; b < b_end; b++) {
+        BigInt B((long long) b);
+        BigInt ans = BigInt::pow(A, B, BigInt::ZERO);
+        EXPECT_EQ(to_string(power(a, b)),
+                  ans.toDecimalString());
+      }
+  }
+}
+
+unsigned long long modular_power(long long n, long long p, long long m) {
+  if (p == 0)
+    return 1;
+
+  unsigned long long ans = 1;
+  unsigned long long tmp = (n % m + m) % m;
+  while (p > 0) {
+    if (p & 1)
+      ans = (ans * tmp) % m;
+    p /= 2;
+    tmp = (tmp * tmp) % m;
+  }
+  return ans;
+}
+
+TEST_F(BigIntTest, test_modular_pow_small_numbers_near_zero) {
+  long long a_start = -5;
+  long long a_end = 10;
+  long long b_start = 0;
+  long long b_end = 100;
+  long long m = 10;
+
+  BigInt M = 10;
+  for (long long a = a_start; a < a_end; a++) {
+    BigInt A((long long) a);
+    for (long long b = b_start; b < b_end; b++) {
+      BigInt B((long long) b);
+      BigInt ans = BigInt::pow(A, B, M);
+      EXPECT_EQ(to_string(modular_power(a, b, m)),
+                ans.toDecimalString());
+    }
+  }
+}
+
+TEST_F(BigIntTest, test_modular_pow_small_numbers_near_max_cell_value) {
+  long long a_start = MAX_CELL_VALUE - 10;
+  long long a_end = MAX_CELL_VALUE + 10;
+  long long b_start = 0;
+  long long b_end = 100;
+  long long m = 10;
+
+  BigInt M = 10;
+  for (long long a = a_start; a < a_end; a++) {
+    BigInt A((long long) a);
+    for (long long b = b_start; b < b_end; b++) {
+      BigInt B((long long) b);
+      BigInt ans = BigInt::pow(A, B, M);
+      EXPECT_EQ(to_string(modular_power(a, b, m)),
+                ans.toDecimalString());
+    }
+  }
 }
 
 TEST_F(BigIntTest, test_is_zero_small_numbers) {

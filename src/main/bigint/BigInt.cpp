@@ -312,6 +312,15 @@ BigInt BigInt::mod(const BigInt &n, const BigInt &m) {
 }
 
 BigInt BigInt::pow(const BigInt &n, const BigInt &power, const BigInt &m) {
+  assert(ZERO_TRIMMED_BIGINT(n));
+  assert(ZERO_TRIMMED_BIGINT(power));
+  assert(ZERO_TRIMMED_BIGINT(m));
+  assert(!power.isNegative());
+  assert(!m.isNegative());
+
+  if(power.isZero())
+    return BigInt::ONE;
+
   BigInt ans = BigInt::ONE;
   BigInt p = power;
   if (m != ZERO) {  // Modular Exponentiation
@@ -324,14 +333,20 @@ BigInt BigInt::pow(const BigInt &n, const BigInt &power, const BigInt &m) {
     }
 
   } else {  // Non-Modular Exponentiation
-    BigInt tmp = n;
+    SIGN_T ans_sign = ans.sign = n.sign & p.isOdd();
+    BigInt tmp = n.absolute();
+
     while (!p.isZero()) {
       if (p.isOdd())
         ans = (ans * tmp);
       p >>= 1;
       tmp = (tmp * tmp);
     }
+
+    ans.sign = ans_sign;
   }
+
+  assert(ZERO_TRIMMED_BIGINT(ans));
   return ans;
 }
 

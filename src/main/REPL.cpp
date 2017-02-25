@@ -65,8 +65,11 @@ void refreshN() {
 
 void refreshPhi() {
   assert(cache.count('p') && cache.count('q'));
-  if (cache.count('h') == 0)
-    cache['h'] = (get('p') - 1) * (get('q') - 1);
+  if (cache.count('h') == 0) {
+    BigInt p = get('p');
+    BigInt q = get('q');
+    cache['h'] = (p != q)? (p - 1) * (q - 1) : p * (p - 1);
+  }
 }
 
 void refreshD() {

@@ -16,10 +16,19 @@ singlefile/rsa-crypt.in:
 singlefile/rsa-crypt: rsa-crypt.cpp
 	@test -f singlefile/rsa-crypt || g++ ./singlefile/rsa-crypt.cpp -o singlefile/rsa-crypt ${CXXFLAGS}
 
+compile: rsa-crypt.cpp
+	g++ ./singlefile/rsa-crypt.cpp -o singlefile/rsa-crypt ${CXXFLAGS}
+
 run: singlefile/rsa-crypt
+	./singlefile/rsa-crypt
+
+timeit: singlefile/rsa-crypt
 	/usr/bin/time --verbose ./singlefile/rsa-crypt
 
 run-fileinput: singlefile/rsa-crypt singlefile/rsa-crypt.in
+	./singlefile/rsa-crypt < singlefile/rsa-crypt.in
+
+timeit-fileinput: singlefile/rsa-crypt singlefile/rsa-crypt.in
 	/usr/bin/time --verbose ./singlefile/rsa-crypt < singlefile/rsa-crypt.in
 
 clean:

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.0)
 project(rsa-crypt)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -7,8 +7,7 @@ add_definitions(-Wall -Wextra -pedantic)
 add_definitions(
         -DN1AMR
         -DN1AMR_LOCAL_PC
-        -DN1AMR_MULTIPLE_FILES
-        -DN1AMR_FILE_INPUT)
+        -DN1AMR_MULTIPLE_FILES)
 
 set(SOURCE_FILES
         src/main/bigint/BigInt.cpp

@@ -3,11 +3,11 @@
 #include "../main/bigint/BigInt.h"
 #include "../main/RSA.h"
 
-class REPLTest : public ::testing::Test {
+class RSATest : public ::testing::Test {
 
 };
 
-TEST_F(REPLTest, test_is_prime_small) {
+TEST_F(RSATest, test_is_prime_small) {
   const int max = 10000;
   bool isNotPrime[max] = {1, 1, 0};
   for (int i = 2; i < max; ++i)
@@ -19,7 +19,7 @@ TEST_F(REPLTest, test_is_prime_small) {
     EXPECT_EQ(!isNotPrime[i], isPrime(BigInt(i)));
 }
 
-TEST_F(REPLTest, test_is_prime_598_bit) {
+TEST_F(RSATest, test_is_prime_598_bit) {
   BigInt p1 = BigInt(
       "1797693134862315907729305190789024733617976978942306572734300811577326758055009631327084773224075360211201138798713933576587897688144166224928474306394741243777678934248654852763217");
   BigInt p2 = BigInt(
@@ -30,7 +30,7 @@ TEST_F(REPLTest, test_is_prime_598_bit) {
   EXPECT_EQ(1, isPrime(p2));
 }
 
-TEST_F(REPLTest, test_inverse) {
+TEST_F(RSATest, test_inverse) {
   BigInt p("8209");
   for (BigInt i = 1; i < p; i++) {
     BigInt j = inverse(i, p);
@@ -38,7 +38,7 @@ TEST_F(REPLTest, test_inverse) {
   }
 }
 
-TEST_F(REPLTest, test_random_when_from_equals_to_minus_1) {
+TEST_F(RSATest, test_random_when_from_equals_to_minus_1) {
   BigInt n = 123;
   for (int i = 0; i < 10; i++)
     EXPECT_EQ(n.toDecimalString(), random(n, n + 1).toDecimalString());

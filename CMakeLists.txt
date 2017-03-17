@@ -23,6 +23,7 @@ set(TESTS_FILES
         src/test/REPL.cpp)
 
 set(LONG_TESTS_FILES
+        src/test/REPLGenerated.cpp
         src/test/bigint/BigIntGeneratedTest.cpp)
 
 add_subdirectory(src/test/lib/googletest-master)
